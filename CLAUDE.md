@@ -125,6 +125,7 @@ tools/serial_probe.py   # Rohmitschnitt ohne Rahmenlogik (Altwerkzeug)
 tools/bitbang_scope.py  # FT232R als Logikanalysator (Bitbang, braucht pyftdi)
 tools/pi_bootstrap.sh   # Grundeinrichtung des Pi (Pakete, Gruppen, NTP)
 tools/build_protokoll_doc.py  # erzeugt docs/protokoll.html (Standardbibliothek)
+tools/build_audio_doc.py      # erzeugt docs/audio_verkabelung.html (Schaltplan Audio)
 gateway/ergoline/       # Protokoll (protocol.py) und serielle Verbindung (link.py), Basis für den Daemon
 gateway/tests/          # Tests (python3 -m unittest discover -s gateway/tests)
 docs/testplan.md        # nächste Tests am Gerät

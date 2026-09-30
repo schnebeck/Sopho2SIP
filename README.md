@@ -35,6 +35,7 @@ die Zuordnung zu SIP und einen Leitfaden für den Daemon. Jede Angabe ist gekenn
 | Datei | Inhalt |
 |---|---|
 | [`docs/protocol.md`](docs/protocol.md) | Arbeitsnotizen zum Protokoll mit Log-Verweisen |
+| [`docs/audio_verkabelung.html`](https://schnebeck.github.io/Sopho2SIP/audio_verkabelung.html) | Schaltplan: Audio-Buchse über 600-Ω-Übertrager an die USB-Soundkarte (vorläufig) |
 | [`docs/hardware.md`](docs/hardware.md) | Pinbelegung, Messwerte, Menüpunkte, Wartungsmodus des Telefons |
 | [`docs/sackgassen.md`](docs/sackgassen.md) | Irrwege, z. B. der inkompatible Octophon-Treiber mit AT-Befehlen |
 | [`docs/testplan.md`](docs/testplan.md) | nächste Tests am Gerät |
