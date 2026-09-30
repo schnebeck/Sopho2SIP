@@ -1,0 +1,15 @@
+# 192064 Abtastwerte in 9.997 s Wandzeit -> effektiv 19213 Hz (Soll 19200; Differenz = Lücken zwischen Blöcken)
+# Rohdaten: /home/schnebeck/Documents/Projects/Sopho2SIP/logs/bitbang_20260930_163457.bin
+RX H (Ruhe)   1512.8 ms  @0
+RX L      833.3 µs  @29045
+RX H      833.3 µs  @29061
+RX L      833.3 µs  @29077
+RX H      833.3 µs  @29093
+RX L     4166.7 µs  @29109
+RX H     1666.7 µs  @29189
+RX L     7500.0 µs  @29221
+RX H (Ruhe)   8473.9 ms  @29365
+# RXD dekodiert als 1200 8N1: 2 Byte
+RX @  29045 (+  1.513 s)  0x05 '\x05'
+RX @  29221 (+  1.522 s)  0x00 '\x00'
+# 2026-09-30 16:35:07.293 Ende, Log: /home/schnebeck/Documents/Projects/Sopho2SIP/logs/bitbang_20260930_163457.log
