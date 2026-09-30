@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: GPL-3.0-or-later
 """Tests für gateway/ergoline/protocol.py gegen den echten Mitschnitt vom 2026-09-30.
 
 Aufruf: python3 -m unittest discover -s gateway/tests -v

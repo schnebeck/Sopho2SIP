@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: GPL-3.0-or-later
 """Test von gateway/ergoline/link.py gegen ein simuliertes Telefon am Pseudo-Terminal (ohne Hardware).
 
 Die Simulation quittiert jeden Auftrag mit 04 00 (echtes ACK-Format noch unbekannt) und meldet danach

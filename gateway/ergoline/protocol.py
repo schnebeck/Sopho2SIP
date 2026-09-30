@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: GPL-3.0-or-later
 """Rahmenprotokoll der ErgoLine D340 an der PC-Schnittstelle (1200 Baud, 8O1).
 
 Reine Protokoll-Logik ohne Ein-/Ausgabe. Quelle: ref/ergoline_tsp/Ergoline.tsp und Mitschnitte,

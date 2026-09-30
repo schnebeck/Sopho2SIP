@@ -67,6 +67,11 @@ und liegen nicht im Repository. Der Treiber ist in der Wayback Machine archivier
 
 Weitere Fundstellen: [`ref/ergoline_tsp/QUELLE.md`](ref/ergoline_tsp/QUELLE.md) und Abschnitt Quellen der Spezifikation.
 
+## Lizenz
+
+Der Code (`gateway/`, `tools/`) steht unter der **GNU General Public License v3.0 oder später**
+(`GPL-3.0-or-later`, siehe [`LICENSE`](LICENSE)). Für die Dokumentation gilt keine gesonderte Lizenz.
+
 ## Vorsicht
 
 Eine Telefonanlage lässt sich nicht beliebig zurücksetzen. Nur dokumentierte Aufträge senden, nichts raten, und am
