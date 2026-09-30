@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: GPL-3.0-or-later
 """Testwerkzeug für das Rahmenprotokoll der ErgoLine D340 (siehe docs/protocol.md, docs/testplan.md).
 
 Frei (ändern keinen Gesprächszustand):

@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: GPL-3.0-or-later
 """Logikanalysator mit dem FT232R im synchronen Bitbang-Modus.
 
 TXD (D0) wird als Ausgang benutzt und erzeugt freigegebene Befehle als UART-Rahmen (8N1),

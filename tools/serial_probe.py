@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: GPL-3.0-or-later
 """Serielle Testsonde für die PC-Schnittstelle der ErgoLine D340 / Octophon 340i.
 
 Sendet optional freigegebene Befehle und protokolliert danach alle Meldungen

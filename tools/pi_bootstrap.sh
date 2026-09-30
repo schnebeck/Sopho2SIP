@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# SPDX-License-Identifier: GPL-3.0-or-later
 # Grundeinrichtung des Gateway-Pi (Phase 1). Läuft auf dem Pi, gestartet vom Laptop:
 #   ssh sopho-gw 'bash -s' < tools/pi_bootstrap.sh
 # Idempotent, kann mehrfach laufen.

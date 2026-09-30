@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: GPL-3.0-or-later
 """Erzeugt docs/protokoll.html (Protokollspezifikation mit SVG-Grafiken) aus docs/protokoll.tpl.html.
 
 Die Grafiken werden hier als Daten beschrieben und zu Inline-SVG gerendert (nur Standardbibliothek).

@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: GPL-3.0-or-later
 """Serielle Verbindung zur ErgoLine D340: Lesethread, Senden mit Quittung, Sitzungslog.
 
 Jede Sitzung schreibt nach logs/ergo_<zeit>.log: Rohbytes (<< raw / >> raw) und dekodierte Rahmen.
