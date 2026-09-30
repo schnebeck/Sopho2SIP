@@ -1,2 +1,13 @@
 __pycache__/
 *.pyc
+
+# Lokal, nicht veröffentlichen (Urheberrecht Philips/ManualsLib; siehe ref/ergoline_tsp/QUELLE.md)
+privat/
+ref/ergoline_tsp/Ergoline.tsp
+ref/ergoline_tsp/ergoline.zip
+ref/ergoline_tsp/*.doc
+ref/ergoline_tsp/*.pdf
+ref/audio_interface_pinout.png
+ref/blockschaltbild_d340.png
+ref/pc_interface_pinout.png
+docs/img/d340_menuebaum.png
