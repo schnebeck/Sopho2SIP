@@ -26,7 +26,8 @@ bestätigen: Kabel 1:1, nicht gekreuzt. Rate/Format: **1200 Baud**, laut Treiber
 | 1 | X_OUT | DC vor Anschluss prüfen (5 V = falsche Buchse!) |
 | 2 | X_IN | |
 | 3 | GNDA | – |
-Noch nicht angeschlossen/gemessen.
+Noch nicht angeschlossen/gemessen. Geplante Verkabelung (2 × Übertrager 600:600, C1/C2 1 µF, Teiler R1 10 kΩ / R2 1 kΩ):
+[`audio_verkabelung.html`](audio_verkabelung.html), erzeugt mit `tools/build_audio_doc.py`.
 
 ## Messungen
 | Datum | Messpunkt | Wert | Deutung |
