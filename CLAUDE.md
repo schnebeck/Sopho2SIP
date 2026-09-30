@@ -101,6 +101,8 @@ Sopho ─UPN─ D340 ─PC-Schnittstelle (Binärrahmen, 1200 8N1)─ USB-RS232 �
 - **Öffentliches Repo (GitHub schnebeck/Sopho2SIP):** Treiber, Handbuch-Auszüge/-PDFs und Menübaum-Bild bleiben lokal
   (`.gitignore`), echte Rufnummern nie committen (Platzhalter `01700000000`). Vor jedem Push `git status` und
   `.gitignore` prüfen. Im Mittelpunkt steht die Dokumentation (`docs/protokoll.html`, README).
+- Lizenz: Code in `gateway/` und `tools/` ist GPL-3.0-or-later; neue Code-Dateien bekommen als erste Zeile
+  (nach dem Shebang) `# SPDX-License-Identifier: GPL-3.0-or-later`. Die Dokumentation hat keine gesonderte Lizenz.
 - Stil: knapp, präzise, kommandozeilenorientiert. Python 3 mit `pyserial`, keine unnötigen Abhängigkeiten.
 - Sprache in Doku und Kommentaren: Deutsch.
 
