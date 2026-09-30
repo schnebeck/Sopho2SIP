@@ -1,0 +1,419 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ErgoLine D340 Protokoll</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Condensed:wght@500;600;700&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap">
+<style>
+/* Layout: Datenblatt – eine Textspalte (~70 Zeichen), Tabellen/Grafiken dürfen breiter werden; Inhaltsverzeichnis oben. */
+:root {
+  --bg: #f3f5f5; --panel: #ffffff; --fg: #16201f; --muted: #56625f; --rule: #cfd7d5;
+  --req: #b0470c;            /* Aufträge PC → Telefon */
+  --ok: #26734a; --drv: #3552b5; --sus: #9a6400;   /* bestätigt / Treiber / vermutet */
+  --act-bg: #e7eeec; --code-bg: #eaefee;
+  --cell-k: #dfe8f7; --cell-l: #e9e4f6; --cell-t: #dff0e7; --cell-d: #f4ecdc;
+  --sans: "IBM Plex Sans", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --cond: "IBM Plex Sans Condensed", "Arial Narrow", "Roboto Condensed", sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0f1515; --panel: #161e1e; --fg: #e2e9e7; --muted: #99a7a3; --rule: #2c3837;
+  --req: #f08a4b; --ok: #5cc68b; --drv: #8ea4ff; --sus: #e2ad4c;
+  --act-bg: #1d2828; --code-bg: #1a2322;
+  --cell-k: #1d2a40; --cell-l: #2a2440; --cell-t: #1b3326; --cell-d: #3a3020; color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #0f1515; --panel: #161e1e; --fg: #e2e9e7; --muted: #99a7a3; --rule: #2c3837;
+  --req: #f08a4b; --ok: #5cc68b; --drv: #8ea4ff; --sus: #e2ad4c;
+  --act-bg: #1d2828; --code-bg: #1a2322;
+  --cell-k: #1d2a40; --cell-l: #2a2440; --cell-t: #1b3326; --cell-d: #3a3020; color-scheme: dark; }
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body { margin: 0; background: var(--bg); color: var(--fg); font: 15.5px/1.6 var(--sans); }
+.wrap { max-width: 980px; margin: 0 auto; padding-inline: 20px; padding-block: 28px 64px; }
+.col { max-width: 72ch; }
+h1, h2, h3 { font-family: var(--cond); line-height: 1.2; text-wrap: balance; margin: 0; }
+h1 { font-size: clamp(1.9rem, 4vw, 2.6rem); font-weight: 700; letter-spacing: -0.01em; }
+h2 { font-size: 1.55rem; font-weight: 600; margin-block: 56px 14px; padding-top: 14px; border-top: 2px solid var(--fg); }
+h3 { font-size: 1.15rem; font-weight: 600; margin-block: 30px 8px; }
+h2 .nr { font-family: var(--mono); font-weight: 500; font-size: 0.8em; color: var(--muted); margin-right: 0.5em; }
+p, ul, ol { margin-block: 0 12px; }
+a { color: var(--drv); }
+a:focus-visible, summary:focus-visible { outline: 2px solid var(--req); outline-offset: 2px; }
+code, .hex { font-family: var(--mono); font-size: 0.9em; }
+code { background: var(--code-bg); padding: 1px 4px; border-radius: 3px; }
+.hex { white-space: nowrap; }
+pre { background: var(--code-bg); border: 1px solid var(--rule); border-radius: 6px; padding: 14px 16px;
+      overflow-x: auto; font: 13.5px/1.5 var(--mono); margin-block: 0 16px; }
+pre code { background: none; padding: 0; }
+
+header.kopf { display: grid; gap: 10px; padding-bottom: 20px; border-bottom: 1px solid var(--rule); }
+.eyebrow { font: 500 12px/1 var(--mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+.lead { font-size: 1.08rem; color: var(--fg); max-width: 72ch; margin: 0; }
+.meta { display: flex; flex-wrap: wrap; gap: 6px 22px; font: 13px/1.5 var(--mono); color: var(--muted); }
+.meta b { color: var(--fg); font-weight: 500; }
+
+nav.toc { margin-top: 22px; }
+nav.toc ol { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 4px 24px;
+             padding: 0; margin: 0; list-style: none; counter-reset: t; }
+nav.toc li { counter-increment: t; }
+nav.toc li::before { content: counter(t, decimal-leading-zero); font-family: var(--mono); color: var(--muted);
+                     font-size: 12px; margin-right: 8px; }
+nav.toc a { color: var(--fg); text-decoration: none; }
+nav.toc a:hover { text-decoration: underline; }
+
+.st { display: inline-block; font: 600 11px/1 var(--mono); letter-spacing: 0.04em; text-transform: uppercase;
+      padding: 3px 6px; border-radius: 3px; border: 1px solid currentColor; vertical-align: 1px; white-space: nowrap; }
+.st-b { color: var(--ok); } .st-t { color: var(--drv); } .st-v { color: var(--sus); }
+.legende { display: flex; flex-wrap: wrap; gap: 8px 22px; margin-block: 14px 0; font-size: 14px; }
+.legende span.st { margin-right: 6px; }
+
+.tbl { overflow-x: auto; margin-block: 8px 18px; }
+table { border-collapse: collapse; width: 100%; font-size: 14.5px; }
+th, td { text-align: left; vertical-align: top; padding: 7px 12px 7px 0; border-bottom: 1px solid var(--rule); }
+th { font: 600 12px/1.3 var(--mono); text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted);
+     border-bottom: 1.5px solid var(--fg); }
+td:first-child { white-space: nowrap; }
+td.num { font-variant-numeric: tabular-nums; }
+
+.hinweis { border-left: 3px solid var(--req); padding: 8px 14px; background: var(--panel); margin-block: 12px 18px;
+           max-width: 72ch; }
+.hinweis.ok { border-left-color: var(--ok); }
+.hinweis p:last-child { margin-bottom: 0; }
+
+figure.fig { margin: 18px 0 26px; }
+.fig-scroll { overflow-x: auto; background: var(--panel); border: 1px solid var(--rule); border-radius: 6px; padding: 10px; }
+figcaption { font-size: 13.5px; color: var(--muted); margin-top: 8px; max-width: 80ch; }
+svg.diagram { display: block; width: 100%; min-width: 640px; height: auto; color: var(--fg); }
+.diagram text { font-family: var(--sans); }
+.d-head { fill: var(--fg); font: 600 13px var(--cond); }
+.d-lbl { fill: var(--muted); font-size: 11.5px; }
+.d-mono { fill: var(--fg); font: 11.5px var(--mono); paint-order: stroke; stroke: var(--panel); stroke-width: 4px; }
+.d-big { font-size: 14px; font-weight: 500; stroke: none; }
+.d-colh { fill: var(--muted); font: 600 10.5px var(--mono); letter-spacing: 0.06em; text-transform: uppercase; }
+.d-box { fill: var(--panel); stroke: var(--fg); stroke-width: 1.2; }
+.d-state { fill: var(--panel); stroke: var(--fg); stroke-width: 1.4; }
+.d-focus { fill: none; stroke: var(--req); stroke-width: 1.2; stroke-dasharray: 4 3; }
+.d-life { stroke: var(--rule); stroke-width: 1.2; stroke-dasharray: 3 4; }
+.d-evt { stroke: var(--fg); stroke-width: 1.4; fill: none; }
+.d-req { stroke: var(--req); stroke-width: 1.8; fill: none; }
+.d-exp { stroke-dasharray: 5 4; }
+.d-ah { fill: var(--fg); }
+.d-ah-req { fill: var(--req); }
+.d-act { fill: var(--act-bg); stroke: var(--rule); }
+.d-actt { fill: var(--fg); font-size: 11.5px; }
+.d-gap { stroke: var(--rule); stroke-dasharray: 2 4; }
+.d-gapt { fill: var(--muted); font-size: 11px; font-style: italic; paint-order: stroke; stroke: var(--panel); stroke-width: 6px; }
+.d-reqt { fill: var(--req); font: 500 11.5px var(--mono); paint-order: stroke; stroke: var(--panel); stroke-width: 4px; }
+.d-cell { stroke: var(--fg); stroke-width: 1; }
+.d-cell-k { fill: var(--cell-k); } .d-cell-l { fill: var(--cell-l); } .d-cell-t { fill: var(--cell-t); } .d-cell-d { fill: var(--cell-d); }
+.d-brace { fill: none; stroke: var(--muted); stroke-width: 1.2; }
+.d-tick { stroke: var(--muted); stroke-width: 1; }
+
+.checks { list-style: none; padding: 0; display: grid; gap: 8px; max-width: 76ch; }
+.checks li { padding-left: 26px; position: relative; }
+.checks li::before { content: "▸"; position: absolute; left: 6px; color: var(--req); }
+footer { margin-top: 56px; padding-top: 14px; border-top: 1px solid var(--rule); font-size: 13px; color: var(--muted); }
+@media (max-width: 560px) { body { font-size: 15px; } h2 { margin-top: 44px; } }
+@media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="kopf">
+  <div class="eyebrow">Sopho2SIP · Spezifikation der PC-Schnittstelle</div>
+  <h1>ErgoLine D340 Protokoll</h1>
+  <p class="lead">Wie ein Programm über die 9-polige PC-Buchse einer Philips ErgoLine D340 an einer Sopho iS3000
+  Anrufe erkennt, annimmt, wählt und auslöst. Genug, um einen eigenen TAPI- oder SIP-Daemon zu bauen.</p>
+  <div class="meta">
+    <span>Stand <b>2026-09-30</b></span>
+    <span>Gerät <b>ERGOLINE 340-2/LG INT</b></span>
+    <span>Firmware <b>V4.03.40.01</b></span>
+    <span>Leitung <b>1200 Bd · 8O1</b></span>
+    <span>Quelle <b>Mitschnitte + Philips Ergoline.tsp 2.1.2</b></span>
+  </div>
+  <div class="legende">
+    <div><span class="st st-b">bestätigt</span>am Gerät gemessen oder mitgeschnitten</div>
+    <div><span class="st st-t">Treiber</span>aus dem Philips-Treiber abgeleitet, am Gerät noch nicht gesehen</div>
+    <div><span class="st st-v">vermutet</span>Deutung ohne Beleg</div>
+  </div>
+  <nav class="toc" aria-label="Inhalt">
+    <ol>
+      <li><a href="#ueberblick">Überblick</a></li>
+      <li><a href="#voraussetzungen">Voraussetzungen</a></li>
+      <li><a href="#rahmen">Rahmenformat</a></li>
+      <li><a href="#meldungen">Meldungen des Telefons</a></li>
+      <li><a href="#auftraege">Aufträge des PCs</a></li>
+      <li><a href="#zeit">Quittung und Zeitverhalten</a></li>
+      <li><a href="#ablaeufe">Abläufe</a></li>
+      <li><a href="#zustand">Zustandsautomat und SIP</a></li>
+      <li><a href="#daemon">Einen Daemon bauen</a></li>
+      <li><a href="#init">Initialisierung im Originaltreiber</a></li>
+      <li><a href="#sicherheit">Sicherheit</a></li>
+      <li><a href="#offen">Offene Fragen</a></li>
+      <li><a href="#quellen">Quellen</a></li>
+    </ol>
+  </nav>
+</header>
+
+<h2 id="ueberblick"><span class="nr">01</span>Überblick</h2>
+<div class="col">
+<p>Die D340 bleibt als „Leitungsmodem“ an der Anlage. Sie erledigt den gesamten Dialog mit der Sopho (UPN, LAPD,
+Philips-TMP). Ein PC spricht nur mit der Firmware des Telefons: über eine serielle Leitung mit einem kleinen
+Binärprotokoll aus Rahmen. Das Telefon meldet Zustände (klingelt, verbunden, ausgelöst …) mit Rufnummern;
+der PC erteilt Aufträge (anmelden, wählen, annehmen, auflegen), die das Telefon quittiert.</p>
+</div>
+{{ARCH}}
+
+<h2 id="voraussetzungen"><span class="nr">02</span>Voraussetzungen</h2>
+<div class="tbl"><table>
+<thead><tr><th>Punkt</th><th>Wert</th><th>Status</th></tr></thead>
+<tbody>
+<tr><td>Freischaltung</td><td>Am Telefon: <b>Merkmale → Optionen → „TAPI: Sprache über Telefon“ = Ein</b>
+  (oder „… über Zusatzgerät“ für die Audio-Buchse). Sind beide aus, reagiert die Schnittstelle auf nichts.
+  Die Einträge erscheinen nur, wenn die Anlage TAPI für die Nebenstelle erlaubt.</td><td><span class="st st-b">bestätigt</span></td></tr>
+<tr><td>Stecker</td><td>DB9-Buchse hinten am Telefon (Telefon = DCE), 1:1-Kabel. Pin 2 Telefon sendet, Pin 3 Telefon empfängt,
+  Pin 5 Masse. Keine Steuerleitungen.</td><td><span class="st st-b">bestätigt</span></td></tr>
+<tr><td>Pegel</td><td>RS-232, Ruhepegel −5 V auf beiden Datenleitungen</td><td><span class="st st-b">bestätigt</span></td></tr>
+<tr><td>Rate</td><td><b>1200 Baud</b>, fest (Wartungstest 63, Bitmessung 833 µs je Bit)</td><td><span class="st st-b">bestätigt</span></td></tr>
+<tr><td>Format</td><td><b>8 Datenbits, ungerade Parität, 1 Stoppbit (8O1)</b>. Der Treiber schaltet zusätzlich
+  Xon/Xoff (<span class="hex">11</span>/<span class="hex">13</span>) ein. Mit 8N1 empfangene Daten sind trotzdem korrekt.</td><td><span class="st st-t">Treiber</span></td></tr>
+</tbody></table></div>
+
+<h2 id="rahmen"><span class="nr">03</span>Rahmenformat</h2>
+<div class="col">
+<p>Beide Richtungen verwenden dasselbe Format: ein Byte Klasse, ein Byte Länge, dann genau so viele Bytes Nutzdaten.
+Mehrere Rahmen folgen lückenlos aufeinander. <span class="st st-b">bestätigt</span> <span class="st st-t">Treiber</span></p>
+</div>
+{{RAHMEN}}
+<div class="tbl"><table>
+<thead><tr><th>Klasse</th><th>Richtung</th><th>Bedeutung</th><th>Treibername</th><th>Status</th></tr></thead>
+<tbody>
+<tr><td class="hex">01</td><td>PC → Telefon</td><td>Auftrag</td><td>–</td><td><span class="st st-t">Treiber</span></td></tr>
+<tr><td class="hex">02</td><td>Telefon → PC</td><td>Meldung</td><td><code>L2_REQ_PHONE</code></td><td><span class="st st-b">bestätigt</span></td></tr>
+<tr><td class="hex">03</td><td>Telefon → PC</td><td>Auftrag abgelehnt</td><td><code>L2_REJ_PHONE</code></td><td><span class="st st-t">Treiber</span></td></tr>
+<tr><td class="hex">04</td><td>Telefon → PC</td><td>Auftrag quittiert</td><td><code>L2_ACK_PHONE</code></td><td><span class="st st-t">Treiber</span></td></tr>
+<tr><td class="hex">05</td><td>Telefon → PC</td><td>Fehler / nicht verstanden (<span class="hex">05 00</span>)</td><td><code>L2_ERR_PHONE</code></td><td><span class="st st-b">bestätigt</span></td></tr>
+</tbody></table></div>
+<div class="col">
+<p>Zerlegen: Puffer sammeln; solange mindestens zwei Bytes da sind, Länge <code>L = puffer[1]</code> lesen und warten,
+bis <code>L + 2</code> Bytes vorliegen. Der Treiber liest L vorzeichenbehaftet (höchstens 127). Es gibt kein Startzeichen,
+nach dem man synchronisieren könnte: Nach einem Fehler den Puffer verwerfen und auf die nächste Lücke warten.</p>
+<pre><code>def feed(puffer, neu):
+    puffer += neu
+    while len(puffer) &gt;= 2 and len(puffer) &gt;= puffer[1] + 2:
+        klasse, laenge = puffer[0], puffer[1]
+        yield klasse, bytes(puffer[2:2 + laenge])
+        del puffer[:2 + laenge]</code></pre>
+</div>
+
+<h2 id="meldungen"><span class="nr">04</span>Meldungen des Telefons</h2>
+<div class="col">
+<p>Nutzdaten einer Meldung (Klasse <span class="hex">02</span>): <b>Byte 0 = Typ</b>, <b>Byte 1 = Leitung</b> (bisher immer
+<span class="hex">01</span>), danach typabhängig. Namen wie im Treiber (<code>L3_STATUS…</code>).</p>
+</div>
+<div class="tbl"><table>
+<thead><tr><th>Typ</th><th>Name</th><th>Bedeutung, Inhalt</th><th>Status</th></tr></thead>
+<tbody>
+<tr><td class="hex">30</td><td>RINGING</td><td>Anruf kommt an; IE <span class="hex">6c</span> Anrufernummer</td><td><span class="st st-b">bestätigt</span></td></tr>
+<tr><td class="hex">36</td><td>DIALTONE</td><td>Wählton; beim Wählen am Telefon erst bei Wahlende gemeldet, ohne Wahl alle 10 s wiederholt</td><td><span class="st st-b">bestätigt</span></td></tr>
+<tr><td class="hex">19</td><td>MORE_INFO</td><td>gewählte Nummer als Block; IE <span class="hex">70</span> Ziel</td><td><span class="st st-b">bestätigt</span></td></tr>
+<tr><td class="hex">3e</td><td>PROCEEDING</td><td>Verbindungsaufbau läuft, Gegenseite wird gerufen</td><td><span class="st st-b">bestätigt</span></td></tr>
+<tr><td class="hex">31</td><td>CONNECTED</td><td>verbunden (ein- und abgehend)</td><td><span class="st st-b">bestätigt</span></td></tr>
+<tr><td class="hex">32</td><td>DISCONNECTED</td><td>Gespräch getrennt; IE <span class="hex">08</span> Ursache (leer = eigene Seite)</td><td><span class="st st-b">bestätigt</span></td></tr>
+<tr><td class="hex">39</td><td>RELEASED</td><td>Leitung frei, zurück in Ruhe</td><td><span class="st st-b">bestätigt</span></td></tr>
+<tr><td class="hex">3b / 3a</td><td>FACILITY ein / aus</td><td>Merkmal an/aus, Kennung in Byte 2 (Tabelle unten)</td><td><span class="st st-b">bestätigt</span></td></tr>
+<tr><td class="hex">33</td><td>IDLE</td><td>Ruhe</td><td><span class="st st-t">Treiber</span></td></tr>
+<tr><td class="hex">34 / 35</td><td>HOLD / UNHOLD</td><td>gehalten / zurückgeholt</td><td><span class="st st-t">Treiber</span></td></tr>
+<tr><td class="hex">37 / 38</td><td>BUSY / CAMPONBUSY</td><td>besetzt / Anklopfen bei besetzt</td><td><span class="st st-t">Treiber</span></td></tr>
+<tr><td class="hex">3c</td><td>FACILITYREJECTED</td><td>Merkmal abgelehnt</td><td><span class="st st-t">Treiber</span></td></tr>
+<tr><td class="hex">3d</td><td>ERROR</td><td>Fehler</td><td><span class="st st-t">Treiber</span></td></tr>
+<tr><td class="hex">3f / 40</td><td>CALLWAITING act / deact</td><td>Anklopfen beginnt / endet</td><td><span class="st st-t">Treiber</span></td></tr>
+<tr><td class="hex">41</td><td>USERTOUSER</td><td>User-to-User-Information (IE <span class="hex">7e</span>)</td><td><span class="st st-t">Treiber</span></td></tr>
+<tr><td class="hex">44</td><td>NOHOLD</td><td>Halten nicht möglich</td><td><span class="st st-t">Treiber</span></td></tr>
+</tbody></table></div>
+
+<h3>Merkmalskennungen bei FACILITY (<span class="hex">3b</span>/<span class="hex">3a</span>, Byte 2)</h3>
+<div class="tbl"><table>
+<thead><tr><th>Kennung</th><th>Merkmal</th><th>Status</th></tr></thead>
+<tbody>
+<tr><td class="hex">0a</td><td>Hörer: ein = abgehoben, aus = aufgelegt</td><td><span class="st st-b">bestätigt</span></td></tr>
+<tr><td class="hex">30</td><td>DTMF-Töne möglich (während eines Gesprächs)</td><td><span class="st st-b">bestätigt</span></td></tr>
+<tr><td class="hex">01</td><td>Umleitung</td><td><span class="st st-t">Treiber</span></td></tr>
+<tr><td class="hex">16 / 17</td><td>wartenden Anruf anzeigen / annehmen</td><td><span class="st st-t">Treiber</span></td></tr>
+<tr><td class="hex">1a</td><td>Rückruf (ARB)</td><td><span class="st st-t">Treiber</span></td></tr>
+<tr><td class="hex">1d</td><td>Aufschalten</td><td><span class="st st-t">Treiber</span></td></tr>
+<tr><td class="hex">1f</td><td>Konferenz vorbereiten</td><td><span class="st st-t">Treiber</span></td></tr>
+</tbody></table></div>
+
+<h3>Informationselemente und Rufnummern</h3>
+<div class="col">
+<p>Hinter Typ und Leitung folgen Elemente nach dem Muster von ISDN (Q.931): Kennung, Länge, Inhalt. Ein Byte mit
+gesetztem Bit 8 steht allein (bisher nur <span class="hex">98</span>, Bedeutung offen).</p>
+</div>
+<div class="tbl"><table>
+<thead><tr><th>IE</th><th>Inhalt</th><th>Status</th></tr></thead>
+<tbody>
+<tr><td class="hex">6c</td><td>Anrufernummer als ASCII-Ziffern</td><td><span class="st st-b">bestätigt</span></td></tr>
+<tr><td class="hex">70</td><td>Zielnummer als ASCII-Ziffern (im Auftrag des PCs mit vorangestelltem Typ-Oktett <span class="hex">81</span>)</td><td><span class="st st-b">bestätigt</span> / <span class="st st-t">Treiber</span></td></tr>
+<tr><td class="hex">08</td><td>Ursache; <span class="hex">08 00</span> = keine, <span class="hex">08 01 8f</span> = Gegenseite hat ausgelöst</td><td><span class="st st-b">bestätigt</span></td></tr>
+<tr><td class="hex">7e</td><td>User-to-User-Information</td><td><span class="st st-t">Treiber</span></td></tr>
+</tbody></table></div>
+<div class="hinweis ok"><p><b>Amtsholung.</b> Externe Nummern stehen mit der Amtsholung der Anlage davor, hier <span class="hex">01</span>.
+Aus <span class="hex">0101700000000</span> wird für SIP die Nummer <span class="hex">01700000000</span>; zum Zurückrufen wählt man
+wieder mit <span class="hex">01</span>. Interne Nebenstellen kommen ohne Vorwahl. Die Amtsholung ist anlagenabhängig und gehört
+in die Konfiguration des Daemons.</p></div>
+
+<h2 id="auftraege"><span class="nr">05</span>Aufträge des PCs</h2>
+<div class="col">
+<p>Aufträge haben Klasse <span class="hex">01</span>; Byte 0 ist der Typ, Byte 1 ist <span class="hex">00</span>.
+Alle Angaben stammen aus dem Philips-Treiber und sind am Gerät noch nicht gesendet worden. <span class="st st-t">Treiber</span></p>
+</div>
+<div class="tbl"><table>
+<thead><tr><th>Auftrag</th><th>Rahmen</th><th>Wann</th></tr></thead>
+<tbody>
+<tr><td>Anmelden</td><td class="hex">01 02 01 00</td><td>einmal nach dem Öffnen der Schnittstelle</td></tr>
+<tr><td>Keepalive</td><td class="hex">01 02 00 00</td><td>nach 15 s ohne Empfang</td></tr>
+<tr><td>Leitung belegen</td><td class="hex">01 02 11 00</td><td>vor dem Wählen, nur im Ruhezustand</td></tr>
+<tr><td>Wählen</td><td class="hex">01 L 19 00 98 70 n+1 81 Ziffern…</td><td>nach dem Belegen; auch als Nachwahl</td></tr>
+<tr><td>Annehmen</td><td class="hex">01 02 14 00</td><td>während RINGING</td></tr>
+<tr><td>Auflegen</td><td class="hex">01 02 13 00</td><td>bei genau einem Gespräch</td></tr>
+<tr><td>Merkmal</td><td class="hex">01 03 26 00 kk</td><td><span class="hex">16</span>/<span class="hex">17</span> Anklopfen anzeigen/annehmen, <span class="hex">c3</span> Reconnect bei zwei Gesprächen</td></tr>
+<tr><td>weitere</td><td class="hex">15, 18, 1b, 1c, 1d, 21–24, 27, 25</td><td>Halten, Übergabe, Konferenz, Rückruf, User-to-User</td></tr>
+</tbody></table></div>
+<div class="col">
+<p><b>Wählen im Detail.</b> Bei <code>n</code> Ziffern ist <code>L = n + 6</code>: Typ <span class="hex">19</span>, Leitung <span class="hex">00</span>,
+das Einzelbyte <span class="hex">98</span>, dann IE <span class="hex">70</span> mit Länge <code>n + 1</code>, Typ-Oktett
+<span class="hex">81</span> und den Ziffern als ASCII.</p>
+<pre><code>Wahl „123“        01 09 19 00 98 70 04 81 31 32 33
+Wahl extern „01 0170 0000000“
+                  01 13 19 00 98 70 0e 81 30 31 30 31 37 30 30 30 30 30 30 30 30</code></pre>
+<p>Im Treiber nicht unterstützt (Rückgabe <code>LINEERR_OPERATIONUNAVAIL</code>): Umleiten eines klingelnden Anrufs,
+Blind Transfer, Accept.</p>
+</div>
+
+<h2 id="zeit"><span class="nr">06</span>Quittung und Zeitverhalten</h2>
+<div class="col">
+<ul>
+<li>Nur Aufträge werden quittiert. Nach jedem Auftrag wartet der Treiber bis zu <b>5 s</b> auf Klasse
+<span class="hex">04</span> (oder <span class="hex">03</span>/<span class="hex">05</span>); bleibt sie aus, gilt der Auftrag als gescheitert. <span class="st st-t">Treiber</span></li>
+<li>Meldungen des Telefons quittiert der PC <b>nicht</b>. Der Treiber hat dafür keine Sendestelle. <span class="st st-t">Treiber</span></li>
+<li>Unverständliche Eingaben beantwortet das Telefon nach etwa <b>1,5 s</b> mit <span class="hex">05 00</span>. <span class="st st-b">bestätigt</span></li>
+<li>Kommt 15 s lang nichts vom Telefon, sendet der Treiber Keepalive <span class="hex">01 02 00 00</span>. <span class="st st-t">Treiber</span></li>
+<li>Pro Zeitpunkt ist höchstens ein Auftrag offen: senden, Quittung abwarten, dann den nächsten.</li>
+</ul>
+</div>
+{{SEQ_FEHLER}}
+
+<h2 id="ablaeufe"><span class="nr">07</span>Abläufe</h2>
+<div class="col"><p>Links stehen Handlungen am Telefon, Pfeile sind Rahmen. Schwarze Pfeile: Meldungen des Telefons.
+Farbige Pfeile: Aufträge des PCs. Gestrichelt: erwartet, am Gerät noch nicht gesehen.</p></div>
+<h3>Eingehender Anruf, am Telefon angenommen</h3>
+{{SEQ_EIN}}
+<h3>Abgehender Anruf, am Telefon gewählt</h3>
+{{SEQ_AUS}}
+<h3>Eingehender Anruf, vom PC angenommen</h3>
+{{SEQ_PC_EIN}}
+<h3>Abgehender Anruf, vom PC gewählt</h3>
+{{SEQ_PC_WAHL}}
+
+<h2 id="zustand"><span class="nr">08</span>Zustandsautomat und SIP</h2>
+{{ZUSTAND}}
+<div class="tbl"><table>
+<thead><tr><th>Ereignis</th><th>Daemon tut</th><th>SIP-Seite</th></tr></thead>
+<tbody>
+<tr><td><span class="hex">30</span> RINGING mit Nummer</td><td>Nummer normalisieren (Amtsholung weg), Anruf anlegen</td><td>INVITE, From = Anrufernummer</td></tr>
+<tr><td>SIP 200 OK vom Softphone</td><td>Auftrag Annehmen <span class="hex">01 02 14 00</span>, Audio durchschalten</td><td>ACK</td></tr>
+<tr><td>INVITE vom Softphone</td><td>Belegen <span class="hex">01 02 11 00</span>, dann Wählen (Amtsholung davor bei extern)</td><td>100 Trying</td></tr>
+<tr><td><span class="hex">3e</span> PROCEEDING</td><td>–</td><td>180 Ringing</td></tr>
+<tr><td><span class="hex">31</span> CONNECTED</td><td>Audio durchschalten</td><td>200 OK (abgehend)</td></tr>
+<tr><td>BYE vom Softphone</td><td>Auftrag Auflegen <span class="hex">01 02 13 00</span></td><td>200 OK</td></tr>
+<tr><td><span class="hex">32</span> DISCONNECTED</td><td>Audio trennen</td><td>BYE, bzw. CANCEL, solange noch nicht verbunden</td></tr>
+<tr><td><span class="hex">39</span> RELEASED</td><td>Anruf löschen, zurück in Ruhe</td><td>–</td></tr>
+<tr><td><span class="hex">3b/3a … 0a</span> Hörer ab/auf</td><td>nur Anzeige (Mensch am Telefon)</td><td>optional Presence/BLF</td></tr>
+</tbody></table></div>
+
+<h2 id="daemon"><span class="nr">09</span>Einen Daemon bauen</h2>
+<div class="col">
+<p>Aufbau, der sich im Test bewährt hat (Referenz: <code>gateway/ergoline/</code> im Repository, Python&nbsp;3 + pyserial):</p>
+<ul class="checks">
+<li>Port über <code>/dev/serial/by-id/…</code> öffnen, 1200 Baud, 8O1. Xon/Xoff zunächst aus lassen, weil
+<span class="hex">11</span> und <span class="hex">13</span> auch als Auftragstypen vorkommen.</li>
+<li>Ein Lesethread schreibt jedes Byte ins Rohlog und füttert den Rahmen-Assembler. Fertige Rahmen gehen in eine Ereignis-Queue;
+Klassen <span class="hex">03</span>/<span class="hex">04</span>/<span class="hex">05</span> zusätzlich in eine Quittungs-Queue.</li>
+<li>Aufträge laufen über genau eine Sendefunktion: Quittungs-Queue leeren, Rahmen schreiben, bis 5 s auf die Quittung warten.</li>
+<li>Nach dem Öffnen einmal Anmelden. Ein Zeitgeber sendet Keepalive, wenn 15 s nichts kam.</li>
+<li>Ein Zustandsautomat pro Leitung übersetzt Meldungen in SIP-Ereignisse und SIP-Ereignisse in Aufträge (Abschnitt 08).</li>
+<li>Fällt die serielle Verbindung weg: Port schließen, neu öffnen, neu anmelden. Laufende Anrufe auf SIP-Seite beenden.</li>
+</ul>
+<pre><code>from ergoline.link import ErgoLink
+from ergoline import protocol as p
+
+with ErgoLink("/dev/serial/by-id/usb-FTDI_…-if00-port0") as link:
+    q = link.sende(p.anmelden())                 # erwartet Klasse 04
+    while True:
+        zeit, r = link.rahmen.get()
+        if r.klasse != p.MELDUNG:
+            continue
+        typ = p.MELDUNGSTYP.get(r.typ)
+        if typ == "RINGING":
+            ie = dict(p.ies(r.daten[2:]))
+            extern, nummer = p.extern(p.rufnummer(ie[0x6C]))
+            sip_invite(von=nummer)               # eigener SIP-Stack, z. B. baresip ctrl_tcp
+        elif typ == "DISCONNECTED":
+            sip_bye()
+
+def sip_angenommen():   link.sende(p.annehmen())
+def sip_beendet():      link.sende(p.auflegen())
+def sip_waehlen(nr):    link.sende(p.belegen()); link.sende(p.waehlen(nr))</code></pre>
+<p>Werkzeug zum Ausprobieren: <code>tools/ergo.py decode|listen|anmelden|keepalive</code>; gesprächsrelevante
+Aufträge nur mit <code>--freigabe</code>.</p>
+</div>
+
+<h2 id="init"><span class="nr">10</span>Initialisierung im Originaltreiber</h2>
+<div class="col">
+<p>Der Philips-Treiber durchläuft beim Öffnen zusätzlich einen Service-Modus mit 9600 Baud. Für den Betrieb ist das
+vermutlich nicht nötig <span class="st st-v">vermutet</span>; die Folge ist hier nur zur Vollständigkeit festgehalten. <span class="st st-t">Treiber</span></p>
+<ol>
+<li>Port öffnen (9600), Escape <span class="hex">02 02 0A 00</span>, 500 ms Pause.</li>
+<li>9600 8N1, Probe <span class="hex">05 88 00 89</span>, 2 s auf Quittung; sonst 9600 8O1 und Escape wiederholen.</li>
+<li>Versionsabfrage: <span class="hex">05 B0 00 B0</span> → Quittung („ATS-Mode“, Textzeilen) → <code>RQV:0\r</code> → Quittung →
+<code>RQQ:1\r</code> → Einzelbyte <span class="hex">02</span>. Die Antwort kommt als Textzeile.</li>
+<li>Umschalten auf 1200 8O1 mit Xon/Xoff, dann Anmelden <span class="hex">01 02 01 00</span> (5 s auf Quittung).</li>
+</ol>
+<p>Ein Hayes-AT-Protokoll gibt es an dieser Buchse nicht. Der ältere Octophon-Treiber (<code>AT$CAL</code> …) gehört zu einem
+anderen Gerät bzw. einer anderen Firmware und ist inkompatibel.</p>
+</div>
+
+<h2 id="sicherheit"><span class="nr">11</span>Sicherheit</h2>
+<div class="hinweis"><p>Die Anlage ist nicht rücksetzbar, eine gesperrte Nebenstelle ließe sich nicht selbst reparieren. Deshalb:
+nur dokumentierte Aufträge senden, nichts raten; Wählen nur zu bekannten Testnummern; am Telefon nie das Service-Menü
+(<code>set TEI</code>, <code>reset data</code>) und nie die Wartungscodes 31–34 benutzen, die den Speicher löschen.</p></div>
+
+<h2 id="offen"><span class="nr">12</span>Offene Fragen</h2>
+<div class="col"><ol>
+<li>Quittiert das Telefon <span class="hex">01 02 01 00</span> bei 1200 8O1 direkt, ohne den Service-Modus? Wie sieht ein ACK-Rahmen aus?</li>
+<li>Stören Xon/Xoff, da <span class="hex">11</span>/<span class="hex">13</span> auch Auftragstypen sind?</li>
+<li>Bedeutung von <span class="hex">98</span> und der Aufträge <span class="hex">15</span>, <span class="hex">18</span>, <span class="hex">1b</span>–<span class="hex">24</span>, <span class="hex">27</span>.</li>
+<li>Meldet das Telefon Ereignisse auch nach einem Neustart ohne vorherige Eingabe?</li>
+<li>Warum wird DIALTONE nach 10 s wiederholt?</li>
+<li>Sprachweg über „Sprache über Zusatzgerät“: Pegel und Echo an X_IN/X_OUT.</li>
+</ol></div>
+
+<h2 id="quellen"><span class="nr">13</span>Quellen</h2>
+<div class="col"><ul>
+<li>Mitschnitte im Repository: <code>logs/serial_20260930_163534.log</code> (alle Meldungen), <code>logs/bitbang_20260930_1633*/1634*/1635*</code> (Rate, Fehlerantwort). Übersicht: <code>logs/INDEX.md</code>.</li>
+<li>Philips ErgoLine D330/D340 TSP for TAPI 2.x, Version 2.1.2 (2002): <code>ref/ergoline_tsp/Ergoline.tsp</code>, Herkunft in <code>QUELLE.md</code>.
+Wichtige Stellen: Parser <code>0x100172b9</code>, Rahmen-Assembler <code>0x1000dbe9</code>, Aufträge <code>0x10014b0c</code> (Wählen),
+<code>0x10015d57</code> (Annehmen), <code>0x100168ce</code> (Auflegen), Initialisierung <code>0x10007afc</code>, Portmodi <code>0x100132c2</code>/<code>0x1001332e</code>.</li>
+<li>ErgoLine D330/D340 Customer Engineer Manual (Philips), Wartungscodes und Schnittstellen; Sopho ErgoLine D340 User Manual.</li>
+<li>Arbeitsnotizen: <code>docs/protocol.md</code>, <code>docs/hardware.md</code>, <code>docs/sackgassen.md</code>.</li>
+</ul></div>
+
+<footer>Sopho2SIP · Diese Seite wird mit <code>tools/build_protokoll_doc.py</code> aus <code>docs/protokoll.tpl.html</code> erzeugt.</footer>
+</div>
+</body>
+</html>
