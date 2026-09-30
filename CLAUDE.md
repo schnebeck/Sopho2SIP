@@ -91,6 +91,8 @@ Sopho ─UPN─ D340 ─PC-Schnittstelle (Binärrahmen, 1200 8N1)─ USB-RS232 �
   **Nur behalten, was etwas Weiterführendes belegt**; nutzlose Mitschnitte löschen. Behaltene Logs in
   `logs/INDEX.md` eintragen. Sackgassen nur knapp in `docs/sackgassen.md` vermerken, ohne Belegsammlung.
 - Hypothesen in `docs/protocol.md` als **vermutet** vs. **bestätigt** kennzeichnen, mit Verweis auf das Log.
+  Neue gesicherte Erkenntnisse zusätzlich in `docs/protokoll.tpl.html` (Status bestätigt/Treiber/vermutet) übernehmen,
+  dann `tools/build_protokoll_doc.py` ausführen. Veröffentlichte Fassung: https://claude.ai/artifact/QbyHyYSk8rnWytsR8QnzJi
 - Hardware-Schritte (Messen, Umstecken, Anrufe auslösen, Menü am Telefon) macht der Nutzer. Claude sagt konkret,
   was zu tun ist, und wartet. Am Telefon nie: Service-Menü, Wartungscodes 31–34, `*`+`3`+`5` beim Einstecken.
 - `ref/` = Referenzmaterial. Quelldateien darin **nie inhaltlich verändern**. Neue Quellen dürfen ergänzt werden
@@ -103,7 +105,9 @@ Sopho ─UPN─ D340 ─PC-Schnittstelle (Binärrahmen, 1200 8N1)─ USB-RS232 �
 
 ```
 CLAUDE.md
-docs/protocol.md        # aktueller Wissensstand zum Protokoll, bestätigt/vermutet
+docs/protokoll.html     # Spezifikation für Daemon-Entwickler (erzeugt, nicht von Hand ändern)
+docs/protokoll.tpl.html # Vorlage dazu; Grafiken in tools/build_protokoll_doc.py
+docs/protocol.md        # Arbeitsnotizen zum Protokoll, bestätigt/vermutet
 docs/sackgassen.md      # Kurzvermerke zu Irrwegen (vor neuen Versuchen lesen)
 docs/hardware.md        # Pinbelegungen, Messwerte, Verkabelung, Handbuch-Befunde, Wartungsmodus
 docs/img/               # Menübaum der D340
@@ -113,6 +117,7 @@ tools/ergo.py           # Hauptwerkzeug: Rahmen dekodieren/mitlesen/Aufträge se
 tools/serial_probe.py   # Rohmitschnitt ohne Rahmenlogik (Altwerkzeug)
 tools/bitbang_scope.py  # FT232R als Logikanalysator (Bitbang, braucht pyftdi)
 tools/pi_bootstrap.sh   # Grundeinrichtung des Pi (Pakete, Gruppen, NTP)
+tools/build_protokoll_doc.py  # erzeugt docs/protokoll.html (Standardbibliothek)
 gateway/ergoline/       # Protokoll (protocol.py) und serielle Verbindung (link.py), Basis für den Daemon
 gateway/tests/          # Tests (python3 -m unittest discover -s gateway/tests)
 docs/testplan.md        # nächste Tests am Gerät
