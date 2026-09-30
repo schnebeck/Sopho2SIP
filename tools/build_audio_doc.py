@@ -195,7 +195,7 @@ nötig sind; eingebaut werden sie in jedem Fall.</p></div>
 <thead><tr><th>Teil</th><th>Wert</th><th>Hinweis</th></tr></thead>
 <tbody>
 <tr><td>T1, T2</td><td>NF-Übertrager 600 Ω : 600 Ω</td><td>Polung egal, Mittelanzapfungen frei lassen</td></tr>
-<tr><td>C1, C2</td><td>1 µF, ungepolt (Folie/MKT oder bipolarer Elko)</td><td>hält Gleichspannung von den Wicklungen fern; Spannungsfestigkeit unkritisch, ab 16 V genügt (Folie gibt es meist erst ab 63 V)</td></tr>
+<tr><td>C1, C2</td><td>1 µF, ungepolt: Folie (MKT), bipolarer Elko oder Keramik X7R/X5R (z. B. 0805)</td><td>hält Gleichspannung von den Wicklungen fern; ab 10 V genügt. Keramik reicht hier, weil kaum Signalspannung am Kondensator liegt; SMD auf Lochraster/Adapter löten, Kabel zugentlasten</td></tr>
 <tr><td>R1</td><td>10 kΩ, ¼ W</td><td>Längswiderstand des Teilers</td></tr>
 <tr><td>R2</td><td>1 kΩ, ¼ W</td><td>Querwiderstand des Teilers gegen GNDA; zusammen etwa −21 dB</td></tr>
 <tr><td>Stecker</td><td>RJ11 6P6C</td><td>Pin 1–3 belegt</td></tr>
@@ -218,7 +218,8 @@ Pegel und Klang beurteilen.</li>
 <li><b>Übertrager</b> trennen Telefon und PC im Audioweg. Die einzige leitende Verbindung bleibt die Masse der seriellen
 Leitung; Brummschleifen über den Audioweg sind damit ausgeschlossen.</li>
 <li><b>Kondensatoren</b>, weil die Wicklungen nur einige Dutzend Ohm Gleichstromwiderstand haben. Ein Gleichanteil an der
-Buchse würde den Ausgang belasten und den Kern sättigen.</li>
+Buchse würde den Ausgang belasten und den Kern sättigen. Die Art ist unkritisch: Der Kondensator liegt in Reihe vor
+einer Last von über 10 kΩ, sein Blindwiderstand (530 Ω bei 300 Hz) nimmt nur wenige Prozent des Signals weg.</li>
 <li><b>Spannungsteiler</b>, weil der zulässige Pegel an X_IN unbekannt ist. Die Soundkarte liefert Line-Pegel; lieber
 leise beginnen und dann nachregeln.</li>
 <li>Die UCA222 belastet den Übertrager mit einigen Kiloohm. Das Telefon sieht daher eine leichte Last, wie bei einem
