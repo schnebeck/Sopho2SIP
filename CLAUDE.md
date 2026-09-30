@@ -98,6 +98,9 @@ Sopho ─UPN─ D340 ─PC-Schnittstelle (Binärrahmen, 1200 8N1)─ USB-RS232 �
 - `ref/` = Referenzmaterial. Quelldateien darin **nie inhaltlich verändern**. Neue Quellen dürfen ergänzt werden
   (mit Herkunftsnachweis: URL, Datum, SHA-256, z. B. `QUELLE.md`). Nachweislich falsche Quellen dürfen gelöscht und
   durch neu gesammelte ersetzt werden; Vermerk in `docs/sackgassen.md`.
+- **Öffentliches Repo (GitHub schnebeck/Sopho2SIP):** Treiber, Handbuch-Auszüge/-PDFs und Menübaum-Bild bleiben lokal
+  (`.gitignore`), echte Rufnummern nie committen (Platzhalter `01700000000`). Vor jedem Push `git status` und
+  `.gitignore` prüfen. Im Mittelpunkt steht die Dokumentation (`docs/protokoll.html`, README).
 - Stil: knapp, präzise, kommandozeilenorientiert. Python 3 mit `pyserial`, keine unnötigen Abhängigkeiten.
 - Sprache in Doku und Kommentaren: Deutsch.
 
@@ -112,6 +115,8 @@ docs/sackgassen.md      # Kurzvermerke zu Irrwegen (vor neuen Versuchen lesen)
 docs/hardware.md        # Pinbelegungen, Messwerte, Verkabelung, Handbuch-Befunde, Wartungsmodus
 docs/img/               # Menübaum der D340
 ref/                    # Handbuch-Auszüge, Fotos (Quellen nicht verändern)
+README.md               # GitHub-Startseite, stellt die Spezifikation in den Mittelpunkt
+privat/                 # lokal, nie veröffentlichen (Original-Log mit echter Rufnummer, Sicherungen)
 ref/ergoline_tsp/       # Philips ErgoLine D330/D340 TSP (maßgeblicher Treiber), Herkunft in QUELLE.md
 tools/ergo.py           # Hauptwerkzeug: Rahmen dekodieren/mitlesen/Aufträge senden (Sperre ohne --freigabe)
 tools/serial_probe.py   # Rohmitschnitt ohne Rahmenlogik (Altwerkzeug)

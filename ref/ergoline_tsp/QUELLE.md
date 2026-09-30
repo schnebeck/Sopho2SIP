@@ -16,3 +16,8 @@ d278ae82b84d656354e80f650fbd9ae9816d62526e92ea5dcb5483e05b374daf  ergoline.zip
 67b9be938474b64eef8c63e565f6fbb979fba9975483173244be4828eb2d0009  ErgoLineTSP_relnotes.doc
 43c5700ffad4e2452b1e79c589faf2d822d2e2d73502832901a0f4df0af3011f  guide_ergoline_d325_d330_english.pdf
 ```
+
+## Nicht im öffentlichen Repository
+Die oben genannten Dateien (Treiber, Versionshinweise, ZIP, Benutzerhandbuch) sind urheberrechtlich geschützt
+(Philips Communication Systems) und werden **nicht** mitveröffentlicht. Wer den Treiber prüfen oder nachanalysieren
+will, lädt ihn über die Wayback-URL oben selbst und vergleicht die SHA-256-Summe.
