@@ -1,0 +1,13 @@
+2026-09-30 16:33:21.733 >> b'ATI0\r' @ 9600 ab Abtastwert 64
+# 57764 Abtastwerte in 3.007 s Wandzeit -> effektiv 19212 Hz (Soll 19200; Differenz = Lücken zwischen Blöcken)
+# Rohdaten: /home/schnebeck/Documents/Projects/Sopho2SIP/logs/bitbang_20260930_163321.bin
+RX H (Ruhe)   1528.3 ms  @0
+RX L      833.3 µs  @29343
+RX H      833.3 µs  @29359
+RX L      833.3 µs  @29375
+RX H      833.3 µs  @29391
+RX L     4166.7 µs  @29407
+RX H     1666.7 µs  @29487
+RX L     7500.0 µs  @29519
+RX H (Ruhe)   1463.6 ms  @29663
+# 2026-09-30 16:33:24.763 Ende, Log: /home/schnebeck/Documents/Projects/Sopho2SIP/logs/bitbang_20260930_163321.log
