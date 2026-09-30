@@ -21,3 +21,4 @@ d278ae82b84d656354e80f650fbd9ae9816d62526e92ea5dcb5483e05b374daf  ergoline.zip
 Die oben genannten Dateien (Treiber, Versionshinweise, ZIP, Benutzerhandbuch) sind urheberrechtlich geschützt
 (Philips Communication Systems) und werden **nicht** mitveröffentlicht. Wer den Treiber prüfen oder nachanalysieren
 will, lädt ihn über die Wayback-URL oben selbst und vergleicht die SHA-256-Summe.
+Direkt-Download (Rohdatei ohne Wayback-Rahmen): https://web.archive.org/web/20101201193039id_/http://tapicall.de/tapi-treiber/nec_philips/telefone/ergoline-serie/ergoline_d330/ergoline.zip

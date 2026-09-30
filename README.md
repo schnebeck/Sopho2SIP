@@ -56,11 +56,16 @@ tools/ergo.py decode logs/serial_20260930_163534.log
 
 Die Spezifikation wird mit `tools/build_protokoll_doc.py` aus `docs/protokoll.tpl.html` erzeugt.
 
-## Nicht enthalten
+## Nicht enthalten: der Philips-Treiber
 
 Der Philips-Treiber (`Ergoline.tsp`), Handbuch-Auszüge und das Benutzerhandbuch sind urheberrechtlich geschützt
-und liegen nicht im Repository. Fundstellen stehen in [`ref/ergoline_tsp/QUELLE.md`](ref/ergoline_tsp/QUELLE.md)
-und in der Spezifikation (Abschnitt Quellen).
+und liegen nicht im Repository. Der Treiber ist in der Wayback Machine archiviert:
+
+- Direkt-Download: [ergoline.zip (Wayback Machine, 2010-12-01)](https://web.archive.org/web/20101201193039id_/http://tapicall.de/tapi-treiber/nec_philips/telefone/ergoline-serie/ergoline_d330/ergoline.zip)
+- SHA-256 `ergoline.zip`: `d278ae82b84d656354e80f650fbd9ae9816d62526e92ea5dcb5483e05b374daf`
+- SHA-256 `Ergoline.tsp` (im ZIP): `2b5b2b3e2e3ff51a2ca666b7bc874e9e9d81551a3f67c5357ea8ea297f50b282`
+
+Weitere Fundstellen: [`ref/ergoline_tsp/QUELLE.md`](ref/ergoline_tsp/QUELLE.md) und Abschnitt Quellen der Spezifikation.
 
 ## Vorsicht
 
