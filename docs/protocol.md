@@ -83,7 +83,7 @@ passt zu beiden Mitschnitten). Im Wahlauftrag des PCs steht laut Treiber das Typ
 Der Treiber wartet nach jedem Auftrag bis 5 s auf `04` (`AckEvent`); ohne Quittung gilt der Auftrag als gescheitert.
 **Bestätigt:** Quittung ist immer `04 00`, nach 100–150 ms (Logs `test_20261001_*`). Nach „Anmelden“ folgt 50 ms später
 die Meldung `02 04 01 01 02 00` (Typ `01`). Der Treiber wertet sie **nicht** aus: einziger Rahmenweg Empfang 0x10014219 →
-Parser 0x100172b9 → `default` (0x1001934a, nur Trace) → CompareOldStateNewState `default` (0x10019d4e). Für einen Daemon ignorierbar. „Annehmen“ lässt das Telefon abheben (Freisprechen bei
+Parser 0x100172b9 → `default` (0x1001934a, nur Trace) → CompareOldStateNewState `default` (0x10019d4e). Für einen Daemon ignorierbar. Deutung (vermutet, Nutzer 2026-10-01): **READY**, Bereitmeldung nach der Anmeldung. „Annehmen“ lässt das Telefon abheben (Freisprechen bei
 „TAPI: Sprache über Telefon“), danach `3b…0a` + `31`. „Auflegen“ beendet das Gespräch: `32` (Ursache leer), `39`, `3a…0a`.
 Im Freisprechbetrieb beendet auch die Lautsprecher-Taste am Telefon das Gespräch (Ursache leer).
 

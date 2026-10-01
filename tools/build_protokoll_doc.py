@@ -245,7 +245,7 @@ ABGEHEND = [
 PC_EINGEHEND = [
     ("m", "pc", "d", "01 02 01 00", "ANMELDEN", "req"),
     ("m", "d", "pc", "04 00", "ACK nach 100 ms", "evt"),
-    ("m", "d", "pc", "02 04 01 01 02 00", "Typ 01 (Bedeutung offen)", "evt"),
+    ("m", "d", "pc", "02 04 01 01 02 00", "READY (Bereitmeldung, vermutet)", "evt"),
     ("a", "Anruf trifft ein"),
     ("m", "d", "pc", "02 12 30 01 98 6c …", "RINGING · Anrufer", "evt"),
     ("m", "pc", "d", "01 02 14 00", "ANNEHMEN", "req"),

@@ -15,6 +15,7 @@ QUITTUNGEN = (REJ, ACK, ERR)
 
 # Schicht 3: Typ der Meldungen des Telefons (Nutzbyte 0), Namen wie im Treiber (L3_STATUS…)
 MELDUNGSTYP = {
+    0x01: "READY",          # vermutet: Bereitmeldung nach „Anmelden“ (im Treiber ungenutzt)
     0x19: "MORE_INFO", 0x30: "RINGING", 0x31: "CONNECTED", 0x32: "DISCONNECTED", 0x33: "IDLE",
     0x34: "HOLD", 0x35: "UNHOLD", 0x36: "DIALTONE", 0x37: "BUSY", 0x38: "CAMPONBUSY",
     0x39: "RELEASED", 0x3A: "FACILITY_AUS", 0x3B: "FACILITY_EIN", 0x3C: "FACILITY_ABGELEHNT",
