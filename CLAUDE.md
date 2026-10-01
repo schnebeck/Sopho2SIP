@@ -52,7 +52,8 @@ und greift die Sprache über dessen Audio-Schnittstelle ab. Nach außen spricht 
 - Empfangsrichtung ist verstanden (Anruf mit Anrufernummer, Wahl, Rufton, verbunden, Auslösung, Ruhe).
 - Aufträge (aus `Ergoline.tsp`): Anmelden `01 02 01 00`, Keepalive `01 02 00 00`, Annehmen `01 02 14 00`, Auflegen
   `01 02 13 00`, Belegen `01 02 11 00`, Wählen `01 LL 19 00 98 70 …` **am Gerät bestätigt** (2026-10-01, Quittung `04 00`). Unverstandene Eingaben beantwortet das Telefon
-  nach ~1,5 s mit `05 00`.
+  nach ~1,5 s mit `05 00`. **Watchdog:** 30 s ohne Rahmen vom PC → die D340 legt PC-Gespräche auf; Keepalive nach
+  15 s ohne Senden (bestätigt).
 - **Maßgebliche Quelle:** `ref/ergoline_tsp/Ergoline.tsp` („Philips ErgoLine D330/D340 TSP for TAPI 2.x“, V2.1.2,
   2002; Herkunft in `ref/ergoline_tsp/QUELLE.md`). Enthält `SendFrame` mit ACK, `L2_ACK_PHONE`, Versionsabfrage.
 - Der früher benutzte `Octophon340.tsp` (ASCII/AT, 9600) ist **inkompatibel** und wurde gelöscht (`docs/sackgassen.md`).
@@ -158,6 +159,5 @@ logs/                   # Mitschnitte, Übersicht in logs/INDEX.md
 
 - Protokoll: Bedeutung der Meldung Typ `01`; Nachwahl/DTMF im Gespräch.
 - Kommen Ereignisse auch ohne jede vorherige Eingabe (Neustart-Test)?
-- Watchdog der D340 (30 s ohne Rahmen vom PC → Gespräch wird aufgelegt): Gegenprobe mit Keepalive im Gespräch.
 - `--steuerung` im Dienst einschalten (Freigabe Nutzer); DTMF-Nachwahl im Gespräch prüfen.
 - Schnittstelle der Nextcloud-App zu den Telefonen (HTTP-API/Action-URLs, AMI/ARI, SIP)?
