@@ -23,11 +23,20 @@ bestätigen: Kabel 1:1, nicht gekreuzt. Rate/Format: **1200 Baud**, laut Treiber
 ## Audio-Schnittstelle (RJ11 Unterseite)
 | Pin | Funktion | Messwert |
 |---|---|---|
-| 1 | X_OUT | DC vor Anschluss prüfen (5 V = falsche Buchse!) |
-| 2 | X_IN | |
+| 1 | X_OUT | Gegenseite: Sprache −31 … −43 dBFS RMS, Spitzen −13 dBFS an der UCA222 (Eingang ohne Verstärkung) |
+| 2 | X_IN | braucht „X-Eingang statt Mikrofon“; dann passt UCA222-Wiedergabe mit PCM −6 dB (Sprache bis −1 dBFS war leicht übersteuert) |
 | 3 | GNDA | – |
-Noch nicht angeschlossen/gemessen. Geplante Verkabelung (2 × Übertrager 600:600, C1/C2 1 µF, Teiler R1 10 kΩ / R2 1 kΩ):
-[`audio_verkabelung.html`](audio_verkabelung.html), erzeugt mit `tools/build_audio_doc.py`.
+Angeschlossen 2026-10-01 (Nutzer): 2 × Übertrager 600:600, C1/C2 1 µF, **ohne** Teiler R1/R2, Cinch `INPUT L`/`OUTPUT L`.
+Pinlage wie in [`audio_verkabelung.html`](audio_verkabelung.html) (Pin 1 links) funktioniert in beiden Richtungen.
+Messungen mit `tools/audio_test.sh` (Aufnahmen `logs/audio_*.wav`, nur lokal):
+- Ruhe: −80 dBFS, kein Brummen; rechter (unbenutzter) Kanal −87 dBFS.
+- **Kein Echo:** Testton auf X_IN erscheint auf X_OUT mit < −91 dBFS (Echodämpfung ≈ 75 dB) → X_OUT führt nur die
+  Gegenseite, AEC unnötig.
+- **X_IN ohne Merkmal 4f sehr leise** (1 kHz bei −16 dBFS kaum hörbar). Mit „X-Eingang statt Mikrofon“ (Merkmal `4f`,
+  per FN-Taste oder Auftrag `01 03 26 00 4f`) passt der Pegel; der Daemon schaltet es bei PC-Gesprächen ein.
+- PCM-Regler der UCA222 dauerhaft −6 dB (`alsactl store`). Der Drehregler der UCA222 wirkt nur auf den Kopfhörer.
+- **Offen:** Vom Pi gewählte Gespräche endeten zweimal nach 20 bzw. 31 s von selbst (DISCONNECTED ohne Ursache,
+  also eigene Seite), jeweils während Wiedergabe auf X_IN; angenommene Gespräche liefen durch.
 
 ## Messungen
 | Datum | Messpunkt | Wert | Deutung |

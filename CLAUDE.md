@@ -34,14 +34,15 @@ und greift die Sprache über dessen Audio-Schnittstelle ab. Nach außen spricht 
 ### Audio-Schnittstelle (Sprache)
 - RJ11 an der Unterseite: Pin 1 X_OUT, Pin 2 X_IN, Pin 3 GNDA (`ref/audio_interface_pinout.png`).
 - **Achtung:** Die benachbarte RJ11 „Static Interface“ führt auf Pin 1 +5 V. Vor dem Anschließen Pin 1 gegen Pin 3 messen.
-- „TAPI: Sprache über Zusatzgerät“ legt den Sprechweg auf diese Buchse. Pegel, Impedanz, Echo: noch zu testen.
+- „TAPI: Sprache über Zusatzgerät“ legt den Sprechweg auf diese Buchse. Gemessen 2026-10-01: X_OUT gut, kein Echo;
+  X_IN nur mit Merkmal `4f` „X-Eingang statt Mikrofon“ (Auftrag `01 03 26 00 4f` im Gespräch). Details `docs/hardware.md`.
 
 ### Gateway-Hardware
 - Raspberry Pi 4, **Ethernet** (kein WLAN für VoIP). Bluetooth nur für das Headset (HFP).
 - Der Arbeits-Laptop ist die Konsole zum Pi: Entwicklung hier im Repo, Ausführung auf dem Pi per `ssh sopho-gw`.
 - USB-RS232-Adapter FTDI FT232R, 1:1-Verlängerung. Im Code immer `/dev/serial/by-id/…`, nie `/dev/ttyUSB0`.
   Der FT232R dient auch als Logikanalysator (`tools/bitbang_scope.py`).
-- USB-Audio **Behringer UCA222**; 2× NF-Übertrager 600 Ω 1:1, Spannungsteiler vor X_IN.
+- USB-Audio **Behringer UCA222** (ALSA `CODEC`, PCM −6 dB gespeichert); 2× NF-Übertrager 600 Ω 1:1, ohne Teiler.
 - Sprache ist Schmalband (G.711 A-law, 8 kHz). SIP-Codec **PCMA**.
 
 ## Das serielle Protokoll (Details: `docs/protocol.md`)
@@ -157,6 +158,6 @@ logs/                   # Mitschnitte, Übersicht in logs/INDEX.md
 
 - Protokoll: Bedeutung der Meldung Typ `01`; Nachwahl/DTMF im Gespräch.
 - Kommen Ereignisse auch ohne jede vorherige Eingabe (Neustart-Test)?
-- Audio: Pegel, Wirkung von X_IN, Inhalt von X_OUT, „Sprache über Zusatzgerät“.
+- Audio: vom PC gewählte Gespräche enden nach 20–30 s von selbst (eigene Seite) – Ursache klären.
 - `--steuerung` im Dienst einschalten (Freigabe Nutzer); DTMF-Nachwahl im Gespräch prüfen.
 - Schnittstelle der Nextcloud-App zu den Telefonen (HTTP-API/Action-URLs, AMI/ARI, SIP)?

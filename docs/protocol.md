@@ -99,6 +99,14 @@ ab (`3b 01 0a`), meldet aber **keinen** Wählton `36`. „Wählen“ (3 s späte
 der Zielnummer, `3e` nach 6 s, `31` + DTMF ein beim Abnehmen der Gegenseite. „Auflegen“ wie oben.
 Sprache lief dabei (Schalter „TAPI: Sprache über Telefon“) über die Freisprecheinrichtung der D340 (Nutzer).
 Für SIP muss der Sprechweg auf die Audio-Buchse: „TAPI: Sprache über Zusatzgerät“ (noch zu testen).
+**Bestätigt 2026-10-01 (`test_20261001_171607_x_eingang_per_pc.log`):** Merkmal `4f` = „X-Eingang statt Mikrofon“.
+Per Funktionstaste im Ruhezustand → `3c 01 4f` (abgelehnt); im Gespräch → `3b 01 4f`, nach Gesprächsende von selbst
+`3a 01 4f`. Der PC schaltet es mit dem Merkmalsauftrag `01 03 26 00 4f` ein (ACK nach 100 ms, `3b 01 4f` nach 300 ms).
+Der Treiber sendet `26` nur mit `16`, `1e`, `52`, `c3`, `ee` – `4f` ist aus der gemeinsamen Kennungsliste von
+Meldung und Auftrag erschlossen und am Gerät bestätigt. Ohne `4f` ist X_IN kaum hörbar (`docs/hardware.md`).
+**Vermutet:** `3a 01 4b`+`3b 01 4e` beim Wechsel in den Special mode (Passwort 2468), umgekehrt beim Zurückwechseln.
+**Offen:** Vom PC gewählte Gespräche endeten zweimal nach 20/31 s mit `3a 01 30`, `32 … 08 00` (eigene Seite), ohne
+Auftrag des PCs.
 
 | Auftrag | Rahmen | Treiberstelle |
 |---|---|---|

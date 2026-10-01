@@ -56,6 +56,9 @@ class Bruecke(unittest.TestCase):
         self.sip("CALL_ESTABLISHED", direction="outgoing")                  # Softphone nimmt ab
         self.assertEqual(self.link.gesendet, ["01 02 14 00"])               # → Annehmen an der D340
         self.melde("02 03 3b 01 0a 02 02 31 01")                             # Hörer ab, CONNECTED
+        self.assertEqual(self.link.gesendet[-1], "01 03 26 00 4f")          # → X-Eingang statt Mikrofon
+        self.melde("02 03 3b 01 4f")
+        self.assertTrue(self.gw.telefon.x_eingang)
         self.sip("CALL_DTMF_START", param="5")
         self.assertEqual(self.link.gesendet[-1], "01 07 19 00 98 70 02 81 35")
         self.sip("CALL_CLOSED")                                             # Softphone legt auf
@@ -89,6 +92,7 @@ class Bruecke(unittest.TestCase):
         self.assertEqual(self.ctrl.befehle, [])
         self.melde("02 02 31 01")                                           # Gegenseite meldet sich
         self.assertEqual(self.ctrl.befehle, ["accept"])
+        self.assertEqual(self.link.gesendet[-1], "01 03 26 00 4f")
         self.sip("CALL_ESTABLISHED")
         self.melde("02 06 32 01 98 08 01 8f")                               # Gegenseite legt auf
         self.assertEqual(self.ctrl.befehle[-1], "hangup")
@@ -101,6 +105,18 @@ class Bruecke(unittest.TestCase):
         self.melde("02 02 36 01")
         self.sip("CALL_CLOSED")
         self.assertEqual(self.link.gesendet[-1], "01 02 13 00")
+
+
+    def test_gespraech_am_hoerer_ohne_x_eingang(self):
+        self.aufbau()
+        self.gw.zuhoerer.remove(self.br.bei_telefon)                      # ohne SIP: jemand hebt an der D340 ab
+        self.melde("02 12 30 01 98 6c 0d " + NUMMER + " 02 03 3b 01 0a 02 02 31 01")
+        self.assertEqual(self.link.gesendet, [])                            # Mikrofon des Hörers bleibt aktiv
+
+    def test_x_eingang_abgelehnt(self):
+        self.aufbau()
+        (r,) = p.Assembler().feed(bytes.fromhex("02 03 3c 01 4f"))
+        self.assertEqual(self.gw.telefon.verarbeite(r, 0.0), [("MERKMAL_ABGELEHNT", None, "X_EINGANG")])
 
 
 class Hilfen(unittest.TestCase):
