@@ -1,0 +1,54 @@
+# Auszug aus ergo_20261001_150042.log, Rufnummer ersetzt: Wähltest extern (belegen, wählen, auflegen)
+# 2026-10-01 15:00:42.069 Port /dev/serial/by-id/usb-FTDI_FT232R_USB_UART_A97WEQGD-if00-port0 1200 8O1 xonxoff=False
+# 2026-10-01 15:00:42.069 Port /dev/serial/by-id/usb-FTDI_FT232R_USB_UART_A97WEQGD-if00-port0 1200 8O1 xonxoff=False
+2026-10-01 15:00:42.070 >> 01 02 01 00                    AUFTRAG ANMELDEN leitung=00
+2026-10-01 15:00:42.070 >> raw b'\x01\x02\x01\x00'
+2026-10-01 15:00:42.170 << raw b'\x04\x00\x02\x04\x01'
+2026-10-01 15:00:42.170 << 04 00                          ACK
+# 2026-10-01 15:00:42.170 Quittung: ACK
+2026-10-01 15:00:42.220 << raw b'\x01\x02\x00'
+2026-10-01 15:00:42.221 << 02 04 01 01 02 00              MELDUNG READY leitung=01 IE_02=
+2026-10-01 15:00:43.171 >> 01 02 11 00                    AUFTRAG BELEGEN leitung=00
+2026-10-01 15:00:43.171 >> raw b'\x01\x02\x11\x00'
+2026-10-01 15:00:43.272 << raw b'\x04\x00'
+2026-10-01 15:00:43.272 << 04 00                          ACK
+# 2026-10-01 15:00:43.273 Quittung: ACK
+2026-10-01 15:00:43.423 << raw b'\x02\x03;\x01\n'
+2026-10-01 15:00:43.423 << 02 03 3b 01 0a                 MELDUNG FACILITY_EIN leitung=01 HOERER
+# 2026-10-01 15:00:46.273 Wählton: keine Meldung binnen 3 s
+2026-10-01 15:00:46.273 >> 01 13 19 00 98 70 0e 81 30 31 30 31 37 30 30 30 30 30 30 30 30 AUFTRAG WAHL leitung=00 [98] ZIEL='0101700000000' (extern '01700000000')
+2026-10-01 15:00:46.273 >> raw b'\x01\x13\x19\x00\x98p\x0e\x810101700000000'
+2026-10-01 15:00:46.629 << raw b'\x04\x00'
+2026-10-01 15:00:46.630 << 04 00                          ACK
+# 2026-10-01 15:00:46.630 Quittung: ACK
+2026-10-01 15:00:46.730 << raw b'\x02\x12\x19\x01\x98'
+2026-10-01 15:00:46.780 << raw b'p\r010'
+2026-10-01 15:00:46.831 << raw b'17000'
+2026-10-01 15:00:46.881 << raw b'00000'
+2026-10-01 15:00:46.881 << 02 12 19 01 98 70 0d 30 31 30 31 37 30 30 30 30 30 30 30 30 MELDUNG MORE_INFO leitung=01 [98] ZIEL='0101700000000' (extern '01700000000')
+2026-10-01 15:00:52.996 << raw b'\x02\x02>'
+2026-10-01 15:00:53.046 << raw b'\x01'
+2026-10-01 15:00:53.046 << 02 02 3e 01                    MELDUNG PROCEEDING leitung=01
+2026-10-01 15:00:59.561 << raw b'\x02\x021'
+2026-10-01 15:00:59.612 << raw b'\x01\x02\x03;\x01'
+2026-10-01 15:00:59.612 << 02 02 31 01                    MELDUNG CONNECTED leitung=01
+# 2026-10-01 15:00:59.612 verbunden, Gespräch 15 s
+2026-10-01 15:00:59.662 << raw b'0'
+2026-10-01 15:00:59.663 << 02 03 3b 01 30                 MELDUNG FACILITY_EIN leitung=01 DTMF
+# 2026-10-01 15:01:14.613 Zustand vor dem Auflegen: Zeit abgelaufen
+2026-10-01 15:01:14.613 >> 01 02 13 00                    AUFTRAG AUFLEGEN leitung=00
+2026-10-01 15:01:14.614 >> raw b'\x01\x02\x13\x00'
+2026-10-01 15:01:14.700 << raw b'\x04\x00'
+2026-10-01 15:01:14.700 << 04 00                          ACK
+# 2026-10-01 15:01:14.700 Quittung: ACK
+2026-10-01 15:01:15.001 << raw b'\x02\x03:\x010\x02\x05'
+2026-10-01 15:01:15.001 << 02 03 3a 01 30                 MELDUNG FACILITY_AUS leitung=01 DTMF
+2026-10-01 15:01:15.052 << raw b'2\x01\x98\x08\x00'
+2026-10-01 15:01:15.052 << 02 05 32 01 98 08 00           MELDUNG DISCONNECTED leitung=01 [98] URSACHE=keine
+2026-10-01 15:01:15.253 << raw b'\x02\x059\x01\x98'
+2026-10-01 15:01:15.303 << raw b'\x08\x00'
+2026-10-01 15:01:15.303 << 02 05 39 01 98 08 00           MELDUNG RELEASED leitung=01 [98] URSACHE=keine
+2026-10-01 15:01:15.404 << raw b'\x02\x03:'
+2026-10-01 15:01:15.454 << raw b'\x01\n'
+2026-10-01 15:01:15.454 << 02 03 3a 01 0a                 MELDUNG FACILITY_AUS leitung=01 HOERER
+# 2026-10-01 15:01:18.316 Ende, Log: /home/pi/Sopho2SIP/logs/ergo_20261001_150042.log

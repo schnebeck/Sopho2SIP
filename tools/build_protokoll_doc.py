@@ -259,13 +259,19 @@ PC_EINGEHEND = [
 
 PC_WAHL = [
     ("m", "pc", "d", "01 02 11 00", "BELEGEN (nur im Ruhezustand)", "req"),
-    ("m", "d", "pc", "04 …", "ACK", "exp"),
-    ("m", "d", "pc", "02 02 36 01", "DIALTONE (erwartet)", "exp"),
-    ("m", "pc", "d", "01 09 19 00 98 70 04 81 31 32 33", "WAHL „123“", "req"),
-    ("m", "d", "pc", "04 …", "ACK", "exp"),
-    ("m", "d", "pc", "02 02 3e 01", "PROCEEDING (erwartet)", "exp"),
+    ("m", "d", "pc", "04 00", "ACK", "evt"),
+    ("m", "d", "pc", "02 03 3b 01 0a", "FACILITY_EIN · HÖRER (kein DIALTONE!)", "evt"),
+    ("m", "pc", "d", "01 13 19 00 98 70 0e 81 30 31 …", "WAHL „01“ + 01700000000", "req"),
+    ("m", "d", "pc", "04 00", "ACK (nach 360 ms)", "evt"),
+    ("m", "d", "pc", "02 12 19 01 98 70 0d 30 31 …", "MORE_INFO · Ziel bestätigt", "evt"),
+    ("m", "d", "pc", "02 02 3e 01", "PROCEEDING", "evt"),
     ("a", "Gegenseite nimmt an"),
-    ("m", "d", "pc", "02 02 31 01", "CONNECTED (erwartet)", "exp"),
+    ("m", "d", "pc", "02 02 31 01", "CONNECTED", "evt"),
+    ("m", "d", "pc", "02 03 3b 01 30", "FACILITY_EIN · DTMF", "evt"),
+    ("g", "Gespräch"),
+    ("m", "pc", "d", "01 02 13 00", "AUFLEGEN", "req"),
+    ("m", "d", "pc", "04 00", "ACK", "evt"),
+    ("m", "d", "pc", "3a…30 · 32 · 39 · 3a…0a", "DTMF aus · DISCONNECTED · RELEASED · HÖRER aus", "evt"),
 ]
 
 FEHLER = [
@@ -307,8 +313,10 @@ def main() -> None:
         "SEQ_PC_EIN": figure(sequenz("s3", TN, PC_EINGEHEND, "PC meldet sich an, nimmt einen eingehenden Anruf an und legt auf"),
                              "Vom PC gesteuert: anmelden, annehmen, auflegen. Am Gerät erprobt (2026-10-01, "
                              "<code>logs/test_20261001_085744_annehmen_auflegen.log</code>)."),
-        "SEQ_PC_WAHL": figure(sequenz("s4", TN, PC_WAHL, "PC belegt die Leitung und wählt 123"),
-                              "Vom PC gesteuert: Leitung belegen und wählen. Externe Ziele beginnen mit der Amtsholung 01."),
+        "SEQ_PC_WAHL": figure(sequenz("s4", TN, PC_WAHL, "PC belegt die Leitung, wählt extern, Gegenseite nimmt an, PC legt auf"),
+                              "Vom PC gesteuert: belegen, wählen, auflegen. Am Gerät erprobt (2026-10-01, "
+                              "<code>logs/test_20261001_150042_waehlen_extern.log</code>). Nach dem Belegen meldet das "
+                              "Telefon nur „Hörer ab“, keinen Wählton; der Anruf entsteht erst mit MORE_INFO."),
         "SEQ_FEHLER": figure(sequenz("s5", TN, FEHLER, "Unverständliche Eingaben beantwortet das Telefon nach 1,5 s mit 05 00; nach 15 s Stille sendet der PC Keepalive"),
                              "Zeitverhalten: Fehlerantwort und Keepalive."),
         "ZUSTAND": figure(zustaende(), "Zustände eines Anrufs aus Sicht des Daemons. Schwarze Pfeile sind Meldungen "

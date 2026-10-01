@@ -282,8 +282,8 @@ Alle Rahmen stammen aus dem Philips-Treiber. Anmelden, Keepalive, Annehmen und A
 <tbody>
 <tr><td>Anmelden</td><td class="hex">01 02 01 00</td><td>einmal nach dem Öffnen der Schnittstelle; Antwort ACK, dann Meldung Typ <span class="hex">01</span></td><td><span class="st st-b">bestätigt</span></td></tr>
 <tr><td>Keepalive</td><td class="hex">01 02 00 00</td><td>nach 15 s ohne Empfang</td><td><span class="st st-b">bestätigt</span></td></tr>
-<tr><td>Leitung belegen</td><td class="hex">01 02 11 00</td><td>vor dem Wählen, nur im Ruhezustand</td><td><span class="st st-t">Treiber</span></td></tr>
-<tr><td>Wählen</td><td class="hex">01 L 19 00 98 70 n+1 81 Ziffern…</td><td>nach dem Belegen; auch als Nachwahl</td><td><span class="st st-t">Treiber</span></td></tr>
+<tr><td>Leitung belegen</td><td class="hex">01 02 11 00</td><td>vor dem Wählen, nur im Ruhezustand; Telefon hebt ab (Freisprechen), meldet Hörer ab, aber keinen Wählton</td><td><span class="st st-b">bestätigt</span></td></tr>
+<tr><td>Wählen</td><td class="hex">01 L 19 00 98 70 n+1 81 Ziffern…</td><td>nach dem Belegen; Telefon bestätigt mit MORE_INFO (<span class="hex">19</span>, Ziel); als Nachwahl/DTMF im Gespräch laut Treiber</td><td><span class="st st-b">bestätigt</span> (Nachwahl: <span class="st st-t">Treiber</span>)</td></tr>
 <tr><td>Annehmen</td><td class="hex">01 02 14 00</td><td>während RINGING; das Telefon hebt ab (Freisprechen bei „Sprache über Telefon“)</td><td><span class="st st-b">bestätigt</span></td></tr>
 <tr><td>Auflegen</td><td class="hex">01 02 13 00</td><td>bei genau einem Gespräch; danach DISCONNECTED, RELEASED, Hörer aus</td><td><span class="st st-b">bestätigt</span></td></tr>
 <tr><td>Merkmal</td><td class="hex">01 03 26 00 kk</td><td><span class="hex">16</span>/<span class="hex">17</span> Anklopfen anzeigen/annehmen, <span class="hex">c3</span> Reconnect bei zwei Gesprächen</td><td><span class="st st-t">Treiber</span></td></tr>
@@ -439,7 +439,7 @@ nur dokumentierte Aufträge senden, nichts raten; Wählen nur zu bekannten Testn
 <h2 id="offen"><span class="nr">12</span>Offene Fragen</h2>
 <div class="col"><ol>
 <li>Inhalt der Bereitmeldung <span class="hex">01</span> (<span class="hex">01 02 00</span>): ändert er sich je nach Zustand des Telefons?</li>
-<li>Wählen und Belegen am Gerät erproben (nur mit Testnummer).</li>
+<li>Nachwahl im Gespräch: hört die Gegenseite DTMF-Töne?</li>
 <li>Stören Xon/Xoff, da <span class="hex">11</span>/<span class="hex">13</span> auch Auftragstypen sind?</li>
 <li>Bedeutung von <span class="hex">98</span> und der Aufträge <span class="hex">15</span>, <span class="hex">18</span>, <span class="hex">1b</span>–<span class="hex">24</span>, <span class="hex">27</span>.</li>
 <li>Meldet das Telefon Ereignisse auch nach einem Neustart ohne vorherige Eingabe?</li>

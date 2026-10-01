@@ -87,13 +87,18 @@ Rufnummern vom Telefon: reine ASCII-Ziffern; externe Nummern mit **Amtsholung `0
 passt zu beiden Mitschnitten). Im Wahlauftrag des PCs steht laut Treiber das Typ-Oktett `0x81` vor den Ziffern.
 `98` (Byte 4 in Nummern-/Auslösemeldungen): Bedeutung offen.
 
-## 6. Aufträge PC → Telefon (Treiber; Anmelden, Keepalive, Annehmen, Auflegen am Gerät bestätigt 2026-10-01)
+## 6. Aufträge PC → Telefon (Treiber; Anmelden, Keepalive, Annehmen, Auflegen, Belegen, Wählen am Gerät bestätigt 2026-10-01)
 Der Treiber wartet nach jedem Auftrag bis 5 s auf `04` (`AckEvent`); ohne Quittung gilt der Auftrag als gescheitert.
 **Bestätigt:** Quittung ist immer `04 00`, nach 100–150 ms (Logs `test_20261001_*`). Nach „Anmelden“ folgt 50 ms später
 die Meldung `02 04 01 01 02 00` (Typ `01`). Der Treiber wertet sie **nicht** aus: einziger Rahmenweg Empfang 0x10014219 →
 Parser 0x100172b9 → `default` (0x1001934a, nur Trace) → CompareOldStateNewState `default` (0x10019d4e). Für einen Daemon ignorierbar. Deutung (vermutet, Nutzer 2026-10-01): **READY**, Bereitmeldung nach der Anmeldung. „Annehmen“ lässt das Telefon abheben (Freisprechen bei
 „TAPI: Sprache über Telefon“), danach `3b…0a` + `31`. „Auflegen“ beendet das Gespräch: `32` (Ursache leer), `39`, `3a…0a`.
 Im Freisprechbetrieb beendet auch die Lautsprecher-Taste am Telefon das Gespräch (Ursache leer).
+**Bestätigt (`test_20261001_150042_waehlen_extern.log`, extern auf Handy):** „Belegen“ → ACK nach 100 ms, Telefon hebt
+ab (`3b 01 0a`), meldet aber **keinen** Wählton `36`. „Wählen“ (3 s später) → ACK nach 360 ms, dann MORE_INFO `19` mit
+der Zielnummer, `3e` nach 6 s, `31` + DTMF ein beim Abnehmen der Gegenseite. „Auflegen“ wie oben.
+Sprache lief dabei (Schalter „TAPI: Sprache über Telefon“) über die Freisprecheinrichtung der D340 (Nutzer).
+Für SIP muss der Sprechweg auf die Audio-Buchse: „TAPI: Sprache über Zusatzgerät“ (noch zu testen).
 
 | Auftrag | Rahmen | Treiberstelle |
 |---|---|---|

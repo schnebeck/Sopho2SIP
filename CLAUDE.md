@@ -50,7 +50,7 @@ und greift die Sprache über dessen Audio-Schnittstelle ab. Nach außen spricht 
   Nummern und Ursachen als Q.931-artige Elemente (`6c` Anrufer, `70` Ziel, `08` Ursache).
 - Empfangsrichtung ist verstanden (Anruf mit Anrufernummer, Wahl, Rufton, verbunden, Auslösung, Ruhe).
 - Aufträge (aus `Ergoline.tsp`): Anmelden `01 02 01 00`, Keepalive `01 02 00 00`, Annehmen `01 02 14 00`, Auflegen
-  `01 02 13 00` **am Gerät bestätigt** (2026-10-01, Quittung `04 00`); Wählen `01 LL 19 00 98 70 …` noch ungetestet. Unverstandene Eingaben beantwortet das Telefon
+  `01 02 13 00`, Belegen `01 02 11 00`, Wählen `01 LL 19 00 98 70 …` **am Gerät bestätigt** (2026-10-01, Quittung `04 00`). Unverstandene Eingaben beantwortet das Telefon
   nach ~1,5 s mit `05 00`.
 - **Maßgebliche Quelle:** `ref/ergoline_tsp/Ergoline.tsp` („Philips ErgoLine D330/D340 TSP for TAPI 2.x“, V2.1.2,
   2002; Herkunft in `ref/ergoline_tsp/QUELLE.md`). Enthält `SendFrame` mit ACK, `L2_ACK_PHONE`, Versionsabfrage.
@@ -129,6 +129,7 @@ README.md               # GitHub-Startseite, stellt die Spezifikation in den Mit
 privat/                 # lokal, nie veröffentlichen (Original-Log mit echter Rufnummer, Sicherungen)
 ref/ergoline_tsp/       # Philips ErgoLine D330/D340 TSP (maßgeblicher Treiber), Herkunft in QUELLE.md
 tools/ergo.py           # Hauptwerkzeug: Rahmen dekodieren/mitlesen/Aufträge senden (Sperre ohne --freigabe)
+tools/log_bereinigen.py # Mitschnitt für das Repo bereinigen (Rufnummer → Platzhalter)
 tools/serial_probe.py   # Rohmitschnitt ohne Rahmenlogik (Altwerkzeug)
 tools/bitbang_scope.py  # FT232R als Logikanalysator (Bitbang, braucht pyftdi)
 tools/pi_bootstrap.sh   # Grundeinrichtung des Pi (Pakete, Gruppen, NTP)
@@ -154,8 +155,8 @@ logs/                   # Mitschnitte, Übersicht in logs/INDEX.md
 
 ## Offene Punkte
 
-- Protokoll: Wählen/Belegen am Gerät erproben (nur mit Testnummer und Freigabe); Bedeutung der Meldung Typ `01`.
+- Protokoll: Bedeutung der Meldung Typ `01`; Nachwahl/DTMF im Gespräch.
 - Kommen Ereignisse auch ohne jede vorherige Eingabe (Neustart-Test)?
 - Audio: Pegel, Wirkung von X_IN, Inhalt von X_OUT, „Sprache über Zusatzgerät“.
-- Erster Wähltest (Testnummer + Freigabe), danach `--steuerung`; DTMF-Nachwahl prüfen.
+- `--steuerung` im Dienst einschalten (Freigabe Nutzer); DTMF-Nachwahl im Gespräch prüfen.
 - Schnittstelle der Nextcloud-App zu den Telefonen (HTTP-API/Action-URLs, AMI/ARI, SIP)?
