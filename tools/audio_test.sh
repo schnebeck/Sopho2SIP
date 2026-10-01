@@ -1,14 +1,16 @@
 #!/usr/bin/env bash
 # SPDX-License-Identifier: GPL-3.0-or-later
 # Audiotest auf dem Pi (Phase 4): eingehenden Anruf annehmen, X_OUT aufnehmen, Testton auf X_IN, auflegen.
-#   tools/audio_test.sh [GESPRÄCH_S=30] [TON_AB_S=15] [PEGEL=-40dB]
-# Ablauf: Dienst sopho2sipd anhalten (serielle Schnittstelle frei), PCM-Wiedergabe der UCA222 auf PEGEL,
+#   tools/audio_test.sh [GESPRÄCH_S=30] [TON_AB_S=15] [TÖNE_dBFS="-46 -36 -26 -16"]
+# Ablauf: Dienst sopho2sipd anhalten (serielle Schnittstelle frei), PCM-Regler der UCA222 auf 0 dB,
 # tools/ergo.py annahmetest (Annehmen/Auflegen: braucht Freigabe des Nutzers!), ab CONNECTED Aufnahme
-# (48 kHz stereo, links = X_OUT), nach TON_AB_S s 3 s Sinus 1 kHz, danach Pegelauswertung; Dienst wieder starten.
+# (48 kHz stereo, links = X_OUT), ab TON_AB_S je Pegel 2 s Sinus 1 kHz + 2 s Pause, danach sekundenweise
+# Auswertung (Pegel X_OUT, 1-kHz-Anteil = Echo des Testtons); Dienst wieder starten.
 # Aufnahmen enthalten Sprache: logs/audio_*.wav sind per .gitignore ausgeschlossen.
 set -euo pipefail
+export LC_ALL=C
 cd "$(dirname "$0")/.."
-GESPRAECH=${1:-30}; TON_AB=${2:-15}; PEGEL=${3:--40dB}
+GESPRAECH=${1:-30}; TON_AB=${2:-15}; TOENE=${3:-"-46 -36 -26 -16"}
 KARTE=CODEC; GERAET=plughw:$KARTE,0
 STAMP=$(date +%Y%m%d_%H%M%S)
 WAV=logs/audio_$STAMP.wav; ERGO_OUT=/tmp/audio_test_ergo_$STAMP.txt
@@ -16,8 +18,8 @@ WAV=logs/audio_$STAMP.wav; ERGO_OUT=/tmp/audio_test_ergo_$STAMP.txt
 aufraeumen() { kill "${AUFNAHME:-}" 2>/dev/null || true; sudo systemctl start sopho2sipd; }
 trap aufraeumen EXIT
 sudo systemctl stop sopho2sipd
-amixer -q -c $KARTE sset PCM -- "$PEGEL"
-echo "== Wiedergabe $PEGEL; warte bis 120 s auf einen Anruf …"
+amixer -q -c $KARTE sset PCM -- 0dB
+echo "== PCM 0 dB, Töne $TOENE dBFS; warte bis 120 s auf einen Anruf …"
 
 python3 -u tools/ergo.py annahmetest --freigabe --gespraech "$GESPRAECH" --warte 120 > "$ERGO_OUT" 2>&1 &
 ERGO=$!
@@ -29,19 +31,21 @@ echo "== verbunden: Aufnahme $GESPRAECH s → $WAV"
 arecord -q -D $GERAET -f S16_LE -r 48000 -c 2 -d "$GESPRAECH" "$WAV" &
 AUFNAHME=$!
 sleep "$TON_AB"
-echo "== Testton 1 kHz, 3 s"
-sox -q -n -r 48000 -c 2 -b 16 -t alsa $GERAET synth 3 sine 1000 vol 0.5
+for pegel in $TOENE; do
+    echo "== Testton 1 kHz, 2 s, $pegel dBFS"
+    sox -q -n -r 48000 -c 2 -b 16 -t alsa $GERAET synth 2 sine 1000 gain "$pegel"
+    sleep 2
+done
 wait $AUFNAHME || true
 wait $ERGO || true
 grep -E ">>|MELDUNG|Quittung|Ende" "$ERGO_OUT" | sed -E 's/(6c 0d|ANRUFER=).*/\1 …/'
 
-echo "== Pegel X_OUT (linker Kanal), je 5 s:"
-for ab in $(seq 0 5 $((GESPRAECH - 5))); do
-    rms=$(sox "$WAV" -n remix 1 trim "$ab" 5 stat 2>&1 | awk '/RMS     amplitude/{print $3}')
-    spitze=$(sox "$WAV" -n remix 1 trim "$ab" 5 stat 2>&1 | awk '/Maximum amplitude/{print $3}')
-    printf "  %3d–%3d s  RMS %6.1f dBFS  Spitze %6.1f dBFS\n" "$ab" $((ab + 5)) \
-        "$(python3 -c "import math;print(20*math.log10(max($rms,1e-9)))")" \
-        "$(python3 -c "import math;print(20*math.log10(max($spitze,1e-9)))")"
+db() { python3 -c "import math,sys;print(f'{20*math.log10(max(float(sys.argv[1]),1e-9)):6.1f}')" "$1"; }
+wert() { sox "$WAV" -n remix "$1" trim "$2" 1 ${3:-} stat 2>&1 | awk -v k="$4" '$0 ~ k {print $3}'; }
+echo "== je Sekunde: X_OUT RMS/Spitze, 1-kHz-Anteil (Echo des Testtons ab ${TON_AB} s), rechter Kanal"
+echo "  s   RMS    Spitze  1kHz   rechts"
+for s in $(seq 0 $((GESPRAECH - 1))); do
+    printf "%3d %s %s %s %s\n" "$s" "$(db "$(wert 1 "$s" "" "RMS     amplitude")")" \
+        "$(db "$(wert 1 "$s" "" "Maximum amplitude")")" "$(db "$(wert 1 "$s" "sinc 950-1050" "RMS     amplitude")")" \
+        "$(db "$(wert 2 "$s" "" "RMS     amplitude")")"
 done
-echo "== Testton im Rückkanal? Bereich $TON_AB–$((TON_AB + 3)) s, 1 kHz-Anteil:"
-sox "$WAV" -n remix 1 trim "$TON_AB" 3 sinc 900-1100 stat 2>&1 | awk '/RMS     amplitude/{printf "  RMS 1 kHz %.1f dBFS (Echo/Übersprechen, falls deutlich über Ruhe)\n", 20*log($3)/log(10)}'
