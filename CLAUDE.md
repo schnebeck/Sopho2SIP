@@ -65,10 +65,11 @@ Sopho ─UPN─ D340 ─PC-Schnittstelle (Binärrahmen, 1200 8N1)─ USB-RS232 �
 ```
 
 - **SIP nicht selbst implementieren.** baresip mit `ctrl_tcp` übernimmt SIP, RTP, Audio, AEC.
-- **Asterisk** (PJSIP) als Registrar, falls kein SIP-Server existiert (offene Frage).
-- Abläufe: Eingehend: Rahmen `30` mit Anrufernummer → SIP-INVITE mit From = normalisierte Nummer (Amtsziffer
-  entfernen) → bei Annahme Annahme-Rahmen (noch unbekannt). Abgehend: INVITE → Wahl-Rahmen (unbekannt).
-  Auflegen: BYE ↔ Auslöse-Rahmen bzw. Meldung `32`/`39`.
+- **Asterisk** (PJSIP) auf dem Pi als Registrar (Entscheidung Nutzer 2026-10-01), Konten `tel1`/`tel2`.
+- Abläufe (`docs/betrieb.md`): Eingehend: Rahmen `30` → baresip ruft `sip:<Anrufernummer ohne 01>@Asterisk`, der
+  Wählplan macht daraus die Caller-ID → Softphone nimmt ab → Annehmen `01 02 14 00`. Abgehend: Softphone wählt →
+  Asterisk ruft baresip mit der Nummer als Absender → Belegen + Wählen → bei `31` nimmt baresip an.
+  Auflegen: BYE ↔ `01 02 13 00` bzw. Meldung `32`/`39`.
 - Eine D340 = ein Gespräch gleichzeitig.
 
 ## Vorgehen (Phasen)
@@ -77,9 +78,10 @@ Sopho ─UPN─ D340 ─PC-Schnittstelle (Binärrahmen, 1200 8N1)─ USB-RS232 �
 2. **Seriell verifizieren:** erledigt (1200 8N1, Freischaltung per TAPI-Schalter, Empfangsrahmen mitgeschnitten).
 3. **Protokoll klären:** `Ergoline.tsp` analysieren (Rahmen, ACK, Befehle), dann mit Freigabe Senden testen. — laufend
 4. **Audio verifizieren:** UCA222, X_OUT/X_IN, „Sprache über Zusatzgerät“. Ergebnisse in `docs/hardware.md`.
-5. **SIP-Stack:** baresip mit `ctrl_tcp`, Codec PCMA, erst lokal mit Softphone testen.
+5. **SIP-Stack:** Asterisk 22 (aus dem Quelltext) und baresip 1.1.0 laufen auf dem Pi (`docs/betrieb.md`).
+   Offen: Test mit echtem Softphone, Sprache über UCA222.
 6. **Gateway-Daemon:** Stufe 1 fertig (Zustandsautomat, Anrufdatensätze, Keepalive, Wiederanlauf); Stufe 2:
-   Steuerbefehle (Wählen/Annehmen/Auflegen) und Übersetzung seriell ↔ baresip.
+   Steuerbefehle und Brücke seriell ↔ baresip (`gateway/sipbruecke.py`) gebaut, Steuerung noch gesperrt.
 7. **Betrieb:** Dienst `sopho2sipd` läuft auf dem Pi (systemd, startet nach Neustart, Ereignisse im Journal,
    Wiederanlauf bei Verbindungsverlust), Logrotation, Firewall (SIP/RTP/Portal nur aus 130.75.63.128/25 und VPN).
    Webportal auf Port 8080 (Passwort). Gesprächsaufträge aus dem Portal erst mit `--steuerung`.
@@ -132,15 +134,20 @@ tools/bitbang_scope.py  # FT232R als Logikanalysator (Bitbang, braucht pyftdi)
 tools/pi_bootstrap.sh   # Grundeinrichtung des Pi (Pakete, Gruppen, NTP)
 tools/asterisk_build.sh # Asterisk 22 LTS aus dem Quelltext (Trixie hat kein Paket)
 tools/firewall.sh       # Firewall laden, mit automatischer Rücknahme gegen Aussperren
+tools/asterisk_config.sh # Asterisk/baresip-Konfiguration einspielen, SIP-Passwörter erzeugen
 tools/build_protokoll_doc.py  # erzeugt docs/protokoll.html (Standardbibliothek)
 tools/build_audio_doc.py      # erzeugt docs/audio_verkabelung.html (Schaltplan Audio)
 gateway/ergoline/       # protocol.py (Rahmen), link.py (seriell), zustand.py (Zustandsautomat), logdatei.py
 gateway/sopho2sipd.py   # Daemon (Stufe 1: Anrufdatensätze als JSON/Webhook, Format in docs/anrufdaten.md)
 gateway/betrieb/        # Dienst (sopho2sipd.service), Logrotation, Firewall (nftables) für den Pi
 gateway/portal.py       # Webportal (Anrufliste, Rückruf, Wähltastatur), Thread im Daemon
+gateway/sipbruecke.py   # Brücke Telefon ⇄ baresip (ctrl_tcp)
+gateway/asterisk/       # Asterisk-Konfiguration (PJSIP, Wählplan); Passwörter nur auf dem Pi
+gateway/baresip/        # baresip-Konfiguration
 gateway/web/index.html  # Oberfläche des Portals (ohne externe Abhängigkeiten)
 gateway/tests/          # Tests (python3 -m unittest discover -s gateway/tests)
 docs/testplan.md        # nächste Tests am Gerät
+docs/betrieb.md         # Dienste, Ports, Einrichtung und Sicherheit auf dem Pi
 logs/                   # Mitschnitte, Übersicht in logs/INDEX.md
 ```
 
@@ -149,5 +156,5 @@ logs/                   # Mitschnitte, Übersicht in logs/INDEX.md
 - Protokoll: Wählen/Belegen am Gerät erproben (nur mit Testnummer und Freigabe); Bedeutung der Meldung Typ `01`.
 - Kommen Ereignisse auch ohne jede vorherige Eingabe (Neustart-Test)?
 - Audio: Pegel, Wirkung von X_IN, Inhalt von X_OUT, „Sprache über Zusatzgerät“.
-- Gibt es bereits einen SIP-Server, oder wird Asterisk auf dem Pi benötigt?
+- Erster Wähltest (Testnummer + Freigabe), danach `--steuerung`; DTMF-Nachwahl prüfen.
 - Schnittstelle der Nextcloud-App zu den Telefonen (HTTP-API/Action-URLs, AMI/ARI, SIP)?
