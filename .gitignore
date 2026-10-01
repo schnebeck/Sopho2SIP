@@ -14,3 +14,4 @@ docs/img/d340_menuebaum.png
 
 # Sitzungslogs enthalten echte Rufnummern: nur bereinigte Kopien committen
 logs/ergo_*.log
+logs/audio_*.wav
