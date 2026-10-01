@@ -78,7 +78,8 @@ Sopho ─UPN─ D340 ─PC-Schnittstelle (Binärrahmen, 1200 8N1)─ USB-RS232 �
 3. **Protokoll klären:** `Ergoline.tsp` analysieren (Rahmen, ACK, Befehle), dann mit Freigabe Senden testen. — laufend
 4. **Audio verifizieren:** UCA222, X_OUT/X_IN, „Sprache über Zusatzgerät“. Ergebnisse in `docs/hardware.md`.
 5. **SIP-Stack:** baresip mit `ctrl_tcp`, Codec PCMA, erst lokal mit Softphone testen.
-6. **Gateway-Daemon:** Python 3 (asyncio), Rahmen-Decoder, Zustandsautomat, Übersetzung seriell ↔ baresip.
+6. **Gateway-Daemon:** Stufe 1 fertig (Zustandsautomat, Anrufdatensätze, Keepalive, Wiederanlauf); Stufe 2:
+   Steuerbefehle (Wählen/Annehmen/Auflegen) und Übersetzung seriell ↔ baresip.
 7. **Betrieb:** systemd-Units, Logging, Wiederanlauf bei Verbindungsverlust zum Telefon.
 
 ## Arbeitsregeln für Claude Code
@@ -126,7 +127,8 @@ tools/bitbang_scope.py  # FT232R als Logikanalysator (Bitbang, braucht pyftdi)
 tools/pi_bootstrap.sh   # Grundeinrichtung des Pi (Pakete, Gruppen, NTP)
 tools/build_protokoll_doc.py  # erzeugt docs/protokoll.html (Standardbibliothek)
 tools/build_audio_doc.py      # erzeugt docs/audio_verkabelung.html (Schaltplan Audio)
-gateway/ergoline/       # Protokoll (protocol.py) und serielle Verbindung (link.py), Basis für den Daemon
+gateway/ergoline/       # protocol.py (Rahmen), link.py (seriell), zustand.py (Zustandsautomat), logdatei.py
+gateway/sopho2sipd.py   # Daemon (Stufe 1: Anrufdatensätze als JSON/Webhook, Format in docs/anrufdaten.md)
 gateway/tests/          # Tests (python3 -m unittest discover -s gateway/tests)
 docs/testplan.md        # nächste Tests am Gerät
 logs/                   # Mitschnitte, Übersicht in logs/INDEX.md

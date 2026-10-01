@@ -48,11 +48,14 @@ Python 3 mit `pyserial`, keine weiteren Abhängigkeiten:
 
 - `gateway/ergoline/protocol.py` – Rahmen, Meldungen, Aufträge (ohne Ein-/Ausgabe)
 - `gateway/ergoline/link.py` – serielle Verbindung mit Quittung und Sitzungslog
+- `gateway/ergoline/zustand.py` – Zustandsautomat nach dem Vorbild des Philips-Treibers
+- `gateway/sopho2sipd.py` – Daemon: Verbindung, Anmeldung, Keepalive, Anrufdatensätze als JSON-Datei/Webhook ([`docs/anrufdaten.md`](docs/anrufdaten.md))
 - `tools/ergo.py` – Mitschnitte dekodieren, mitlesen, Aufträge senden
 - Tests: `python3 -m unittest discover -s gateway/tests -v`
 
 ```
 tools/ergo.py decode logs/serial_20260930_163534.log
+gateway/sopho2sipd.py --wiedergabe logs/serial_20260930_163534.log --anrufe -
 ```
 
 Die Spezifikation wird mit `tools/build_protokoll_doc.py` aus `docs/protokoll.tpl.html` erzeugt.
