@@ -3,6 +3,7 @@
 # Audiotest auf dem Pi (Phase 4): eingehenden Anruf annehmen, X_OUT aufnehmen, Testton auf X_IN, auflegen.
 #   tools/audio_test.sh [GESPRÄCH_S=30] [TON_AB_S=15] [TÖNE_dBFS="-46 -36 -26 -16"] [NUMMER]
 # Ohne NUMMER wird ein eingehender Anruf angenommen; mit NUMMER wählt der Pi (ergo.py waehltest, Freigabe!).
+# NACHRICHT=datei.wav: statt der Töne diese Aufnahme spielen, je Wert in TÖNE mit dieser Verstärkung (dB).
 # Ablauf: Dienst sopho2sipd anhalten (serielle Schnittstelle frei), PCM-Regler der UCA222 auf 0 dB,
 # tools/ergo.py annahmetest (Annehmen/Auflegen: braucht Freigabe des Nutzers!), ab CONNECTED Aufnahme
 # (48 kHz stereo, links = X_OUT), ab TON_AB_S je Pegel 2 s Sinus 1 kHz + 2 s Pause, danach sekundenweise
@@ -37,9 +38,15 @@ arecord -q -D $GERAET -f S16_LE -r 48000 -c 2 -d "$GESPRAECH" "$WAV" &
 AUFNAHME=$!
 sleep "$TON_AB"
 for pegel in $TOENE; do
-    echo "== Testton 1 kHz, 2 s, $pegel dBFS"
-    sox -q -n -r 48000 -c 2 -b 16 -t alsa $GERAET synth 2 sine 1000 gain "$pegel"
-    sleep 2
+    if [ -n "${NACHRICHT:-}" ]; then
+        echo "== Nachricht $NACHRICHT, Verstärkung $pegel dB"
+        sox -q "$NACHRICHT" -t alsa $GERAET gain "$pegel"
+        sleep 1
+    else
+        echo "== Testton 1 kHz, 2 s, $pegel dBFS"
+        sox -q -n -r 48000 -c 2 -b 16 -t alsa $GERAET synth 2 sine 1000 gain "$pegel"
+        sleep 2
+    fi
 done
 wait $AUFNAHME || true
 wait $ERGO || true
