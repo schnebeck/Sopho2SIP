@@ -20,7 +20,7 @@ am Gerät noch nicht geprüft, **vermutet** = Deutung.
 | Stecker | DB9-Buchse, Telefon = DCE, 1:1-Kabel, Pin 2 (Telefon sendet), 3 (Telefon empfängt), 5 (GND) | bestätigt |
 | Pegel | Ruhepegel −5 V auf beiden Datenleitungen | bestätigt |
 | Rate | **1200 Baud** | bestätigt (Testcode 63, `bitbang_20260930_163321`) |
-| Format | **8O1 (ungerade Parität), Xon/Xoff `0x11`/`0x13`** im Betriebsmodus (Port-Methode 0x100132c2) | Treiber. Unsere 8N1-Mitschnitte lesen das Paritätsbit als Stoppbit; die Daten stimmen trotzdem. |
+| Format | **8O1 (ungerade Parität)**; der Treiber schaltet zusätzlich Xon/Xoff ein (Port-Methode 0x100132c2) | bestätigt: Senden/Empfangen mit 8O1 ohne Xon/Xoff (2026-10-01) |
 | Servicemodus | 9600 8N1 bzw. 8O1 („ASFD-Modus“, nur für Escape/Versionsabfrage, Abschnitt 7) | Treiber |
 
 ## 3. Rahmenformat (beide Richtungen)
@@ -79,8 +79,12 @@ Rufnummern vom Telefon: reine ASCII-Ziffern; externe Nummern mit **Amtsholung `0
 passt zu beiden Mitschnitten). Im Wahlauftrag des PCs steht laut Treiber das Typ-Oktett `0x81` vor den Ziffern.
 `98` (Byte 4 in Nummern-/Auslösemeldungen): Bedeutung offen.
 
-## 6. Aufträge PC → Telefon (Treiber, am Gerät noch nicht getestet)
+## 6. Aufträge PC → Telefon (Treiber; Anmelden, Keepalive, Annehmen, Auflegen am Gerät bestätigt 2026-10-01)
 Der Treiber wartet nach jedem Auftrag bis 5 s auf `04` (`AckEvent`); ohne Quittung gilt der Auftrag als gescheitert.
+**Bestätigt:** Quittung ist immer `04 00`, nach 100–150 ms (Logs `test_20261001_*`). Nach „Anmelden“ folgt 50 ms später
+die Meldung `02 04 01 01 02 00` (Typ `01`, Bedeutung offen). „Annehmen“ lässt das Telefon abheben (Freisprechen bei
+„TAPI: Sprache über Telefon“), danach `3b…0a` + `31`. „Auflegen“ beendet das Gespräch: `32` (Ursache leer), `39`, `3a…0a`.
+Im Freisprechbetrieb beendet auch die Lautsprecher-Taste am Telefon das Gespräch (Ursache leer).
 
 | Auftrag | Rahmen | Treiberstelle |
 |---|---|---|
@@ -119,7 +123,7 @@ Empfangsmodi im Treiber (OnData 0x10014219, Flags relativ zum Telefonobjekt):
 - Ein Hayes-AT-Protokoll (`AT$…`) kommt in `Ergoline.tsp` nicht vor.
 
 ## 8. Offene Fragen
-1. Nimmt das Telefon `01 02 01 00` bei 1200 8O1 direkt an (ohne Schritte 2–5)? Wie sieht das ACK aus?
+1. ~~Nimmt das Telefon `01 02 01 00` bei 1200 8O1 direkt an?~~ Ja, ACK `04 00` (2026-10-01). Offen: Meldung Typ `01`.
 2. Xon/Xoff: Die Auftragstypen `11` und `13` sind zugleich die Xon/Xoff-Zeichen. Wie verhält sich das in der Praxis?
 3. Bedeutung von `98` und der Aufträge `15`, `18`, `1b`–`24`, `27`.
 4. Kommen Ereignisse ohne jede vorherige Eingabe (Neustart-Test)?

@@ -49,8 +49,8 @@ und greift die Sprache über dessen Audio-Schnittstelle ab. Nach außen spricht 
 - **Binärrahmen** `<Klasse> <Länge> <Nutzdaten>`, 1200 8O1. Klassen: `01` Auftrag PC, `02` Meldung Telefon, `03` REJ, `04` ACK, `05` ERR.
   Nummern und Ursachen als Q.931-artige Elemente (`6c` Anrufer, `70` Ziel, `08` Ursache).
 - Empfangsrichtung ist verstanden (Anruf mit Anrufernummer, Wahl, Rufton, verbunden, Auslösung, Ruhe).
-- Aufträge (aus `Ergoline.tsp`, am Gerät noch ungetestet): Anmelden `01 02 01 00`, Wählen `01 LL 19 00 98 70 …`,
-  Annehmen `01 02 14 00`, Auflegen `01 02 13 00`; das Telefon quittiert mit `04`. Unverstandene Eingaben beantwortet das Telefon
+- Aufträge (aus `Ergoline.tsp`): Anmelden `01 02 01 00`, Keepalive `01 02 00 00`, Annehmen `01 02 14 00`, Auflegen
+  `01 02 13 00` **am Gerät bestätigt** (2026-10-01, Quittung `04 00`); Wählen `01 LL 19 00 98 70 …` noch ungetestet. Unverstandene Eingaben beantwortet das Telefon
   nach ~1,5 s mit `05 00`.
 - **Maßgebliche Quelle:** `ref/ergoline_tsp/Ergoline.tsp` („Philips ErgoLine D330/D340 TSP for TAPI 2.x“, V2.1.2,
   2002; Herkunft in `ref/ergoline_tsp/QUELLE.md`). Enthält `SendFrame` mit ACK, `L2_ACK_PHONE`, Versionsabfrage.
@@ -134,7 +134,7 @@ logs/                   # Mitschnitte, Übersicht in logs/INDEX.md
 
 ## Offene Punkte
 
-- Protokoll: Aufträge aus `Ergoline.tsp` am Gerät bestätigen (erst Anmelden `01 02 01 00`, dann mit Freigabe Wählen/Annehmen/Auflegen).
+- Protokoll: Wählen/Belegen am Gerät erproben (nur mit Testnummer und Freigabe); Bedeutung der Meldung Typ `01`.
 - Kommen Ereignisse auch ohne jede vorherige Eingabe (Neustart-Test)?
 - Audio: Pegel, Wirkung von X_IN, Inhalt von X_OUT, „Sprache über Zusatzgerät“.
 - Gibt es bereits einen SIP-Server, oder wird Asterisk auf dem Pi benötigt?

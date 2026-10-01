@@ -12,6 +12,8 @@ Nur mit --freigabe (Anruf wird ausgelöst/beeinflusst; CLAUDE.md: vorher Nutzer 
   ergo.py belegen | annehmen | auflegen --freigabe
   ergo.py waehlen NUMMER --freigabe     Nummer inkl. Amtsholung (extern: 01…)
   ergo.py roh "01 02 00 00" --freigabe  beliebiger Rahmen
+  ergo.py annahmetest --freigabe [--gespraech S]
+                                        anmelden, auf Anruf warten, annehmen, S s halten, auflegen
 
 Optionen: --port, --paritaet O|N (Standard O = 8O1 wie im Treiber), --xonxoff, --dauer
 """
@@ -59,15 +61,57 @@ def decode(pfade: list[str]) -> int:
     return 0
 
 
+def warte_auf(link, typ: str, sekunden: float):
+    """Wartet auf eine Meldung des Typs (Name aus MELDUNGSTYP); liefert den Rahmen oder None."""
+    import queue, time
+    ende = time.time() + sekunden
+    while time.time() < ende:
+        try:
+            _, r = link.rahmen.get(timeout=max(0.05, ende - time.time()))
+        except queue.Empty:
+            break
+        if r.klasse == p.MELDUNG and p.MELDUNGSTYP.get(r.typ) == typ:
+            return r
+    return None
+
+
+def annahmetest(a, link) -> int:
+    with link:
+        if (q := link.sende(p.anmelden())) is None or q.klasse != p.ACK:
+            link.notiz("Anmelden fehlgeschlagen, Abbruch")
+            return 1
+        link.notiz(f"Warte bis {a.warte:.0f} s auf einen Anruf …")
+        if warte_auf(link, "RINGING", a.warte) is None:
+            link.notiz("kein Anruf, Abbruch")
+            return 1
+        q = link.sende(p.annehmen())
+        if q is None or q.klasse != p.ACK:
+            link.notiz("Annehmen nicht quittiert, Abbruch")
+            return 1
+        if warte_auf(link, "CONNECTED", 5) is None:
+            link.notiz("keine CONNECTED-Meldung nach Annehmen")
+        link.notiz(f"Gespräch {a.gespraech:.0f} s")
+        link.lausche(a.gespraech)
+        q = link.sende(p.auflegen())
+        if q is None or q.klasse != p.ACK:
+            link.notiz("Auflegen nicht quittiert")
+        if warte_auf(link, "RELEASED", 5) is None:
+            link.notiz("keine RELEASED-Meldung nach Auflegen")
+        link.lausche(3)
+    return 0
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("befehl", choices=sorted(FREI | {"belegen", "annehmen", "auflegen", "waehlen", "roh"}))
+    ap.add_argument("befehl", choices=sorted(FREI | {"belegen", "annehmen", "auflegen", "waehlen", "roh", "annahmetest"}))
     ap.add_argument("argumente", nargs="*")
     ap.add_argument("--port", default=None)
     ap.add_argument("--paritaet", choices=["O", "N", "E"], default="O")
     ap.add_argument("--xonxoff", action="store_true")
     ap.add_argument("--dauer", type=float, default=10.0, help="Mitlesen danach (s)")
     ap.add_argument("--freigabe", action="store_true", help="Nutzerfreigabe für gesprächsrelevante Rahmen")
+    ap.add_argument("--gespraech", type=float, default=10.0, help="annahmetest: Gesprächsdauer (s)")
+    ap.add_argument("--warte", type=float, default=120.0, help="annahmetest: max. Wartezeit auf Anruf (s)")
     a = ap.parse_args()
 
     if a.befehl == "decode":
@@ -94,6 +138,8 @@ def main() -> int:
         rahmen = teile[0]
 
     from ergoline.link import PORT_STANDARD, ErgoLink
+    if a.befehl == "annahmetest":
+        return annahmetest(a, ErgoLink(a.port or PORT_STANDARD, paritaet=a.paritaet, xonxoff=a.xonxoff))
     with ErgoLink(a.port or PORT_STANDARD, paritaet=a.paritaet, xonxoff=a.xonxoff) as link:
         if rahmen is not None:
             q = link.sende(rahmen)

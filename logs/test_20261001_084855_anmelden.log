@@ -1,0 +1,9 @@
+# 2026-10-01 08:48:55.937 Port /dev/serial/by-id/usb-FTDI_FT232R_USB_UART_A97WEQGD-if00-port0 1200 8O1 xonxoff=False
+2026-10-01 08:48:55.938 >> 01 02 01 00                    AUFTRAG ANMELDEN leitung=00
+2026-10-01 08:48:55.938 >> raw b'\x01\x02\x01\x00'
+2026-10-01 08:48:56.038 << raw b'\x04\x00\x02\x04\x01'
+2026-10-01 08:48:56.038 << 04 00                          ACK
+# 2026-10-01 08:48:56.039 Quittung: ACK
+2026-10-01 08:48:56.088 << raw b'\x01\x02\x00'
+2026-10-01 08:48:56.088 << 02 04 01 01 02 00              MELDUNG TYP_01 leitung=01 IE_02=
+# 2026-10-01 08:49:08.098 Ende, Log: /home/schnebeck/Documents/Projects/Sopho2SIP/logs/ergo_20261001_084855.log

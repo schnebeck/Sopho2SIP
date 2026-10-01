@@ -129,7 +129,7 @@ footer { margin-top: 56px; padding-top: 14px; border-top: 1px solid var(--rule);
   <p class="lead">Wie ein Programm über die 9-polige PC-Buchse einer Philips ErgoLine D340 an einer Sopho iS3000
   Anrufe erkennt, annimmt, wählt und auslöst. Genug, um einen eigenen TAPI- oder SIP-Daemon zu bauen.</p>
   <div class="meta">
-    <span>Stand <b>2026-09-30</b></span>
+    <span>Stand <b>2026-10-01</b></span>
     <span>Gerät <b>ERGOLINE 340-2/LG INT</b></span>
     <span>Firmware <b>V4.03.40.01</b></span>
     <span>Leitung <b>1200 Bd · 8O1</b></span>
@@ -179,8 +179,9 @@ der PC erteilt Aufträge (anmelden, wählen, annehmen, auflegen), die das Telefo
   Pin 5 Masse. Keine Steuerleitungen.</td><td><span class="st st-b">bestätigt</span></td></tr>
 <tr><td>Pegel</td><td>RS-232, Ruhepegel −5 V auf beiden Datenleitungen</td><td><span class="st st-b">bestätigt</span></td></tr>
 <tr><td>Rate</td><td><b>1200 Baud</b>, fest (Wartungstest 63, Bitmessung 833 µs je Bit)</td><td><span class="st st-b">bestätigt</span></td></tr>
-<tr><td>Format</td><td><b>8 Datenbits, ungerade Parität, 1 Stoppbit (8O1)</b>. Der Treiber schaltet zusätzlich
-  Xon/Xoff (<span class="hex">11</span>/<span class="hex">13</span>) ein. Mit 8N1 empfangene Daten sind trotzdem korrekt.</td><td><span class="st st-t">Treiber</span></td></tr>
+<tr><td>Format</td><td><b>8 Datenbits, ungerade Parität, 1 Stoppbit (8O1)</b>. Senden und Empfangen damit am Gerät
+  erprobt, ohne Xon/Xoff. Der Treiber schaltet zusätzlich Xon/Xoff (<span class="hex">11</span>/<span class="hex">13</span>) ein;
+  nötig ist das nicht.</td><td><span class="st st-b">bestätigt</span></td></tr>
 </tbody></table></div>
 
 <h2 id="rahmen"><span class="nr">03</span>Rahmenformat</h2>
@@ -192,10 +193,10 @@ Mehrere Rahmen folgen lückenlos aufeinander. <span class="st st-b">bestätigt</
 <div class="tbl"><table>
 <thead><tr><th>Klasse</th><th>Richtung</th><th>Bedeutung</th><th>Treibername</th><th>Status</th></tr></thead>
 <tbody>
-<tr><td class="hex">01</td><td>PC → Telefon</td><td>Auftrag</td><td>–</td><td><span class="st st-t">Treiber</span></td></tr>
+<tr><td class="hex">01</td><td>PC → Telefon</td><td>Auftrag</td><td>–</td><td><span class="st st-b">bestätigt</span></td></tr>
 <tr><td class="hex">02</td><td>Telefon → PC</td><td>Meldung</td><td><code>L2_REQ_PHONE</code></td><td><span class="st st-b">bestätigt</span></td></tr>
 <tr><td class="hex">03</td><td>Telefon → PC</td><td>Auftrag abgelehnt</td><td><code>L2_REJ_PHONE</code></td><td><span class="st st-t">Treiber</span></td></tr>
-<tr><td class="hex">04</td><td>Telefon → PC</td><td>Auftrag quittiert</td><td><code>L2_ACK_PHONE</code></td><td><span class="st st-t">Treiber</span></td></tr>
+<tr><td class="hex">04</td><td>Telefon → PC</td><td>Auftrag quittiert, immer <span class="hex">04 00</span>, nach 100–150 ms</td><td><code>L2_ACK_PHONE</code></td><td><span class="st st-b">bestätigt</span></td></tr>
 <tr><td class="hex">05</td><td>Telefon → PC</td><td>Fehler / nicht verstanden (<span class="hex">05 00</span>)</td><td><code>L2_ERR_PHONE</code></td><td><span class="st st-b">bestätigt</span></td></tr>
 </tbody></table></div>
 <div class="col">
@@ -218,6 +219,7 @@ nach dem man synchronisieren könnte: Nach einem Fehler den Puffer verwerfen und
 <div class="tbl"><table>
 <thead><tr><th>Typ</th><th>Name</th><th>Bedeutung, Inhalt</th><th>Status</th></tr></thead>
 <tbody>
+<tr><td class="hex">01</td><td>–</td><td>kommt 50 ms nach der Quittung auf „Anmelden“, Nutzdaten <span class="hex">01 01 02 00</span>; Bedeutung offen (Treiber kennt den Typ nicht)</td><td><span class="st st-b">bestätigt</span></td></tr>
 <tr><td class="hex">30</td><td>RINGING</td><td>Anruf kommt an; IE <span class="hex">6c</span> Anrufernummer</td><td><span class="st st-b">bestätigt</span></td></tr>
 <tr><td class="hex">36</td><td>DIALTONE</td><td>Wählton; beim Wählen am Telefon erst bei Wahlende gemeldet, ohne Wahl alle 10 s wiederholt</td><td><span class="st st-b">bestätigt</span></td></tr>
 <tr><td class="hex">19</td><td>MORE_INFO</td><td>gewählte Nummer als Block; IE <span class="hex">70</span> Ziel</td><td><span class="st st-b">bestätigt</span></td></tr>
@@ -270,19 +272,20 @@ in die Konfiguration des Daemons.</p></div>
 <h2 id="auftraege"><span class="nr">05</span>Aufträge des PCs</h2>
 <div class="col">
 <p>Aufträge haben Klasse <span class="hex">01</span>; Byte 0 ist der Typ, Byte 1 ist <span class="hex">00</span>.
-Alle Angaben stammen aus dem Philips-Treiber und sind am Gerät noch nicht gesendet worden. <span class="st st-t">Treiber</span></p>
+Alle Rahmen stammen aus dem Philips-Treiber. Anmelden, Keepalive, Annehmen und Auflegen sind am Gerät erprobt
+(2026-10-01); die übrigen noch nicht.</p>
 </div>
 <div class="tbl"><table>
-<thead><tr><th>Auftrag</th><th>Rahmen</th><th>Wann</th></tr></thead>
+<thead><tr><th>Auftrag</th><th>Rahmen</th><th>Wann</th><th>Status</th></tr></thead>
 <tbody>
-<tr><td>Anmelden</td><td class="hex">01 02 01 00</td><td>einmal nach dem Öffnen der Schnittstelle</td></tr>
-<tr><td>Keepalive</td><td class="hex">01 02 00 00</td><td>nach 15 s ohne Empfang</td></tr>
-<tr><td>Leitung belegen</td><td class="hex">01 02 11 00</td><td>vor dem Wählen, nur im Ruhezustand</td></tr>
-<tr><td>Wählen</td><td class="hex">01 L 19 00 98 70 n+1 81 Ziffern…</td><td>nach dem Belegen; auch als Nachwahl</td></tr>
-<tr><td>Annehmen</td><td class="hex">01 02 14 00</td><td>während RINGING</td></tr>
-<tr><td>Auflegen</td><td class="hex">01 02 13 00</td><td>bei genau einem Gespräch</td></tr>
-<tr><td>Merkmal</td><td class="hex">01 03 26 00 kk</td><td><span class="hex">16</span>/<span class="hex">17</span> Anklopfen anzeigen/annehmen, <span class="hex">c3</span> Reconnect bei zwei Gesprächen</td></tr>
-<tr><td>weitere</td><td class="hex">15, 18, 1b, 1c, 1d, 21–24, 27, 25</td><td>Halten, Übergabe, Konferenz, Rückruf, User-to-User</td></tr>
+<tr><td>Anmelden</td><td class="hex">01 02 01 00</td><td>einmal nach dem Öffnen der Schnittstelle; Antwort ACK, dann Meldung Typ <span class="hex">01</span></td><td><span class="st st-b">bestätigt</span></td></tr>
+<tr><td>Keepalive</td><td class="hex">01 02 00 00</td><td>nach 15 s ohne Empfang</td><td><span class="st st-b">bestätigt</span></td></tr>
+<tr><td>Leitung belegen</td><td class="hex">01 02 11 00</td><td>vor dem Wählen, nur im Ruhezustand</td><td><span class="st st-t">Treiber</span></td></tr>
+<tr><td>Wählen</td><td class="hex">01 L 19 00 98 70 n+1 81 Ziffern…</td><td>nach dem Belegen; auch als Nachwahl</td><td><span class="st st-t">Treiber</span></td></tr>
+<tr><td>Annehmen</td><td class="hex">01 02 14 00</td><td>während RINGING; das Telefon hebt ab (Freisprechen bei „Sprache über Telefon“)</td><td><span class="st st-b">bestätigt</span></td></tr>
+<tr><td>Auflegen</td><td class="hex">01 02 13 00</td><td>bei genau einem Gespräch; danach DISCONNECTED, RELEASED, Hörer aus</td><td><span class="st st-b">bestätigt</span></td></tr>
+<tr><td>Merkmal</td><td class="hex">01 03 26 00 kk</td><td><span class="hex">16</span>/<span class="hex">17</span> Anklopfen anzeigen/annehmen, <span class="hex">c3</span> Reconnect bei zwei Gesprächen</td><td><span class="st st-t">Treiber</span></td></tr>
+<tr><td>weitere</td><td class="hex">15, 18, 1b, 1c, 1d, 21–24, 27, 25</td><td>Halten, Übergabe, Konferenz, Rückruf, User-to-User</td><td><span class="st st-t">Treiber</span></td></tr>
 </tbody></table></div>
 <div class="col">
 <p><b>Wählen im Detail.</b> Bei <code>n</code> Ziffern ist <code>L = n + 6</code>: Typ <span class="hex">19</span>, Leitung <span class="hex">00</span>,
@@ -298,8 +301,8 @@ Blind Transfer, Accept.</p>
 <h2 id="zeit"><span class="nr">06</span>Quittung und Zeitverhalten</h2>
 <div class="col">
 <ul>
-<li>Nur Aufträge werden quittiert. Nach jedem Auftrag wartet der Treiber bis zu <b>5 s</b> auf Klasse
-<span class="hex">04</span> (oder <span class="hex">03</span>/<span class="hex">05</span>); bleibt sie aus, gilt der Auftrag als gescheitert. <span class="st st-t">Treiber</span></li>
+<li>Nur Aufträge werden quittiert. Die Quittung <span class="hex">04 00</span> kommt nach <b>100–150 ms</b> <span class="st st-b">bestätigt</span>.
+Der Treiber wartet bis zu <b>5 s</b> (auch auf <span class="hex">03</span>/<span class="hex">05</span>); bleibt sie aus, gilt der Auftrag als gescheitert. <span class="st st-t">Treiber</span></li>
 <li>Meldungen des Telefons quittiert der PC <b>nicht</b>. Der Treiber hat dafür keine Sendestelle. <span class="st st-t">Treiber</span></li>
 <li>Unverständliche Eingaben beantwortet das Telefon nach etwa <b>1,5 s</b> mit <span class="hex">05 00</span>. <span class="st st-b">bestätigt</span></li>
 <li>Kommt 15 s lang nichts vom Telefon, sendet der Treiber Keepalive <span class="hex">01 02 00 00</span>. <span class="st st-t">Treiber</span></li>
@@ -309,7 +312,8 @@ Blind Transfer, Accept.</p>
 {{SEQ_FEHLER}}
 
 <h2 id="ablaeufe"><span class="nr">07</span>Abläufe</h2>
-<div class="col"><p>Links stehen Handlungen am Telefon, Pfeile sind Rahmen. Schwarze Pfeile: Meldungen des Telefons.
+<div class="col"><p>Links stehen Handlungen am Telefon, Pfeile sind Rahmen.
+Achtung: Im Freisprechbetrieb beendet die Lautsprecher-Taste am Telefon das Gespräch (Ursache leer). Schwarze Pfeile: Meldungen des Telefons.
 Farbige Pfeile: Aufträge des PCs. Gestrichelt: erwartet, am Gerät noch nicht gesehen.</p></div>
 <h3>Eingehender Anruf, am Telefon angenommen</h3>
 {{SEQ_EIN}}
@@ -395,7 +399,8 @@ nur dokumentierte Aufträge senden, nichts raten; Wählen nur zu bekannten Testn
 
 <h2 id="offen"><span class="nr">12</span>Offene Fragen</h2>
 <div class="col"><ol>
-<li>Quittiert das Telefon <span class="hex">01 02 01 00</span> bei 1200 8O1 direkt, ohne den Service-Modus? Wie sieht ein ACK-Rahmen aus?</li>
+<li>Bedeutung der Meldung Typ <span class="hex">01</span> (<span class="hex">01 01 02 00</span>) nach dem Anmelden.</li>
+<li>Wählen und Belegen am Gerät erproben (nur mit Testnummer).</li>
 <li>Stören Xon/Xoff, da <span class="hex">11</span>/<span class="hex">13</span> auch Auftragstypen sind?</li>
 <li>Bedeutung von <span class="hex">98</span> und der Aufträge <span class="hex">15</span>, <span class="hex">18</span>, <span class="hex">1b</span>–<span class="hex">24</span>, <span class="hex">27</span>.</li>
 <li>Meldet das Telefon Ereignisse auch nach einem Neustart ohne vorherige Eingabe?</li>

@@ -244,16 +244,17 @@ ABGEHEND = [
 
 PC_EINGEHEND = [
     ("m", "pc", "d", "01 02 01 00", "ANMELDEN", "req"),
-    ("m", "d", "pc", "04 …", "ACK, spätestens nach 5 s", "exp"),
+    ("m", "d", "pc", "04 00", "ACK nach 100 ms", "evt"),
+    ("m", "d", "pc", "02 04 01 01 02 00", "Typ 01 (Bedeutung offen)", "evt"),
     ("a", "Anruf trifft ein"),
     ("m", "d", "pc", "02 12 30 01 98 6c …", "RINGING · Anrufer", "evt"),
     ("m", "pc", "d", "01 02 14 00", "ANNEHMEN", "req"),
-    ("m", "d", "pc", "04 …", "ACK", "exp"),
-    ("m", "d", "pc", "02 02 31 01", "CONNECTED (erwartet)", "exp"),
-    ("g", "Gespräch"),
+    ("m", "d", "pc", "04 00", "ACK", "evt"),
+    ("m", "d", "pc", "02 03 3b 01 0a · 02 02 31 01", "HÖRER ein (Freisprechen) · CONNECTED", "evt"),
+    ("g", "Gespräch, 4 s"),
     ("m", "pc", "d", "01 02 13 00", "AUFLEGEN", "req"),
-    ("m", "d", "pc", "04 …", "ACK", "exp"),
-    ("m", "d", "pc", "02 05 32 … / 02 05 39 …", "DISCONNECTED, RELEASED (erwartet)", "exp"),
+    ("m", "d", "pc", "04 00", "ACK", "evt"),
+    ("m", "d", "pc", "02 05 32 … · 02 05 39 … · 02 03 3a 01 0a", "DISCONNECTED · RELEASED · HÖRER aus", "evt"),
 ]
 
 PC_WAHL = [
@@ -273,7 +274,7 @@ FEHLER = [
     ("m", "d", "pc", "05 00", "ERR (bestätigt)", "evt"),
     ("g", "15 s ohne Empfang"),
     ("m", "pc", "d", "01 02 00 00", "KEEPALIVE", "req"),
-    ("m", "d", "pc", "04 …", "ACK", "exp"),
+    ("m", "d", "pc", "04 00", "ACK (bestätigt)", "evt"),
 ]
 
 
@@ -291,8 +292,8 @@ def main() -> None:
                           "Abgehender Anruf, am Telefon gewählt; die Gegenseite legt auf. Abheben und Einzelziffern "
                           "werden nicht gemeldet, die Nummer kommt als Block. Bestätigt."),
         "SEQ_PC_EIN": figure(sequenz("s3", TN, PC_EINGEHEND, "PC meldet sich an, nimmt einen eingehenden Anruf an und legt auf"),
-                             "Vom PC gesteuert: anmelden, annehmen, auflegen. Aufträge (farbig) laut Treiber, "
-                             "gestrichelte Antworten sind erwartet und am Gerät noch nicht gesehen."),
+                             "Vom PC gesteuert: anmelden, annehmen, auflegen. Am Gerät erprobt (2026-10-01, "
+                             "<code>logs/test_20261001_085744_annehmen_auflegen.log</code>)."),
         "SEQ_PC_WAHL": figure(sequenz("s4", TN, PC_WAHL, "PC belegt die Leitung und wählt 123"),
                               "Vom PC gesteuert: Leitung belegen und wählen. Externe Ziele beginnen mit der Amtsholung 01."),
         "SEQ_FEHLER": figure(sequenz("s5", TN, FEHLER, "Unverständliche Eingaben beantwortet das Telefon nach 1,5 s mit 05 00; nach 15 s Stille sendet der PC Keepalive"),
