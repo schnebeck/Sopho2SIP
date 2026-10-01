@@ -65,7 +65,10 @@ class ErgoLink:
         self._log.write(zeile + "\n")
         self._log.flush()
         if anzeigen and self.echo:
-            self.echo(zeile)
+            if self.echo is print:
+                print(zeile, flush=True)
+            else:
+                self.echo(zeile)
 
     def notiz(self, text: str) -> None:
         self._schreibe(f"# {ts()} {text}")

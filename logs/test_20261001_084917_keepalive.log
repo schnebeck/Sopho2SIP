@@ -1,0 +1,7 @@
+# 2026-10-01 08:49:17.768 Port /dev/serial/by-id/usb-FTDI_FT232R_USB_UART_A97WEQGD-if00-port0 1200 8O1 xonxoff=False
+2026-10-01 08:49:17.768 >> 01 02 00 00                    AUFTRAG KEEPALIVE leitung=00
+2026-10-01 08:49:17.768 >> raw b'\x01\x02\x00\x00'
+2026-10-01 08:49:17.869 << raw b'\x04\x00'
+2026-10-01 08:49:17.869 << 04 00                          ACK
+# 2026-10-01 08:49:17.870 Quittung: ACK
+# 2026-10-01 08:49:19.878 Ende, Log: /home/schnebeck/Documents/Projects/Sopho2SIP/logs/ergo_20261001_084917.log
