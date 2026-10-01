@@ -80,7 +80,8 @@ Sopho ─UPN─ D340 ─PC-Schnittstelle (Binärrahmen, 1200 8N1)─ USB-RS232 �
 5. **SIP-Stack:** baresip mit `ctrl_tcp`, Codec PCMA, erst lokal mit Softphone testen.
 6. **Gateway-Daemon:** Stufe 1 fertig (Zustandsautomat, Anrufdatensätze, Keepalive, Wiederanlauf); Stufe 2:
    Steuerbefehle (Wählen/Annehmen/Auflegen) und Übersetzung seriell ↔ baresip.
-7. **Betrieb:** systemd-Units, Logging, Wiederanlauf bei Verbindungsverlust zum Telefon.
+7. **Betrieb:** Dienst `sopho2sipd` läuft auf dem Pi (systemd, startet nach Neustart, Ereignisse im Journal,
+   Wiederanlauf bei Verbindungsverlust). Offen: Rotation der Rohprotokolle `logs/ergo_*.log`.
 
 ## Arbeitsregeln für Claude Code
 
@@ -129,6 +130,7 @@ tools/build_protokoll_doc.py  # erzeugt docs/protokoll.html (Standardbibliothek)
 tools/build_audio_doc.py      # erzeugt docs/audio_verkabelung.html (Schaltplan Audio)
 gateway/ergoline/       # protocol.py (Rahmen), link.py (seriell), zustand.py (Zustandsautomat), logdatei.py
 gateway/sopho2sipd.py   # Daemon (Stufe 1: Anrufdatensätze als JSON/Webhook, Format in docs/anrufdaten.md)
+gateway/systemd/        # sopho2sipd.service (Dienst auf dem Pi)
 gateway/tests/          # Tests (python3 -m unittest discover -s gateway/tests)
 docs/testplan.md        # nächste Tests am Gerät
 logs/                   # Mitschnitte, Übersicht in logs/INDEX.md
@@ -141,4 +143,3 @@ logs/                   # Mitschnitte, Übersicht in logs/INDEX.md
 - Audio: Pegel, Wirkung von X_IN, Inhalt von X_OUT, „Sprache über Zusatzgerät“.
 - Gibt es bereits einen SIP-Server, oder wird Asterisk auf dem Pi benötigt?
 - Schnittstelle der Nextcloud-App zu den Telefonen (HTTP-API/Action-URLs, AMI/ARI, SIP)?
-- FTDI-Adapter und Telefon vom Laptop an den Pi umstecken; serielle Tests dort wiederholen.
