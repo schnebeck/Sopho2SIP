@@ -64,6 +64,7 @@ class Gateway:
         self.link = None
         self.zuhoerer: list = []            # f(name, anruf, zusatz), z. B. SipBruecke.bei_telefon
         self.sip = None                     # BaresipCtrl, falls --baresip
+        self.rueckwaerts = None             # Rueckwaertssuche, falls --rueckwaertssuche
         self._abos: list[queue.Queue] = []
         self._abo_lock = threading.Lock()
 
@@ -115,6 +116,18 @@ class Gateway:
                 self.ausgabe.ereignis(name, anruf, zusatz)
             self._melde_zuhoerern(name, anruf, zusatz)
             self._sende_an_abos(name)
+            if name in ("ANRUF_EIN", "WAHL") and self.rueckwaerts and anruf.nummer_roh and anruf.name is None:
+                threading.Thread(target=self._rueckwaerts, args=(anruf,), daemon=True).start()
+
+    def _rueckwaerts(self, anruf) -> None:
+        ext, nummer = p.extern(anruf.nummer_roh, self.amtsholung)
+        treffer = self.rueckwaerts.frage(nummer) if ext else None
+        if not treffer:
+            return
+        with self.lock:
+            anruf.name, anruf.ort = treffer["name"], treffer.get("ort")
+        self.ausgabe.echo(f"  NAME         #{anruf.kennung} {treffer['name']} ({treffer.get('ort') or '–'}, {treffer['quelle']})")
+        self._sende_an_abos("NAME")
 
     # --- Abfragen -----------------------------------------------------------------------------------
     def status(self) -> dict:
@@ -134,9 +147,14 @@ class Gateway:
         out = []
         for z in reversed(zeilen[-n:]):
             try:
-                out.append(json.loads(z))
+                ds = json.loads(z)
             except json.JSONDecodeError:
                 continue
+            if not ds.get("name") and self.rueckwaerts and ds.get("extern"):
+                treffer = self.rueckwaerts.bekannt(ds.get("nummer", ""))    # nur Zwischenspeicher, kein Netz
+                if treffer:
+                    ds["name"], ds["ort"] = treffer["name"], treffer.get("ort")
+            out.append(ds)
         return out
 
     # --- Aufträge (Portal) --------------------------------------------------------------------------
@@ -219,12 +237,17 @@ def main() -> int:
     ap.add_argument("--portal", metavar="HOST:PORT", help="Webportal starten, z. B. 127.0.0.1:8080")
     ap.add_argument("--steuerung", action="store_true", help="Wählen/Annehmen/Auflegen (Portal, SIP) erlauben")
     ap.add_argument("--baresip", metavar="HOST:PORT", help="SIP-Brücke über baresip ctrl_tcp, z. B. 127.0.0.1:4444")
+    ap.add_argument("--rueckwaertssuche", action="store_true",
+                    help="Namen externer Anrufer online nachschlagen (11880, Das Örtliche; Nummern gehen an diese Dienste)")
     ap.add_argument("--wiedergabe", metavar="LOG", help="Mitschnitt statt Telefon verarbeiten")
     a = ap.parse_args()
     ausgabe = Ausgabe(a.anrufe, a.webhook, echo=lambda s: print(s, file=sys.stderr, flush=True))
     if a.wiedergabe:
         return wiedergabe(a.wiedergabe, ausgabe, a.amtsholung)
     gw = Gateway(ausgabe, a.amtsholung, a.steuerung)
+    if a.rueckwaertssuche:
+        from rueckwaerts import Rueckwaertssuche
+        gw.rueckwaerts = Rueckwaertssuche(echo=ausgabe.echo)
     if a.baresip:
         from sipbruecke import BaresipCtrl, SipBruecke
         host, _, port = a.baresip.rpartition(":")
