@@ -1,0 +1,26 @@
+# SPDX-License-Identifier: GPL-3.0-or-later
+# Firewall des Gateway-Pi (öffentliche Adresse im Uni-Netz). Eingehend ist alles gesperrt außer:
+#   SSH (nur Schlüssel) von überall; SIP, RTP und Portal nur aus den Netzen in @erlaubt.
+# Installation: tools/firewall.sh (mit automatischer Rücknahme, falls die SSH-Verbindung abreißt).
+table inet sopho2sip {
+    set erlaubt {
+        type ipv4_addr
+        flags interval
+        elements = { 130.75.63.128/25,   # Netz des Pi
+                     10.8.6.0/24 }       # VPN des Laptops
+    }
+
+    chain input {
+        type filter hook input priority filter; policy drop;
+        ct state established,related accept
+        ct state invalid drop
+        iif lo accept
+        meta l4proto { icmp, ipv6-icmp } accept
+        udp dport 68 accept                                   # DHCP-Antworten
+        tcp dport 22 accept                                   # SSH
+        ip saddr @erlaubt tcp dport 8080 accept               # Webportal
+        ip saddr @erlaubt meta l4proto { udp, tcp } th dport 5060 accept   # SIP (Asterisk)
+        ip saddr @erlaubt udp dport 10000-20000 accept        # RTP (Asterisk)
+        ip saddr @erlaubt udp dport 5353 accept               # mDNS
+    }
+}

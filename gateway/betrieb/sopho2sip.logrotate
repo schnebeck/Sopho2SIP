@@ -1,0 +1,16 @@
+# SPDX-License-Identifier: GPL-3.0-or-later
+# Rohprotokolle des Daemons (eine Datei je Verbindungsaufbau, durch Keepalive ~1 MB/Tag).
+# copytruncate: der Daemon schreibt mit O_APPEND weiter, kein Neustart nötig.
+# Anrufdatensätze (~/.local/share/sopho2sip/anrufe.jsonl) werden bewusst NICHT rotiert.
+# Installation: sudo install -m 644 gateway/betrieb/sopho2sip.logrotate /etc/logrotate.d/sopho2sip
+/home/pi/Sopho2SIP/logs/ergo_*.log {
+    su pi pi
+    daily
+    rotate 14
+    maxage 30
+    compress
+    delaycompress
+    missingok
+    notifempty
+    copytruncate
+}

@@ -203,6 +203,32 @@ class Telefon:
             return [p.waehlen(nummer)]           # Rückfrage aus gehaltenem Gespräch (Treiber)
         raise AuftragNichtMoeglich("Leitung belegt")
 
+    def auftraege_ziffern(self, ziffern: str) -> list[p.Rahmen]:
+        """Nachwahl/Tonwahl in einem bestehenden Anruf (Treiber TSPI_lineDial 0x100090f0: abgelehnt nur bei
+        IDLE/DISCONNECTED, sonst derselbe Rahmen 19 wie bei der Wahl). DTMF zur Gegenseite: vermutet."""
+        if self._suche(DISCONNECTED):
+            raise AuftragNichtMoeglich("ein Anruf ist noch nicht freigegeben")
+        if not [a for a in self.anrufe.values() if a.zustand in AKTIV]:
+            raise AuftragNichtMoeglich("kein Anruf für Nachwahl")
+        return [p.waehlen(ziffern)]
+
+    def auftraege_wahl_oder_ziffern(self, nummer: str) -> list[p.Rahmen]:
+        """Ohne Anruf: Leitung belegen und wählen; mit Anruf (Wählton, Gespräch …): Ziffern nachsenden."""
+        if not [a for a in self.anrufe.values() if a.zustand in AKTIV]:
+            return self.auftraege_waehlen(nummer)
+        return self.auftraege_ziffern(nummer)
+
+    def zustand_kurz(self) -> dict:
+        """Kurzzustand für Anzeigen (Portal): erster laufender Anruf oder Ruhe."""
+        namen = {OFFERING: "klingelt", ACCEPTED: "verbunden", DIALTONE: "waehlton", DIALING: "waehlt",
+                 PROCEEDING: "ruft", RINGBACK: "ruft", BUSY: "besetzt", CONNECTED: "verbunden",
+                 ONHOLD: "gehalten", DISCONNECTED: "getrennt"}
+        for a in self.anrufe.values():
+            ext, nummer = p.extern(a.nummer_roh, self.amtsholung) if a.nummer_roh else (False, "")
+            return {"zustand": namen.get(a.zustand, "unbekannt"), "richtung": a.richtung, "nummer": nummer,
+                    "extern": ext, "beginn": a.beginn, "verbunden": a.verbunden}
+        return {"zustand": "ruhe"}
+
     def auftraege_annehmen(self) -> list[p.Rahmen]:
         klingelt = [a for a in self.anrufe.values() if a.zustand == OFFERING]
         if len(self.anrufe) == 1 and klingelt:

@@ -1,0 +1,356 @@
+<!doctype html>
+<!-- SPDX-License-Identifier: GPL-3.0-or-later -->
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sopho2SIP</title>
+<style>
+:root {
+  --bg: #f4f5f7; --panel: #ffffff; --text: #1c1f24; --muted: #6a7280; --rule: #e1e4e9;
+  --key: #f0f2f5; --key-hi: #e2e6ec; --accent: #1f6feb; --ok: #1a7f37; --warn: #b35900; --bad: #c62828;
+  --ok-bg: #e6f4ea; --warn-bg: #fff3e0; --bad-bg: #fdecea; --info-bg: #e8f0fe;
+  --radius: 14px; --mono: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #111317; --panel: #1a1d23; --text: #e8eaed; --muted: #9aa1ac; --rule: #2c3038;
+    --key: #252932; --key-hi: #303540; --accent: #5b9dff; --ok: #4cc26b; --warn: #f0a24a; --bad: #ff6b6b;
+    --ok-bg: #16301f; --warn-bg: #332412; --bad-bg: #3a1a1a; --info-bg: #1a2740;
+    color-scheme: dark;
+  }
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--text);
+  font: 15px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+header { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; padding: 14px 20px;
+  background: var(--panel); border-bottom: 1px solid var(--rule); }
+header h1 { font-size: 18px; margin: 0; letter-spacing: .01em; }
+.pill { font-size: 12px; padding: 3px 10px; border-radius: 99px; background: var(--key); color: var(--muted); }
+.pill.ok { background: var(--ok-bg); color: var(--ok); }
+.pill.bad { background: var(--bad-bg); color: var(--bad); }
+.pill.warn { background: var(--warn-bg); color: var(--warn); }
+.spacer { flex: 1; }
+main { display: grid; grid-template-columns: minmax(300px, 380px) 1fr; gap: 20px; padding: 20px;
+  max-width: 1200px; margin: 0 auto; }
+@media (max-width: 820px) { main { grid-template-columns: 1fr; padding: 16px; } }
+section { background: var(--panel); border: 1px solid var(--rule); border-radius: var(--radius); padding: 18px; }
+h2 { font-size: 13px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); margin: 0 0 12px; font-weight: 600; }
+
+/* Zustand */
+#zustand { display: grid; gap: 6px; margin-bottom: 16px; }
+#zustand .gross { font-size: 26px; font-weight: 650; }
+#zustand .nummer { font: 500 18px var(--mono); }
+#zustand .klein { color: var(--muted); font-size: 13px; }
+#zustand.klingelt .gross { color: var(--accent); animation: puls 1s ease-in-out infinite; }
+#zustand.verbunden .gross { color: var(--ok); }
+#zustand.besetzt .gross, #zustand.getrennt .gross { color: var(--bad); }
+@keyframes puls { 50% { opacity: .45; } }
+@media (prefers-reduced-motion: reduce) { #zustand.klingelt .gross { animation: none; } }
+.aktionen { display: flex; gap: 10px; margin-bottom: 16px; }
+.aktionen button { flex: 1; }
+
+/* Tastatur */
+#anzeige { width: 100%; font: 500 26px var(--mono); text-align: center; padding: 10px 40px; border-radius: 10px;
+  border: 1px solid var(--rule); background: var(--bg); color: var(--text); letter-spacing: .04em; }
+.anzeige-zeile { position: relative; margin-bottom: 12px; }
+#loeschen { position: absolute; right: 6px; top: 50%; transform: translateY(-50%); background: none; border: 0;
+  color: var(--muted); font-size: 20px; padding: 6px 10px; cursor: pointer; }
+.tasten { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.taste { height: 64px; border: 0; border-radius: 12px; background: var(--key); color: var(--text); cursor: pointer;
+  display: grid; place-content: center; line-height: 1.05; user-select: none; -webkit-user-select: none;
+  touch-action: manipulation; transition: background .08s; }
+.taste:hover { background: var(--key-hi); }
+.taste.an { background: var(--accent); color: #fff; }
+.taste b { font-size: 24px; font-weight: 550; }
+.taste small { font-size: 10px; letter-spacing: .14em; color: var(--muted); min-height: 11px; }
+.taste.an small { color: #fff; }
+.tonwahl { font-size: 12px; color: var(--muted); text-align: center; margin: 10px 0 0; min-height: 18px; }
+.tonwahl.aktiv { color: var(--ok); }
+button.gruen, button.rot, button.blau { height: 48px; border: 0; border-radius: 12px; color: #fff; font-size: 16px;
+  font-weight: 600; cursor: pointer; }
+button.gruen { background: var(--ok); }
+button.rot { background: var(--bad); }
+button.blau { background: var(--accent); }
+button:disabled { opacity: .35; cursor: not-allowed; }
+.waehlzeile { display: grid; grid-template-columns: 1fr; margin-top: 12px; }
+.optionen { display: flex; justify-content: space-between; align-items: center; margin-top: 12px;
+  font-size: 13px; color: var(--muted); }
+
+/* Anrufliste */
+.listenkopf { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-bottom: 10px; }
+.filter button { border: 1px solid var(--rule); background: var(--panel); color: var(--text); border-radius: 99px;
+  padding: 5px 12px; font-size: 13px; cursor: pointer; }
+.filter button[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: #fff; }
+#suche { flex: 1; min-width: 140px; padding: 7px 12px; border: 1px solid var(--rule); border-radius: 99px;
+  background: var(--bg); color: var(--text); font-size: 14px; }
+ul#liste { list-style: none; margin: 0; padding: 0; }
+#liste li { display: grid; grid-template-columns: 30px 1fr auto auto; gap: 12px; align-items: center;
+  padding: 10px 4px; border-top: 1px solid var(--rule); }
+#liste li:first-child { border-top: 0; }
+.symbol { width: 30px; height: 30px; border-radius: 50%; display: grid; place-content: center; font-size: 15px;
+  background: var(--key); }
+.symbol.verpasst { background: var(--bad-bg); color: var(--bad); }
+.symbol.ein { background: var(--ok-bg); color: var(--ok); }
+.symbol.aus { background: var(--info-bg); color: var(--accent); }
+.wer { font: 500 15px var(--mono); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.wer.verpasst { color: var(--bad); }
+.wann { font-size: 12px; color: var(--muted); }
+.dauer { font-size: 13px; color: var(--muted); text-align: right; font-variant-numeric: tabular-nums; }
+.rueckruf { border: 1px solid var(--rule); background: var(--panel); color: var(--accent); border-radius: 99px;
+  padding: 6px 12px; font-size: 13px; cursor: pointer; white-space: nowrap; }
+.rueckruf:hover { background: var(--info-bg); }
+.leer { color: var(--muted); padding: 24px 4px; text-align: center; }
+#meldung { position: fixed; left: 50%; bottom: 20px; transform: translateX(-50%); max-width: calc(100% - 32px);
+  background: var(--text); color: var(--bg); padding: 10px 16px; border-radius: 10px; font-size: 14px;
+  opacity: 0; pointer-events: none; transition: opacity .2s; }
+#meldung.sichtbar { opacity: 1; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Sopho2SIP</h1>
+  <span id="p-telefon" class="pill">Telefon …</span>
+  <span id="p-steuerung" class="pill">…</span>
+  <span class="spacer"></span>
+  <span id="p-live" class="pill">Live …</span>
+</header>
+
+<main>
+  <section aria-label="Telefon">
+    <h2>Telefon</h2>
+    <div id="zustand" class="ruhe" aria-live="polite">
+      <div class="gross" id="z-text">–</div>
+      <div class="nummer" id="z-nummer"></div>
+      <div class="klein" id="z-info"></div>
+    </div>
+    <div class="aktionen">
+      <button class="gruen" id="annehmen" hidden>Annehmen</button>
+      <button class="rot" id="auflegen" hidden>Auflegen</button>
+    </div>
+
+    <div class="anzeige-zeile">
+      <input id="anzeige" inputmode="tel" autocomplete="off" aria-label="Rufnummer" placeholder="Nummer">
+      <button id="loeschen" aria-label="Letzte Ziffer löschen" title="Löschen">⌫</button>
+    </div>
+    <div class="tasten" id="tasten"></div>
+    <p class="tonwahl" id="tonwahl"></p>
+    <div class="waehlzeile"><button class="gruen" id="waehlen">Wählen</button></div>
+    <div class="optionen">
+      <label><input type="checkbox" id="ton" checked> Tastentöne lokal</label>
+      <span>Extern: <code>01</code> vorwählen</span>
+    </div>
+  </section>
+
+  <section aria-label="Anrufliste">
+    <div class="listenkopf">
+      <h2 style="margin:0 8px 0 0">Anrufe</h2>
+      <div class="filter" role="group" aria-label="Filter">
+        <button data-f="alle" aria-pressed="true">Alle</button>
+        <button data-f="verpasst" aria-pressed="false">Verpasst</button>
+        <button data-f="ein" aria-pressed="false">Eingehend</button>
+        <button data-f="aus" aria-pressed="false">Ausgehend</button>
+      </div>
+      <input id="suche" type="search" placeholder="Nummer suchen" aria-label="Nummer suchen">
+    </div>
+    <ul id="liste"><li class="leer">Lade …</li></ul>
+  </section>
+</main>
+<div id="meldung" role="status"></div>
+
+<script>
+"use strict";
+const $ = (id) => document.getElementById(id);
+const TASTEN = [["1",""],["2","ABC"],["3","DEF"],["4","GHI"],["5","JKL"],["6","MNO"],
+                ["7","PQRS"],["8","TUV"],["9","WXYZ"],["*",""],["0","+"],["#",""]];
+// DTMF-Frequenzpaare (ITU-T Q.23)
+const ZEILE = {"1":697,"2":697,"3":697,"4":770,"5":770,"6":770,"7":852,"8":852,"9":852,"*":941,"0":941,"#":941};
+const SPALTE = {"1":1209,"4":1209,"7":1209,"*":1209,"2":1336,"5":1336,"8":1336,"0":1336,"3":1477,"6":1477,"9":1477,"#":1477};
+const IM_ANRUF = new Set(["waehlton","waehlt","ruft","verbunden","gehalten","besetzt"]);
+const ZUSTANDSTEXT = {ruhe:"Bereit", klingelt:"Anruf", waehlton:"Wählton", waehlt:"Wählt …", ruft:"Ruft …",
+  verbunden:"Verbunden", gehalten:"Gehalten", besetzt:"Besetzt", getrennt:"Getrennt", unbekannt:"?"};
+
+let status = null, uhrVersatz = 0, filter = "alle", anrufe = [], audio = null;
+
+// --- Töne ------------------------------------------------------------------------------------------
+function ton(z) {
+  if (!$("ton").checked || !ZEILE[z]) return;
+  try {
+    audio = audio || new (window.AudioContext || window.webkitAudioContext)();
+    const t = audio.currentTime, g = audio.createGain();
+    g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(.12, t + .01);
+    g.gain.setValueAtTime(.12, t + .14); g.gain.linearRampToValueAtTime(0, t + .16);
+    g.connect(audio.destination);
+    for (const f of [ZEILE[z], SPALTE[z]]) {
+      const o = audio.createOscillator(); o.frequency.value = f; o.connect(g); o.start(t); o.stop(t + .17);
+    }
+  } catch (e) { /* ohne Audio weiter */ }
+}
+
+// --- API -------------------------------------------------------------------------------------------
+async function post(art, daten = {}) {
+  try {
+    const r = await fetch("/api/" + art, {method: "POST", body: JSON.stringify(daten),
+      headers: {"Content-Type": "application/json", "X-Sopho2SIP": "1"}});
+    const j = await r.json();
+    if (!j.ok) melde(j.fehler || "abgelehnt");
+    return j.ok;
+  } catch (e) { melde("Keine Verbindung zum Gateway"); return false; }
+}
+let meldTimer;
+function melde(text) {
+  const m = $("meldung"); m.textContent = text; m.classList.add("sichtbar");
+  clearTimeout(meldTimer); meldTimer = setTimeout(() => m.classList.remove("sichtbar"), 3500);
+}
+
+// --- Tastatur --------------------------------------------------------------------------------------
+function imAnruf() { return status && IM_ANRUF.has(status.anruf.zustand); }
+function taste(z) {
+  ton(z);
+  const k = document.querySelector(`.taste[data-z="${CSS.escape(z)}"]`);
+  if (k) { k.classList.add("an"); setTimeout(() => k.classList.remove("an"), 130); }
+  if (imAnruf()) post("waehlen", {nummer: z});          // Tonwahl/Nachwahl im laufenden Anruf
+  else $("anzeige").value += z;
+}
+for (const [z, buchst] of TASTEN) {
+  const b = document.createElement("button");
+  b.className = "taste"; b.dataset.z = z; b.setAttribute("aria-label", z);
+  b.innerHTML = `<b>${z}</b><small>${buchst}</small>`;
+  b.addEventListener("pointerdown", (e) => { e.preventDefault(); taste(z); });
+  b.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); taste(z); } });
+  $("tasten").append(b);
+}
+$("loeschen").onclick = () => { $("anzeige").value = $("anzeige").value.slice(0, -1); };
+$("anzeige").addEventListener("input", (e) => {
+  const sauber = e.target.value.replace(/[^0-9*#]/g, ""); if (sauber !== e.target.value) e.target.value = sauber;
+});
+$("anzeige").addEventListener("keydown", (e) => { if (e.key === "Enter") { e.preventDefault(); waehle(); } });
+document.addEventListener("keydown", (e) => {
+  if (e.target === $("anzeige") || e.target === $("suche") || e.ctrlKey || e.metaKey || e.altKey) return;
+  if (/^[0-9*#]$/.test(e.key)) { e.preventDefault(); taste(e.key); }
+  else if (e.key === "Backspace") { e.preventDefault(); $("loeschen").click(); }
+  else if (e.key === "Enter") { e.preventDefault(); waehle(); }
+});
+async function waehle(nummer) {
+  nummer = nummer || $("anzeige").value;
+  if (!nummer) { melde("Keine Nummer"); return; }
+  if (await post("waehlen", {nummer})) { $("anzeige").value = ""; melde("Wähle " + nummer); }
+}
+$("waehlen").onclick = () => waehle();
+$("annehmen").onclick = () => post("annehmen");
+$("auflegen").onclick = () => post("auflegen");
+
+// --- Zustand ---------------------------------------------------------------------------------------
+function dauer(s) { s = Math.max(0, Math.round(s)); const m = Math.floor(s / 60);
+  return m >= 60 ? `${Math.floor(m/60)}:${String(m%60).padStart(2,"0")}:${String(s%60).padStart(2,"0")}`
+                 : `${m}:${String(s % 60).padStart(2, "0")}`; }
+function zeige(st) {
+  status = st; uhrVersatz = Date.now() / 1000 - st.zeit;
+  const tel = $("p-telefon");
+  tel.textContent = st.verbunden ? (st.bereit ? "Telefon bereit" : "Telefon verbunden") : "Telefon getrennt";
+  tel.className = "pill " + (st.verbunden ? "ok" : "bad");
+  const sg = $("p-steuerung");
+  sg.textContent = st.steuerung ? "Steuerung frei" : "Steuerung gesperrt";
+  sg.className = "pill " + (st.steuerung ? "ok" : "warn");
+  sg.title = st.steuerung ? "" : "Daemon ohne --steuerung: Wählen, Annehmen und Auflegen sind gesperrt";
+  const a = st.anruf, z = a.zustand;
+  $("zustand").className = z;
+  $("z-text").textContent = ZUSTANDSTEXT[z] || z;
+  $("z-nummer").textContent = a.nummer ? a.nummer : (z === "ruhe" ? "" : "unbekannt");
+  $("annehmen").hidden = z !== "klingelt";
+  $("auflegen").hidden = !(imAnruf() || z === "klingelt");
+  for (const b of [$("annehmen"), $("auflegen"), $("waehlen")]) b.disabled = !st.steuerung || !st.verbunden;
+  $("tonwahl").textContent = imAnruf() ? "Tasten senden direkt (Nachwahl/Tonwahl)" : "";
+  $("tonwahl").className = "tonwahl" + (imAnruf() ? " aktiv" : "");
+  tick();
+}
+function tick() {
+  if (!status) return;
+  const a = status.anruf, jetzt = Date.now() / 1000 - uhrVersatz;
+  let info = "";
+  if (a.zustand !== "ruhe") {
+    info = (a.richtung === "ein" ? "eingehend" : "ausgehend") + (a.nummer ? (a.extern ? " · extern" : " · intern") : "");
+    if (a.verbunden) info += " · " + dauer(jetzt - a.verbunden);
+    else if (a.beginn) info += " · seit " + dauer(jetzt - a.beginn);
+  } else if (status.hoerer_ab) info = "Hörer abgenommen";
+  $("z-info").textContent = info;
+}
+setInterval(tick, 1000);
+
+// --- Anrufliste ------------------------------------------------------------------------------------
+const tagFmt = new Intl.DateTimeFormat("de-DE", {weekday: "short", day: "2-digit", month: "2-digit"});
+const zeitFmt = new Intl.DateTimeFormat("de-DE", {hour: "2-digit", minute: "2-digit"});
+function wann(iso) {
+  const d = new Date(iso), h = new Date(); const gestern = new Date(h); gestern.setDate(h.getDate() - 1);
+  const tag = d.toDateString() === h.toDateString() ? "Heute" :
+              d.toDateString() === gestern.toDateString() ? "Gestern" : tagFmt.format(d);
+  return `${tag}, ${zeitFmt.format(d)}`;
+}
+function art(a) {
+  if (a.ergebnis === "verpasst") return ["verpasst", "↙", "Verpasst"];
+  if (a.richtung === "ein") return ["ein", "↙", "Eingehend"];
+  if (a.ergebnis === "ohne_wahl") return ["", "–", "Abgehoben ohne Wahl"];
+  return ["aus", "↗", a.ergebnis === "nicht_erreicht" ? "Ausgehend, nicht erreicht" : "Ausgehend"];
+}
+function zeichneListe() {
+  const q = $("suche").value.replace(/\s/g, "");
+  const liste = anrufe.filter((a) =>
+    (filter === "alle" || (filter === "verpasst" ? a.ergebnis === "verpasst" :
+                           a.richtung === filter && a.ergebnis !== "verpasst")) &&
+    (!q || (a.nummer || "").includes(q)));
+  const ul = $("liste"); ul.replaceChildren();
+  if (!liste.length) {
+    const li = document.createElement("li"); li.className = "leer";
+    li.textContent = anrufe.length ? "Keine Treffer" : "Noch keine Anrufe"; ul.append(li); return;
+  }
+  for (const a of liste) {
+    const [kl, sym, titel] = art(a);
+    const li = document.createElement("li");
+    const s = document.createElement("span"); s.className = "symbol " + kl; s.textContent = sym; s.title = titel;
+    const mitte = document.createElement("div");
+    const wer = document.createElement("div"); wer.className = "wer" + (kl === "verpasst" ? " verpasst" : "");
+    wer.textContent = a.nummer ? a.nummer : (a.ergebnis === "ohne_wahl" ? "—" : "unbekannt");
+    if (a.nummer && !a.extern) wer.textContent = "Nst. " + a.nummer;
+    const w = document.createElement("div"); w.className = "wann";
+    w.textContent = `${wann(a.beginn)} · ${titel}`;
+    mitte.append(wer, w);
+    const d = document.createElement("span"); d.className = "dauer";
+    d.textContent = a.angenommen ? dauer(a.dauer_s) : "";
+    li.append(s, mitte, d);
+    if (a.nummer_roh) {
+      const b = document.createElement("button"); b.className = "rueckruf"; b.textContent = "Rückruf";
+      b.title = "Wählt " + a.nummer_roh; b.disabled = !(status && status.steuerung && status.verbunden);
+      b.onclick = () => waehle(a.nummer_roh);
+      li.append(b);
+    } else li.append(document.createElement("span"));
+    ul.append(li);
+  }
+}
+async function ladeListe() {
+  try { anrufe = await (await fetch("/api/anrufe?n=500")).json(); zeichneListe(); }
+  catch (e) { melde("Anrufliste nicht geladen"); }
+}
+document.querySelectorAll(".filter button").forEach((b) => b.onclick = () => {
+  filter = b.dataset.f;
+  document.querySelectorAll(".filter button").forEach((x) => x.setAttribute("aria-pressed", x === b));
+  zeichneListe();
+});
+$("suche").addEventListener("input", zeichneListe);
+
+// --- Live ------------------------------------------------------------------------------------------
+function live() {
+  const es = new EventSource("/api/ereignisse");
+  es.onopen = () => { $("p-live").textContent = "Live"; $("p-live").className = "pill ok"; };
+  es.onmessage = (m) => {
+    const ev = JSON.parse(m.data);
+    zeige(ev.status);
+    if (ev.typ === "ANRUF_ENDE" || ev.typ === "STATUS") ladeListe();
+    else zeichneListe();
+  };
+  es.onerror = () => { $("p-live").textContent = "Live getrennt"; $("p-live").className = "pill bad"; };
+}
+live();
+</script>
+</body>
+</html>

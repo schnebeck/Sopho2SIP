@@ -1,10 +1,12 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 # Sopho2SIP-Daemon als Systemdienst auf dem Pi (Nutzer pi, Repo unter /home/pi/Sopho2SIP).
-# Installation:  sudo cp gateway/systemd/sopho2sipd.service /etc/systemd/system/
+# Installation:  sudo cp gateway/betrieb/sopho2sipd.service /etc/systemd/system/
 #                sudo systemctl daemon-reload && sudo systemctl enable --now sopho2sipd
 # Ereignisse:    journalctl -u sopho2sipd -f
 # Rohprotokoll:  ~/Sopho2SIP/logs/ergo_*.log (eine Datei pro Verbindungsaufbau)
 # Anrufe:        ~/.local/share/sopho2sip/anrufe.jsonl
+# Portal:        Port 8080; ohne Passwort (python3 gateway/portal.py passwort) nur auf 127.0.0.1.
+# Steuerung:     Wählen/Annehmen/Auflegen erst mit --steuerung (nach dem ersten Wähltest).
 # Webhook:       ExecStart um --webhook URL ergänzen (systemctl edit sopho2sipd)
 
 [Unit]
@@ -18,7 +20,7 @@ User=pi
 Group=pi
 SupplementaryGroups=dialout
 WorkingDirectory=/home/pi/Sopho2SIP
-ExecStart=/usr/bin/python3 -u gateway/sopho2sipd.py
+ExecStart=/usr/bin/python3 -u gateway/sopho2sipd.py --portal 0.0.0.0:8080
 # Der Daemon baut die Verbindung bei Fehlern selbst neu auf; Restart fängt Abstürze ab.
 Restart=always
 RestartSec=5

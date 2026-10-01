@@ -1,25 +1,27 @@
 #!/usr/bin/env python3
 # SPDX-License-Identifier: GPL-3.0-or-later
-"""Sopho2SIP-Daemon (Kern): hält die Verbindung zur ErgoLine D340, führt den Zustandsautomaten und gibt
-für jeden beendeten Anruf einen Anrufdatensatz aus – als JSON-Zeile in eine Datei und optional per HTTP-POST.
+"""Sopho2SIP-Daemon: hält die Verbindung zur ErgoLine D340, führt den Zustandsautomaten, gibt für jeden beendeten
+Anruf einen Anrufdatensatz aus (JSON-Zeile in eine Datei, optional HTTP-POST) und bedient das Webportal.
 
-Betrieb:     gateway/sopho2sipd.py [--port …] [--anrufe DATEI] [--webhook URL]
+Betrieb:     gateway/sopho2sipd.py [--port …] [--anrufe DATEI] [--webhook URL] [--portal HOST:PORT] [--steuerung]
 Wiedergabe:  gateway/sopho2sipd.py --wiedergabe logs/serial_20260930_163534.log [--anrufe -]
 
-Die Datensätze enthalten echte Rufnummern: Standardziel ist ~/.local/share/sopho2sip/anrufe.jsonl, nie das Repo.
-SIP, Audio und Steuerbefehle folgen in späteren Ausbaustufen.
+Ohne --steuerung sendet der Daemon nur Anmelden und Keepalive; Wählen/Annehmen/Auflegen aus dem Portal sind
+dann gesperrt. Die Datensätze enthalten echte Rufnummern: Standardziel ~/.local/share/sopho2sip/anrufe.jsonl.
 """
 import argparse
 import json
 import pathlib
+import queue
 import sys
+import threading
 import time
 import urllib.request
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 from ergoline import protocol as p  # noqa: E402
 from ergoline.logdatei import rohdaten  # noqa: E402
-from ergoline.zustand import Telefon  # noqa: E402
+from ergoline.zustand import AuftragNichtMoeglich, Telefon  # noqa: E402
 
 STANDARD_ANRUFE = pathlib.Path.home() / ".local" / "share" / "sopho2sip" / "anrufe.jsonl"
 KEEPALIVE_S = 15.0
@@ -51,48 +53,144 @@ class Ausgabe:
                 self.echo(f"  Webhook fehlgeschlagen: {e}")
 
 
-def verarbeite(telefon: Telefon, ausgabe: Ausgabe, r: p.Rahmen, zeit: float) -> None:
-    for name, anruf, zusatz in telefon.verarbeite(r, zeit):
-        if name == "ANRUF_ENDE":
-            ausgabe.ereignis(name, anruf, f"{zusatz['richtung']} {zusatz['nummer'] or '–'} "
-                                          f"{'angenommen ' + str(zusatz['dauer_s']) + ' s' if zusatz['angenommen'] else 'nicht angenommen'}")
-            ausgabe.datensatz(zusatz)
-        else:
-            ausgabe.ereignis(name, anruf, zusatz)
+class Gateway:
+    """Gemeinsamer Zustand von Empfangsschleife und Portal. Alle Zugriffe auf Telefon und Link unter self.lock."""
+
+    def __init__(self, ausgabe: Ausgabe, amtsholung: str = p.AMTSHOLUNG, steuerung: bool = False):
+        self.ausgabe, self.amtsholung, self.steuerung = ausgabe, amtsholung, steuerung
+        self.lock = threading.RLock()
+        self.telefon = Telefon(amtsholung)
+        self.link = None
+        self._abos: list[queue.Queue] = []
+        self._abo_lock = threading.Lock()
+
+    # --- Ereignisse an Portal-Abonnenten -----------------------------------------------------------
+    def abonniere(self) -> queue.Queue:
+        q: queue.Queue = queue.Queue(maxsize=100)
+        with self._abo_lock:
+            self._abos.append(q)
+        return q
+
+    def abbestelle(self, q: queue.Queue) -> None:
+        with self._abo_lock:
+            if q in self._abos:
+                self._abos.remove(q)
+
+    def _sende_an_abos(self, typ: str, **daten) -> None:
+        ev = {"typ": typ, "status": self.status(), **daten}
+        with self._abo_lock:
+            for q in self._abos:
+                try:
+                    q.put_nowait(ev)
+                except queue.Full:
+                    pass
+
+    # --- Empfang ------------------------------------------------------------------------------------
+    def verbindung(self, link) -> None:
+        with self.lock:
+            self.link = link
+            self.telefon = Telefon(self.amtsholung)
+        self._sende_an_abos("VERBINDUNG")
+
+    def verarbeite(self, r: p.Rahmen, zeit: float) -> None:
+        with self.lock:
+            ereignisse = self.telefon.verarbeite(r, zeit)
+        for name, anruf, zusatz in ereignisse:
+            if name == "ANRUF_ENDE":
+                self.ausgabe.ereignis(name, anruf, f"{zusatz['richtung']} {zusatz['nummer'] or '–'} "
+                                      f"{'angenommen ' + str(zusatz['dauer_s']) + ' s' if zusatz['angenommen'] else 'nicht angenommen'}")
+                self.ausgabe.datensatz(zusatz)
+            else:
+                self.ausgabe.ereignis(name, anruf, zusatz)
+            self._sende_an_abos(name)
+
+    # --- Abfragen -----------------------------------------------------------------------------------
+    def status(self) -> dict:
+        with self.lock:
+            return {"verbunden": self.link is not None, "bereit": self.telefon.bereit,
+                    "hoerer_ab": self.telefon.hoerer_ab, "steuerung": self.steuerung,
+                    "anruf": self.telefon.zustand_kurz(), "zeit": time.time()}
+
+    def anrufliste(self, n: int = 200) -> list[dict]:
+        if self.ausgabe.datei == "-":
+            return []
+        try:
+            zeilen = pathlib.Path(self.ausgabe.datei).read_text(encoding="utf-8").splitlines()
+        except FileNotFoundError:
+            return []
+        out = []
+        for z in reversed(zeilen[-n:]):
+            try:
+                out.append(json.loads(z))
+            except json.JSONDecodeError:
+                continue
+        return out
+
+    # --- Aufträge (Portal) --------------------------------------------------------------------------
+    def auftrag(self, art: str, nummer: str = "") -> dict:
+        if not self.steuerung:
+            return {"ok": False, "fehler": "Steuerung gesperrt (Daemon ohne --steuerung gestartet)"}
+        with self.lock:
+            if self.link is None:
+                return {"ok": False, "fehler": "keine Verbindung zum Telefon"}
+            try:
+                if art == "waehlen":
+                    rahmen = self.telefon.auftraege_wahl_oder_ziffern(nummer)
+                elif art == "annehmen":
+                    rahmen = self.telefon.auftraege_annehmen()
+                elif art == "auflegen":
+                    rahmen = self.telefon.auftraege_auflegen()
+                else:
+                    return {"ok": False, "fehler": f"unbekannter Auftrag {art}"}
+            except (AuftragNichtMoeglich, ValueError) as e:
+                return {"ok": False, "fehler": str(e)}
+            gesendet = []
+            for r in rahmen:
+                q = self.link.sende(r)
+                gesendet.append(r.hex())
+                if q is None or q.klasse != p.ACK:
+                    return {"ok": False, "gesendet": gesendet,
+                            "fehler": f"keine Quittung für {r.hex()}" if q is None else q.beschreibung()}
+        self.ausgabe.echo(f"  AUFTRAG     {art} {' | '.join(gesendet)}")
+        return {"ok": True, "gesendet": gesendet}
 
 
 def wiedergabe(pfad: str, ausgabe: Ausgabe, amtsholung: str) -> int:
-    telefon, asm = Telefon(amtsholung), p.Assembler()
+    gw, asm = Gateway(ausgabe, amtsholung), p.Assembler()
     for zeit, richtung, daten in rohdaten(pfad):
         if richtung != "<<":
             continue
         for r in asm.feed(daten):
-            verarbeite(telefon, ausgabe, r, zeit)
+            gw.verarbeite(r, zeit)
     return 0
 
 
-def betrieb(a, ausgabe: Ausgabe) -> int:
+def betrieb(a, gw: Gateway) -> int:
     from ergoline.link import PORT_STANDARD, ErgoLink
     import serial
     while True:
         try:
             with ErgoLink(a.port or PORT_STANDARD, echo=None) as link:
-                telefon = Telefon(a.amtsholung)
-                q = link.sende(p.anmelden())
+                gw.verbindung(link)
+                with gw.lock:
+                    q = link.sende(p.anmelden())
                 print(f"Anmeldung: {q.beschreibung() if q else 'keine Quittung'}", flush=True)
                 letzte = time.time()
                 while True:
                     try:
                         zeit, r = link.rahmen.get(timeout=1.0)
-                    except Exception:
+                    except queue.Empty:
                         if time.time() - letzte > KEEPALIVE_S:
-                            if link.sende(p.keepalive()) is None:
+                            with gw.lock:
+                                q = link.sende(p.keepalive())
+                            if q is None:
                                 raise serial.SerialException("Keepalive ohne Quittung")
                             letzte = time.time()
                         continue
                     letzte = zeit
-                    verarbeite(telefon, ausgabe, r, zeit)
+                    gw.verarbeite(r, zeit)
         except (serial.SerialException, OSError) as e:
+            gw.verbindung(None)
             print(f"Verbindung verloren ({e}); neuer Versuch in 5 s", flush=True)
             time.sleep(5)
         except KeyboardInterrupt:
@@ -105,12 +203,19 @@ def main() -> int:
     ap.add_argument("--anrufe", default=str(STANDARD_ANRUFE), help="JSON-Zeilen-Datei für Anrufdatensätze, '-' = stdout")
     ap.add_argument("--webhook", help="URL, an die jeder Anrufdatensatz per HTTP-POST (JSON) geht")
     ap.add_argument("--amtsholung", default=p.AMTSHOLUNG)
+    ap.add_argument("--portal", metavar="HOST:PORT", help="Webportal starten, z. B. 127.0.0.1:8080")
+    ap.add_argument("--steuerung", action="store_true", help="Wählen/Annehmen/Auflegen aus dem Portal erlauben")
     ap.add_argument("--wiedergabe", metavar="LOG", help="Mitschnitt statt Telefon verarbeiten")
     a = ap.parse_args()
     ausgabe = Ausgabe(a.anrufe, a.webhook, echo=lambda s: print(s, file=sys.stderr, flush=True))
     if a.wiedergabe:
         return wiedergabe(a.wiedergabe, ausgabe, a.amtsholung)
-    return betrieb(a, ausgabe)
+    gw = Gateway(ausgabe, a.amtsholung, a.steuerung)
+    if a.portal:
+        import portal
+        portal.starte(a.portal, gw)
+        print(f"Portal: http://{a.portal}/ (Steuerung {'frei' if a.steuerung else 'gesperrt'})", flush=True)
+    return betrieb(a, gw)
 
 
 if __name__ == "__main__":
