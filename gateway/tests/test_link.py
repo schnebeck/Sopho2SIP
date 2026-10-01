@@ -72,6 +72,15 @@ class LinkTest(unittest.TestCase):
         self.assertIn(">> 01 02 01 00", logtext)
         self.assertIn("RINGING", logtext)
 
+    def test_keepalive_nach_sendepause(self):
+        tel = Telefon(self.master)
+        tel.start()
+        with link.ErgoLink(self.port, echo=None, keepalive_s=0.4) as l:
+            time.sleep(1.6)
+        tel.stop.set()
+        n = bytes(tel.empfangen).count(bytes.fromhex("01 02 00 00"))
+        self.assertGreaterEqual(n, 2)                      # alle ~0,5 s ein Keepalive, ohne eigenes Zutun
+
     def test_keine_quittung(self):
         with link.ErgoLink(self.port, echo=None) as l:
             self.assertIsNone(l.sende(p.keepalive(), warte_quittung=0.3))

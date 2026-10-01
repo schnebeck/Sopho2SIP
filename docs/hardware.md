@@ -35,8 +35,8 @@ Messungen mit `tools/audio_test.sh` (Aufnahmen `logs/audio_*.wav`, nur lokal):
 - **X_IN ohne Merkmal 4f sehr leise** (1 kHz bei −16 dBFS kaum hörbar). Mit „X-Eingang statt Mikrofon“ (Merkmal `4f`,
   per FN-Taste oder Auftrag `01 03 26 00 4f`) passt der Pegel; der Daemon schaltet es bei PC-Gesprächen ein.
 - PCM-Regler der UCA222 dauerhaft −6 dB (`alsactl store`). Der Drehregler der UCA222 wirkt nur auf den Kopfhörer.
-- **Offen:** Vom Pi gewählte Gespräche endeten zweimal nach 20 bzw. 31 s von selbst (DISCONNECTED ohne Ursache,
-  also eigene Seite), jeweils während Wiedergabe auf X_IN; angenommene Gespräche liefen durch.
+- Vorzeitige Auslösung vom Pi gewählter Gespräche: kein Audioproblem, sondern der 30-s-Watchdog der D340
+  (`docs/protocol.md`, Abschnitt 6).
 
 ## Messungen
 | Datum | Messpunkt | Wert | Deutung |

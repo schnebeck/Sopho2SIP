@@ -158,6 +158,6 @@ logs/                   # Mitschnitte, Übersicht in logs/INDEX.md
 
 - Protokoll: Bedeutung der Meldung Typ `01`; Nachwahl/DTMF im Gespräch.
 - Kommen Ereignisse auch ohne jede vorherige Eingabe (Neustart-Test)?
-- Audio: vom PC gewählte Gespräche enden nach 20–30 s von selbst (eigene Seite) – Ursache klären.
+- Watchdog der D340 (30 s ohne Rahmen vom PC → Gespräch wird aufgelegt): Gegenprobe mit Keepalive im Gespräch.
 - `--steuerung` im Dienst einschalten (Freigabe Nutzer); DTMF-Nachwahl im Gespräch prüfen.
 - Schnittstelle der Nextcloud-App zu den Telefonen (HTTP-API/Action-URLs, AMI/ARI, SIP)?
