@@ -142,6 +142,7 @@ gateway/sopho2sipd.py   # Daemon (Stufe 1: Anrufdatensätze als JSON/Webhook, Fo
 gateway/betrieb/        # Dienst (sopho2sipd.service), Logrotation, Firewall (nftables) für den Pi
 gateway/portal.py       # Webportal (Anrufliste, Rückruf, Wähltastatur), Thread im Daemon
 gateway/sipbruecke.py   # Brücke Telefon ⇄ baresip (ctrl_tcp)
+gateway/rueckwaerts.py  # Rückwärtssuche (11880, Das Örtliche) mit Zwischenspeicher
 gateway/asterisk/       # Asterisk-Konfiguration (PJSIP, Wählplan); Passwörter nur auf dem Pi
 gateway/baresip/        # baresip-Konfiguration
 gateway/web/index.html  # Oberfläche des Portals (ohne externe Abhängigkeiten)

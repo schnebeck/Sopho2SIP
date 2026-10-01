@@ -42,6 +42,9 @@ h2 { font-size: 13px; text-transform: uppercase; letter-spacing: .06em; color: v
 #zustand { display: grid; gap: 6px; margin-bottom: 16px; }
 #zustand .gross { font-size: 26px; font-weight: 650; }
 #zustand .nummer { font: 500 18px var(--mono); }
+#zustand .name { font-size: 20px; font-weight: 600; }
+#zustand .name:empty { display: none; }
+.ort { color: var(--muted); font-size: 13px; font-weight: 400; }
 #zustand .klein { color: var(--muted); font-size: 13px; }
 #zustand.klingelt .gross { color: var(--accent); animation: puls 1s ease-in-out infinite; }
 #zustand.verbunden .gross { color: var(--ok); }
@@ -123,6 +126,7 @@ ul#liste { list-style: none; margin: 0; padding: 0; }
     <h2>Telefon</h2>
     <div id="zustand" class="ruhe" aria-live="polite">
       <div class="gross" id="z-text">–</div>
+      <div class="name" id="z-name"></div>
       <div class="nummer" id="z-nummer"></div>
       <div class="klein" id="z-info"></div>
     </div>
@@ -153,7 +157,7 @@ ul#liste { list-style: none; margin: 0; padding: 0; }
         <button data-f="ein" aria-pressed="false">Eingehend</button>
         <button data-f="aus" aria-pressed="false">Ausgehend</button>
       </div>
-      <input id="suche" type="search" placeholder="Nummer suchen" aria-label="Nummer suchen">
+      <input id="suche" type="search" placeholder="Nummer oder Name" aria-label="Nummer oder Name suchen">
     </div>
     <ul id="liste"><li class="leer">Lade …</li></ul>
   </section>
@@ -263,6 +267,7 @@ function zeige(st) {
   $("zustand").className = z;
   $("z-text").textContent = ZUSTANDSTEXT[z] || z;
   $("z-nummer").textContent = a.nummer ? a.nummer : (z === "ruhe" ? "" : "unbekannt");
+  $("z-name").textContent = a.name ? a.name + (a.ort ? " · " + a.ort : "") : "";
   $("annehmen").hidden = z !== "klingelt";
   $("auflegen").hidden = !(imAnruf() || z === "klingelt");
   for (const b of [$("annehmen"), $("auflegen"), $("waehlen")]) b.disabled = !st.steuerung || !st.verbunden;
@@ -303,7 +308,7 @@ function zeichneListe() {
   const liste = anrufe.filter((a) =>
     (filter === "alle" || (filter === "verpasst" ? a.ergebnis === "verpasst" :
                            a.richtung === filter && a.ergebnis !== "verpasst")) &&
-    (!q || (a.nummer || "").includes(q)));
+    (!q || (a.nummer || "").includes(q) || (a.name || "").toLowerCase().includes($("suche").value.toLowerCase().trim())));
   const ul = $("liste"); ul.replaceChildren();
   if (!liste.length) {
     const li = document.createElement("li"); li.className = "leer";
@@ -317,8 +322,13 @@ function zeichneListe() {
     const wer = document.createElement("div"); wer.className = "wer" + (kl === "verpasst" ? " verpasst" : "");
     wer.textContent = a.nummer ? a.nummer : (a.ergebnis === "ohne_wahl" ? "—" : "unbekannt");
     if (a.nummer && !a.extern) wer.textContent = "Nst. " + a.nummer;
+    if (a.name) {
+      wer.textContent = a.name;
+      wer.style.fontFamily = "inherit";
+      if (a.ort) { const o = document.createElement("span"); o.className = "ort"; o.textContent = " · " + a.ort; wer.append(o); }
+    }
     const w = document.createElement("div"); w.className = "wann";
-    w.textContent = `${wann(a.beginn)} · ${titel}`;
+    w.textContent = `${wann(a.beginn)} · ${titel}` + (a.name ? ` · ${a.nummer}` : "");
     mitte.append(wer, w);
     const d = document.createElement("span"); d.className = "dauer";
     d.textContent = a.angenommen ? dauer(a.dauer_s) : "";

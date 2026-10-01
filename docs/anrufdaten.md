@@ -16,6 +16,8 @@ Stand: Ausbaustufe 1 (nur Telefonseite, noch ohne SIP). Felder können ergänzt,
 | `nummer` | str | Rufnummer ohne Amtsholung (`""` wenn keine) |
 | `extern` | bool | `true`, wenn die Nummer mit der Amtsholung (`01`) kam/gewählt wurde |
 | `nummer_roh` | str | Ziffern wie vom Telefon gemeldet, inkl. Amtsholung |
+| `name` | str/null | Name aus der Rückwärtssuche (nur externe Nummern, nur mit `--rueckwaertssuche`) |
+| `ort` | str/null | Ort aus der Rückwärtssuche |
 | `beginn` | str | ISO 8601 mit Zeitzone: Klingelbeginn bzw. Wählton |
 | `verbunden` | str/null | Zeitpunkt der Verbindung |
 | `ende` | str | Zeitpunkt der Freigabe (RELEASED) |
@@ -29,7 +31,7 @@ Stand: Ausbaustufe 1 (nur Telefonseite, noch ohne SIP). Felder können ergänzt,
 
 ```json
 {"kennung": 3, "ergebnis": "verbunden", "richtung": "aus", "nummer": "01700000000", "extern": true,
- "nummer_roh": "0101700000000", "beginn": "2026-09-30T16:38:37.791+02:00", "verbunden": "2026-09-30T16:38:49.832+02:00",
+ "nummer_roh": "0101700000000", "name": null, "ort": null, "beginn": "2026-09-30T16:38:37.791+02:00", "verbunden": "2026-09-30T16:38:49.832+02:00",
  "ende": "2026-09-30T16:39:20.128+02:00", "angenommen": true, "dauer_s": 21.9, "ursache": "8f",
  "ausloeser": "gegenseite", "verlauf": ["DIALTONE", "DIALING", "PROCEEDING", "RINGBACK", "CONNECTED", "DISCONNECTED", "IDLE"]}
 ```

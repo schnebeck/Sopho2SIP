@@ -9,7 +9,7 @@ D340 ─seriell─ sopho2sipd ─ctrl_tcp 127.0.0.1:4444─ baresip ─SIP 127.0
 
 | Dienst | Unit | Konfiguration | Zweck |
 |---|---|---|---|
-| `sopho2sipd` | `gateway/betrieb/sopho2sipd.service` | Aufrufoptionen in der Unit | Telefon, Zustandsautomat, Anrufdatensätze, Portal, SIP-Brücke |
+| `sopho2sipd` | `gateway/betrieb/sopho2sipd.service` | Aufrufoptionen in der Unit | Telefon, Zustandsautomat, Anrufdatensätze, Portal, SIP-Brücke, Rückwärtssuche |
 | `baresip` | `gateway/betrieb/baresip.service` | `gateway/baresip/config` → `~/.baresip/` | SIP-Seite, Audio über UCA222 (`plughw:CODEC,0`), nur lokal |
 | `asterisk` | Unit aus dem Quellbaum + Drop-in | `gateway/asterisk/*.conf` → `/etc/asterisk/` | Registrar für Softphones, Wählplan |
 | `nftables` | Debian | `gateway/betrieb/sopho2sip.nft` | Firewall |
@@ -53,6 +53,14 @@ ssh -t sopho-gw 'python3 ~/Sopho2SIP/gateway/portal.py passwort' && ssh sopho-gw
 - DTMF vom Softphone (RFC 4733) → Ziffer als Nachwahl (Rahmen `19`, Treiber `TSPI_lineDial`). Ob die Gegenseite
   dabei Töne hört: **vermutet**, beim ersten Wähltest prüfen.
 - Sprache: nur mit „TAPI: Sprache über Zusatzgerät“ am Telefon und angeschlossener UCA222 (`docs/audio_verkabelung.html`).
+
+## Rückwärtssuche
+Mit `--rueckwaertssuche` (in der Unit gesetzt) schlägt der Daemon beim Klingeln bzw. bei eigener Wahl den Namen
+externer Nummern nach (`gateway/rueckwaerts.py`): zuerst 11880.com (JSON-LD, Telefonnummer muss passen), dann
+Das Örtliche (nur bei Weiterleitung auf einen Eintrag). Name/Ort erscheinen im Portal und im Anrufdatensatz.
+**Datenschutz:** Jede externe Anrufernummer geht an diese Dienste. Zwischenspeicher
+`~/.local/share/sopho2sip/rueckwaerts.json` (Treffer 30 Tage, ohne Treffer 7 Tage). Nebenstellen werden nie gesucht.
+Mobilnummern stehen selten in Verzeichnissen. Abschalten: Option aus der Unit entfernen.
 
 ## Beobachten
 ```

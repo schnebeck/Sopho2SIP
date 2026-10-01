@@ -43,6 +43,8 @@ class Anruf:
     getrennt: float | None = None
     ende: float | None = None
     ursache: bytes | None = None        # Inhalt von IE 08 (b"" = keine)
+    name: str | None = None             # aus der Rückwärtssuche (gateway/rueckwaerts.py)
+    ort: str | None = None
     verlauf: list = field(default_factory=list)
 
     def setze(self, zustand: int, zeit: float) -> None:
@@ -68,6 +70,8 @@ class Anruf:
             "nummer": nummer,
             "extern": ext,
             "nummer_roh": self.nummer_roh,
+            "name": self.name,
+            "ort": self.ort,
             "beginn": _iso(self.beginn),
             "verbunden": _iso(self.verbunden),
             "ende": _iso(self.ende),
@@ -226,7 +230,7 @@ class Telefon:
         for a in self.anrufe.values():
             ext, nummer = p.extern(a.nummer_roh, self.amtsholung) if a.nummer_roh else (False, "")
             return {"zustand": namen.get(a.zustand, "unbekannt"), "richtung": a.richtung, "nummer": nummer,
-                    "extern": ext, "beginn": a.beginn, "verbunden": a.verbunden}
+                    "extern": ext, "name": a.name, "ort": a.ort, "beginn": a.beginn, "verbunden": a.verbunden}
         return {"zustand": "ruhe"}
 
     def auftraege_annehmen(self) -> list[p.Rahmen]:
