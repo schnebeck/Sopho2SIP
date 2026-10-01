@@ -101,6 +101,57 @@ Im Freisprechbetrieb beendet auch die Lautsprecher-Taste am Telefon das Gespräc
 Beispiel „Wählen 123“: `01 09 19 00 98 70 04 81 31 32 33`.
 Im Treiber nicht unterstützt (`LINEERR_OPERATIONUNAVAIL`): Redirect, BlindTransfer, Accept.
 
+## 6a. Zustandsautomat des Treibers (Treiber, statisch analysiert 2026-10-01)
+Der Treiber führt für das Telefon eine **Anruftabelle** (Telefonobjekt `+0x14d4`, 31 Plätze; der Platzindex ist die
+interne Anrufkennung) und je Anruf einen Zustand im **TAPI-Format `LINECALLSTATE_*`** samt Modus.
+Die Rahmen tragen **keine Anrufkennung** (Byte „Leitung“ ist immer `01`): Der Treiber ordnet jede Meldung dem Anruf zu,
+der sich gerade in einem passenden Zustand befindet (`SUCHE_ZUSTAND` 0x100075a3). Ein Daemon muss das genauso machen.
+
+Ablauf je empfangenem Rahmen (Empfang 0x10014219): Ereignisobjekt anlegen → Parser 0x100172b9 setzt Ereigniscode(s)
+→ Behandler 0x1000ab4f (legt bei Wählton-Codes `0f`–`14` bzw. Angebot `3c` einen neuen Anruf an) → Übergang
+0x100069eb (alter Zustand × Code → neuer Zustand) → Modus 0x1000b70b → TAPI-Meldung `LINE_CALLSTATE` (0x1000a515).
+
+**Ereigniscodes** (CompareOldStateNewState 0x10019bbb): `02` unbekannt · `0a` Freigabe · `0b`–`0e` besetzt
+(Modus STATION/TRUNK/UNKNOWN/UNAVAIL) · `0f`–`14` Wählton (NORMAL/SPECIAL/INTERNAL/EXTERNAL/UNKNOWN/UNAVAIL) ·
+`15`–`19` Sonderinfo · `1a`–`25` Auslösung (LINEDISCONNECTMODE NORMAL, UNKNOWN, REJECT, PICKUP, FORWARDED, BUSY,
+NOANSWER, …) · `29` Wahl · `2a` Proceeding · `2b` Ringback · `2c` Halten · `2d` Halten für Übergabe ·
+`2e` Halten für Konferenz · `2f` Accept · `30` Konferenz · `32` Verbunden · `3c` Angebot.
+Bei RESP_PROCEEDING folgen `2a` und `2b` direkt nacheinander; bei RESP_CONNECT auf einen Anruf in OFFERING/ACCEPTED
+erst `2f`, dann `32`.
+
+**Übergänge** (0x100069eb; in jedem Zustand gilt zusätzlich: `02` → UNKNOWN, `1a`–`25` → DISCONNECTED):
+
+| alter Zustand | Code → neuer Zustand |
+|---|---|
+| UNKNOWN (neu) | `3c`→OFFERING · `0f`–`14`→DIALTONE · `29`→DIALING · `2a`→PROCEEDING · `2b`→RINGBACK · `0b`–`0e`→BUSY · `2f`→ACCEPTED · `32`→CONNECTED · `2c`→ONHOLD · `2d`→ONHOLDPENDTRANSFER · `2e`→ONHOLDPENDCONF · `30`→CONFERENCED · `0a`→IDLE |
+| OFFERING | `2f`→ACCEPTED |
+| ACCEPTED | `32`→CONNECTED |
+| DIALTONE | `29`→DIALING |
+| DIALING | `2a`→PROCEEDING · `0b`–`0e`→BUSY |
+| PROCEEDING | `2b`→RINGBACK · `0b`–`0e`→BUSY · `30`→CONFERENCED |
+| RINGBACK, BUSY | `32`→CONNECTED · `30`→CONFERENCED (nur RINGBACK) · `2b`→RINGBACK (nur BUSY) |
+| CONNECTED | `2c`→ONHOLD · `2d`→ONHOLDPENDTRANSFER · `2e`→ONHOLDPENDCONF · `30`→CONFERENCED |
+| ONHOLD, CONFERENCED | `32`→CONNECTED |
+| ONHOLDPENDTRANSFER | `32`→CONNECTED · `30`→CONFERENCED |
+| ONHOLDPENDCONF | `30`→CONFERENCED |
+| DISCONNECTED | `0a`→IDLE (Platz wird frei) |
+
+**Meldung → Zustand** (über Treibernamen, passt zu den Mitschnitten): `30` RINGING → OFFERING (neuer Anruf) ·
+`36` DIALTONE → DIALTONE (neuer Anruf) · `19` MORE_INFO → DIALING · `3e` PROCEEDING → PROCEEDING, RINGBACK ·
+`31` CONNECTED → (ACCEPTED,) CONNECTED · `37` BUSY → BUSY · `34`/`35` HOLD/UNHOLD → ONHOLD/CONNECTED ·
+`32` DISCONNECTED → DISCONNECTED, Modus aus IE `08` · `39` RELEASED → IDLE, Platz frei.
+
+**Vorbedingungen der Aufträge** (Sendefunktionen, siehe Abschnitt 6):
+- Wählen: abgelehnt, solange ein Anruf DISCONNECTED ist. Kein Anruf → erst `11` belegen (ACK), dann `19` wählen.
+  Ein Anruf in ONHOLD oder ONHOLDPENDTRANSFER → `19` direkt (Rückfragewahl, ohne Belegen). Sonst abgelehnt.
+- Annehmen: genau ein Anruf in OFFERING → `14`. Zwei Anrufe, einer OFFERING (anklopfend) → `26 16`, dann `26 17`.
+- Auflegen: ein Anruf → `13`. Zwei Anrufe → je nach Zuständen `15` und/oder `26 c3`/`26 ee` (Reconnect zum gehaltenen).
+- Jeder Auftrag: genau einer offen, bis 5 s auf `04`.
+
+**Folgerung für den Daemon:** Anruftabelle mit eigenen Kennungen; Zustand je Anruf als LINECALLSTATE (oder gleichwertig);
+Zuordnung jeder Meldung über den Zustand; Aufträge nur senden, wenn die Vorbedingung erfüllt ist; Modus/Ursache
+mitführen (für SIP-Statuscodes und die Anrufstatistik).
+
 ## 7. Initialisierung durch den Treiber (lineOpen 0x10007afc)
 1. Port öffnen (9600).
 2. „XSSEscape“: `02 02 0A 00`, 500 ms Pause.
