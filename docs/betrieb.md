@@ -10,7 +10,7 @@ D340 ─seriell─ sopho2sipd ─ctrl_tcp 127.0.0.1:4444─ baresip ─SIP 127.0
 | Dienst | Unit | Konfiguration | Zweck |
 |---|---|---|---|
 | `sopho2sipd` | `gateway/betrieb/sopho2sipd.service` | Aufrufoptionen in der Unit | Telefon, Zustandsautomat, Anrufdatensätze, Portal, SIP-Brücke, Rückwärtssuche |
-| `baresip` | `gateway/betrieb/baresip.service` | `gateway/baresip/config` → `~/.baresip/` | SIP-Seite, Audio über UCA222 (`plughw:CODEC,0`), nur lokal |
+| `baresip` 4.12 | `gateway/betrieb/baresip.service` | `gateway/baresip/config` → `~/.baresip/` | SIP-Seite, Audio über UCA222 (`plughw:CODEC,0`), nur lokal |
 | `asterisk` | Unit aus dem Quellbaum + Drop-in | `gateway/asterisk/*.conf` → `/etc/asterisk/` | Registrar für Softphones, Wählplan |
 | `nftables` | Debian | `gateway/betrieb/sopho2sip.nft` | Firewall |
 
@@ -20,7 +20,7 @@ ssh sopho-gw 'bash -s' < tools/pi_bootstrap.sh
 ssh sopho-gw 'git clone https://github.com/schnebeck/Sopho2SIP.git'
 tools/firewall.sh                                           # mit Rücknahme nach 120 s, falls SSH abreißt
 scp tools/asterisk_build.sh sopho-gw:/tmp/ && ssh sopho-gw 'bash /tmp/asterisk_build.sh'   # ~15 min
-ssh sopho-gw 'sudo apt-get install -y --no-install-recommends baresip-core'
+scp tools/baresip_build.sh sopho-gw:/tmp/ && ssh sopho-gw 'bash /tmp/baresip_build.sh v4.12.0'   # ~5 min, /usr/local
 ssh sopho-gw 'cd ~/Sopho2SIP && tools/asterisk_config.sh'   # Passwörter → ~/.config/sopho2sip/sip-zugaenge.txt
 ssh sopho-gw 'cd ~/Sopho2SIP && sudo install -m 644 gateway/betrieb/sopho2sipd.service /etc/systemd/system/ \
   && sudo install -m 644 gateway/betrieb/sopho2sip.logrotate /etc/logrotate.d/sopho2sip \
@@ -32,6 +32,15 @@ ssh sopho-gw 'python3 ~/Sopho2SIP/gateway/portal.py zertifikat && sudo systemctl
 ## Aktualisieren
 `ssh sopho-gw 'cd ~/Sopho2SIP && git pull && sudo systemctl restart sopho2sipd'`
 (Asterisk-/baresip-Dateien geändert: zusätzlich `tools/asterisk_config.sh`.)
+
+## baresip 4.x: Besonderheiten
+- Debian/Trixie liefert nur 1.1.0 (2021); `tools/baresip_build.sh` baut `re` + `baresip` aus dem Quelltext nach `/usr/local`.
+- `module_tmp` gibt es nicht mehr: `account.so` als `module_app` laden, sonst kein Konto.
+- Loopback wird aus den lokalen Adressen gefiltert; `net_interface 127.0.0.1` erzwingt sie (sonst „SIP register failed:
+  Protocol not supported“ bei `sip_listen 127.0.0.1:…`).
+- Jitterbuffer heißt `audio_jitter_buffer_type`/`audio_jitter_buffer_ms`.
+- Eingehende Anrufe nur an den Benutzer des Kontos (`sip:gateway@…`), andere bekommen 404.
+- `ctrl_tcp`: Ereignisfelder wie in 1.1.0; der Befehl `sndcode` existiert nicht mehr (DTMF senden brauchen wir nicht).
 
 ## Sicherheit
 - Firewall: eingehend nur SSH (Schlüssel) von überall; Portal 8080, SIP 5060, RTP 10000–20000, mDNS nur aus
