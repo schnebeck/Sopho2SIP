@@ -19,4 +19,6 @@ Werkzeuge: `serial` = `tools/serial_probe.py`, `bitbang` = `tools/bitbang_scope.
 | `test_20261001_085744_annehmen_auflegen.log` | ergo annahmetest | Anmelden, Annehmen, Auflegen (4 s) | keine | **Annehmen und Auflegen bestätigt** |
 | `test_20261001_130201_pi_angenommen_verpasst.log` | Daemon `sopho2sipd.py` auf dem Pi | Anmelden, Keepalive | Anruf am Telefon angenommen; zweiter Anruf nicht angenommen | Betrieb am Pi; verpasster Anruf = RINGING → RELEASED `08 01 8f` |
 | `test_20261001_150042_waehlen_extern.log` | ergo waehltest am Pi | Anmelden, Belegen, Wählen (extern), Auflegen | Handy angenommen | **Belegen und Wählen bestätigt**; kein DIALTONE nach Belegen |
-| `test_20261001_171607_x_eingang_per_pc.log` | audio_test.sh (waehltest --nach-verbindung) | Belegen, Wählen, `01 03 26 00 4f`, Auflegen | Handy angenommen, keine Taste | **Merkmal 4f per PC** (`3b 01 4f`); Selbstauslösung nach 31 s |
+| `test_20261001_171607_x_eingang_per_pc.log` | audio_test.sh (waehltest --nach-verbindung) | Belegen, Wählen, `01 03 26 00 4f`, Auflegen | Handy angenommen, keine Taste | **Merkmal 4f per PC** (`3b 01 4f`); Selbstauslösung nach 31 s (Watchdog) |
+| `test_20261001_190905_watchdog_ohne_keepalive.log` | audio_test.sh (waehltest ohne Keepalive) | Belegen, Wählen | Handy angenommen | **Watchdog**: D340 legt 30,5 s nach dem letzten PC-Rahmen auf |
+| `test_20261001_191319_watchdog_mit_keepalive.log` | audio_test.sh (waehltest, Keepalive 10 s) | Belegen, Wählen, 6 × Keepalive, Auflegen | Handy angenommen | Gegenprobe: Gespräch hält 60 s |

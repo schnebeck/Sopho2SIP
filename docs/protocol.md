@@ -105,10 +105,11 @@ Per Funktionstaste im Ruhezustand → `3c 01 4f` (abgelehnt); im Gespräch → `
 Der Treiber sendet `26` nur mit `16`, `1e`, `52`, `c3`, `ee` – `4f` ist aus der gemeinsamen Kennungsliste von
 Meldung und Auftrag erschlossen und am Gerät bestätigt. Ohne `4f` ist X_IN kaum hörbar (`docs/hardware.md`).
 **Vermutet:** `3a 01 4b`+`3b 01 4e` beim Wechsel in den Special mode (Passwort 2468), umgekehrt beim Zurückwechseln.
-**Watchdog (vermutet, Gegenprobe ausstehend; Idee Nutzer):** Vom PC geführte Gespräche endeten viermal genau
+**Watchdog (bestätigt 2026-10-01; Idee Nutzer):** Vom PC geführte Gespräche endeten viermal genau
 30,4–30,7 s nach dem **letzten Rahmen des PCs** mit `3a 01 30`, `32 … 08 00`, `39` (wie Auflegen am Telefon) – mit und
 ohne X-Eingang, mit und ohne Wiedergabe (Logs `ergo_20261001_171035/171607/190634/190905`). Die Testwerkzeuge sendeten
-im Gespräch keine Keepalives. Folgerung: Der PC muss spätestens alle 30 s etwas senden. Der Treiber sendet Keepalive
+im Gespräch keine Keepalives. Gegenprobe mit Keepalive alle 10 s: Gespräch hielt 60 s (`test_20261001_191319_watchdog_mit_keepalive.log`; ohne:
+`test_20261001_190905_watchdog_ohne_keepalive.log`). Folgerung: Der PC muss spätestens alle 30 s etwas senden. Der Treiber sendet Keepalive
 nach 15 s ohne *Empfang*; Daemon und Werkzeuge senden jetzt nach 15 s (Werkzeuge 10 s) ohne *Senden*.
 
 | Auftrag | Rahmen | Treiberstelle |

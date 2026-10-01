@@ -312,6 +312,12 @@ Der Treiber wartet bis zu <b>5 s</b> (auch auf <span class="hex">03</span>/<span
 <li>Meldungen des Telefons quittiert der PC <b>nicht</b>. Der Treiber hat dafür keine Sendestelle. <span class="st st-t">Treiber</span></li>
 <li>Unverständliche Eingaben beantwortet das Telefon nach etwa <b>1,5 s</b> mit <span class="hex">05 00</span>. <span class="st st-b">bestätigt</span></li>
 <li>Kommt 15 s lang nichts vom Telefon, sendet der Treiber Keepalive <span class="hex">01 02 00 00</span>. <span class="st st-t">Treiber</span></li>
+<li><b>Watchdog des Telefons:</b> Kommt <b>30 s</b> lang kein Rahmen vom PC, legt die D340 ein vom PC geführtes Gespräch
+selbst auf (<span class="hex">3a 01 30</span>, <span class="hex">32 01 98 08 00</span>, <span class="hex">39</span> – wie Auflegen am Telefon).
+Gemessen viermal 30,4–30,7 s nach dem letzten PC-Rahmen; mit Keepalive alle 10 s hielt dasselbe Gespräch 60 s.
+Ein Daemon sollte daher nach <b>15 s ohne Senden</b> ein Keepalive schicken, nicht nur nach 15 s ohne Empfang.
+<span class="st st-b">bestätigt</span> (<code>logs/test_20261001_190905_watchdog_ohne_keepalive.log</code>,
+<code>logs/test_20261001_191319_watchdog_mit_keepalive.log</code>)</li>
 <li>Pro Zeitpunkt ist höchstens ein Auftrag offen: senden, Quittung abwarten, dann den nächsten.</li>
 </ul>
 </div>
