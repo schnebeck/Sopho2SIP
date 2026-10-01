@@ -4,6 +4,7 @@
 #   tools/audio_test.sh [GESPRÄCH_S=30] [TON_AB_S=15] [TÖNE_dBFS="-46 -36 -26 -16"] [NUMMER]
 # Ohne NUMMER wird ein eingehender Anruf angenommen; mit NUMMER wählt der Pi (ergo.py waehltest, Freigabe!).
 # NACHRICHT=datei.wav: statt der Töne diese Aufnahme spielen, je Wert in TÖNE mit dieser Verstärkung (dB).
+# NACH_VERBINDUNG="01 03 26 00 4f": diesen Rahmen 1 s nach CONNECTED senden (nur Wählvariante, Freigabe!).
 # Ablauf: Dienst sopho2sipd anhalten (serielle Schnittstelle frei), PCM-Regler der UCA222 auf 0 dB,
 # tools/ergo.py annahmetest (Annehmen/Auflegen: braucht Freigabe des Nutzers!), ab CONNECTED Aufnahme
 # (48 kHz stereo, links = X_OUT), ab TON_AB_S je Pegel 2 s Sinus 1 kHz + 2 s Pause, danach sekundenweise
@@ -23,7 +24,8 @@ sudo systemctl stop sopho2sipd
 amixer -q -c $KARTE sset PCM -- 0dB
 if [ -n "$NUMMER" ]; then
     echo "== PCM 0 dB, Töne $TOENE dBFS; wähle (bis 60 s bis zur Annahme) …"
-    python3 -u tools/ergo.py waehltest "$NUMMER" --freigabe --warte 60 --gespraech "$GESPRAECH" > "$ERGO_OUT" 2>&1 &
+    python3 -u tools/ergo.py waehltest "$NUMMER" --freigabe --warte 60 --gespraech "$GESPRAECH" \
+        ${NACH_VERBINDUNG:+--nach-verbindung "$NACH_VERBINDUNG"} > "$ERGO_OUT" 2>&1 &
 else
     echo "== PCM 0 dB, Töne $TOENE dBFS; warte bis 120 s auf einen Anruf …"
     python3 -u tools/ergo.py annahmetest --freigabe --gespraech "$GESPRAECH" --warte 120 > "$ERGO_OUT" 2>&1 &
@@ -50,7 +52,7 @@ for pegel in $TOENE; do
 done
 wait $AUFNAHME || true
 wait $ERGO || true
-grep -E ">>|MELDUNG|Quittung|Ende" "$ERGO_OUT" | sed -E 's/(6c 0d|70 0e 81|70 0d|ANRUFER=|ZIEL=).*/\1 …/'
+grep -E ">>|MELDUNG|Quittung|Zusatzrahmen|Ende" "$ERGO_OUT" | sed -E 's/(6c 0d|70 0e 81|70 0d|ANRUFER=|ZIEL=).*/\1 …/'
 
 db() { python3 -c "import math,sys;print(f'{20*math.log10(max(float(sys.argv[1]),1e-9)):6.1f}')" "$1"; }
 wert() { sox "$WAV" -n remix "$1" trim "$2" 1 ${3:-} stat 2>&1 | awk -v k="$4" '$0 ~ k {print $3}'; }
