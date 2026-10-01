@@ -29,10 +29,11 @@ Reihenfolge, je einzeln und mit Rückfrage:
 1. **Erledigt 2026-10-01** (`tools/ergo.py annahmetest --freigabe`). Eingehend annehmen: Nutzer ruft an → `tools/ergo.py annehmen --freigabe` während es klingelt.
    Erwartet: `ACK`, dann `CONNECTED`; Sprache über Hörer/Freisprechen (Schalter „über Telefon“).
 2. **Erledigt 2026-10-01.** Auflegen: `tools/ergo.py auflegen --freigabe` → `ACK`, `DISCONNECTED`, `RELEASED`.
-3. Wählen intern: `tools/ergo.py waehlen <Nebenstelle> --freigabe` (vom Nutzer genannte Testnummer).
+3. **Erledigt 2026-10-01 (extern, `tools/ergo.py waehltest 01… --freigabe`).** Wählen intern: `tools/ergo.py waehltest <Nebenstelle> --freigabe`.
    Hinweis: Der Treiber sendet vorher `belegen` (`01 02 11 00`) im Ruhezustand; bei `ERR`/`REJ` erst
    `tools/ergo.py belegen --freigabe`, dann `waehlen`.
-4. Wählen extern: Nummer mit Amtsholung `01` (z. B. `01…`), nur mit Freigabe.
+4. **Erledigt 2026-10-01.** Wählen extern: Nummer mit Amtsholung `01`, nur mit Freigabe.
+5. Nachwahl/DTMF im Gespräch (`roh`-Rahmen `19` mit einer Ziffer): hört die Gegenseite den Ton? Nur mit Freigabe.
 
 ## Danach
 Ergebnisse in `docs/protocol.md` (Status „bestätigt“ mit Log), nützliche Logs in `logs/INDEX.md`, nutzlose löschen.

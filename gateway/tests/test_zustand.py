@@ -45,6 +45,14 @@ class Mitschnitte(unittest.TestCase):
         _, _, (d,) = abspielen("test_20261001_085405_annehmen.log")
         self.assertEqual(d["ergebnis"], "angenommen")
 
+    def test_pc_waehlt_extern(self):
+        tel, ev, (d,) = abspielen("test_20261001_150042_waehlen_extern.log")   # belegen ohne DIALTONE
+        self.assertEqual((d["ergebnis"], d["richtung"], d["nummer"], d["ausloeser"]),
+                         ("verbunden", "aus", "01700000000", "eigene_seite"))
+        self.assertEqual(d["verlauf"], ["DIALING", "PROCEEDING", "RINGBACK", "CONNECTED", "DISCONNECTED", "IDLE"])
+        self.assertAlmostEqual(d["dauer_s"], 15.4, delta=0.3)
+        self.assertEqual(tel.anrufe, {})
+
     def test_pi_angenommen_und_verpasst(self):
         tel, _, ds = abspielen("test_20261001_130201_pi_angenommen_verpasst.log")
         self.assertEqual([d["ergebnis"] for d in ds], ["angenommen", "verpasst"])

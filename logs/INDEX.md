@@ -18,3 +18,4 @@ Werkzeuge: `serial` = `tools/serial_probe.py`, `bitbang` = `tools/bitbang_scope.
 | `test_20261001_085405_annehmen.log` | ergo annahmetest | Anmelden, Annehmen, Auflegen | Lautsprecher-Taste nach 8 s | Annehmen bestätigt; Gespräch durch Taste beendet |
 | `test_20261001_085744_annehmen_auflegen.log` | ergo annahmetest | Anmelden, Annehmen, Auflegen (4 s) | keine | **Annehmen und Auflegen bestätigt** |
 | `test_20261001_130201_pi_angenommen_verpasst.log` | Daemon `sopho2sipd.py` auf dem Pi | Anmelden, Keepalive | Anruf am Telefon angenommen; zweiter Anruf nicht angenommen | Betrieb am Pi; verpasster Anruf = RINGING → RELEASED `08 01 8f` |
+| `test_20261001_150042_waehlen_extern.log` | ergo waehltest am Pi | Anmelden, Belegen, Wählen (extern), Auflegen | Handy angenommen | **Belegen und Wählen bestätigt**; kein DIALTONE nach Belegen |
