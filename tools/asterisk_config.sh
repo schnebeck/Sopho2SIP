@@ -65,10 +65,11 @@ PW_GW=$(sudo awk '/^\[gateway\]\(zugang\)/{z=1} z&&/^password/{print $3; exit}' 
 QUELL=$(ls -d /usr/local/src/asterisk/asterisk-*/ | tail -1)
 [ -f /etc/logrotate.d/asterisk ] || sudo make -C "$QUELL" install-logrotate >/dev/null
 
-# Native systemd-Unit aus dem Quellbaum (statt des generierten Init-Skripts), Laufzeitverzeichnis für den Nutzer
+# Native systemd-Unit aus dem Quellbaum (statt des generierten Init-Skripts). Type=simple: ohne libsystemd
+# gebaut, Asterisk meldet sich nicht per sd_notify. Laufzeitverzeichnis für den Nutzer asterisk.
 sudo install -m 644 "$QUELL/contrib/systemd/asterisk.service" /etc/systemd/system/asterisk.service
 sudo mkdir -p /etc/systemd/system/asterisk.service.d
-printf '[Service]\nRuntimeDirectory=asterisk\nRuntimeDirectoryPreserve=yes\n' |
+printf '[Service]\nType=simple\nRuntimeDirectory=asterisk\nRuntimeDirectoryPreserve=yes\n' |
     sudo tee /etc/systemd/system/asterisk.service.d/sopho2sip.conf >/dev/null
 sudo systemctl daemon-reload
 sudo systemctl enable --quiet asterisk
