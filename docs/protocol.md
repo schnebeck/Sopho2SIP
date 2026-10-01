@@ -55,6 +55,14 @@ keine Sendestelle in Empfang/Parser).
 | 16:39:11.5 | Gegenseite legt auf | `32 01 98 08 01 8f` · `3a 01 30` | DISCONNECTED, Ursache 0x8f · DTMF aus |
 | 16:39:19.9 | Hörer aufgelegt | `39 01 98 08 00` · `3a 01 0a` | RELEASED · ON HOOK |
 
+
+Verpasster Anruf (bestätigt, `test_20261001_130201_pi_angenommen_verpasst.log`, Daemon auf dem Pi):
+
+| Zeit | Aktion des Nutzers | Nutzdaten (hex) | Bedeutung |
+|---|---|---|---|
+| 13:02:33.8 | Anruf kommt an | `30 01 98 6c 0d` + `0101700000000` | RINGING |
+| 13:02:45.0 | Anrufer legt auf, niemand hat abgenommen | `39 01 98 08 01 8f` | RELEASED, Ursache 0x8f; **kein** DISCONNECTED, keine Hörermeldung |
+
 Im Ruhezustand sendet das Telefon nichts. Abheben/Einzelziffern kamen erst bei Wahlende (Blockwahl).
 
 ## 5. Meldungstypen (Treiber, Parser 0x100172b9)

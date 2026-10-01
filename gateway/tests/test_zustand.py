@@ -45,6 +45,14 @@ class Mitschnitte(unittest.TestCase):
         _, _, (d,) = abspielen("test_20261001_085405_annehmen.log")
         self.assertEqual(d["ergebnis"], "angenommen")
 
+    def test_pi_angenommen_und_verpasst(self):
+        tel, _, ds = abspielen("test_20261001_130201_pi_angenommen_verpasst.log")
+        self.assertEqual([d["ergebnis"] for d in ds], ["angenommen", "verpasst"])
+        verpasst = ds[1]                                        # RINGING → RELEASED 08 01 8f, ohne DISCONNECTED
+        self.assertEqual(verpasst["verlauf"], ["OFFERING", "IDLE"])
+        self.assertEqual((verpasst["ursache"], verpasst["ausloeser"]), ("8f", "gegenseite"))
+        self.assertEqual(tel.anrufe, {})
+
 
 class Vorbedingungen(unittest.TestCase):
     def setUp(self):
