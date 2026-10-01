@@ -174,8 +174,8 @@ if __name__ == "__main__":
     if len(sys.argv) >= 2 and sys.argv[1] == "passwort":
         benutzer = sys.argv[2] if len(sys.argv) > 2 else "sopho"
         pw = getpass.getpass(f"Neues Portal-Passwort für {benutzer}: ")
-        if len(pw) < 10 or pw != getpass.getpass("Wiederholen: "):
-            raise SystemExit("abgebrochen (mindestens 10 Zeichen, beide Eingaben gleich)")
+        if len(pw) < 8 or pw != getpass.getpass("Wiederholen: "):
+            raise SystemExit("abgebrochen (mindestens 8 Zeichen, beide Eingaben gleich)")
         passwort_setzen(benutzer, pw)
         print(f"gespeichert: {PASSWORTDATEI}; Daemon neu starten: sudo systemctl restart sopho2sipd")
     else:
