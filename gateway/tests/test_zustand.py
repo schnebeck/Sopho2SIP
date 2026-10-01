@@ -84,6 +84,23 @@ class Vorbedingungen(unittest.TestCase):
         self.melde("02 05 39 01 98 08 00")
         self.assertEqual(len(self.tel.auftraege_waehlen("123")), 2)
 
+    def test_ziffern_nur_mit_anruf(self):
+        with self.assertRaises(z.AuftragNichtMoeglich):
+            self.tel.auftraege_ziffern("1")
+        self.assertEqual([r.hex() for r in self.tel.auftraege_wahl_oder_ziffern("12")],
+                         ["01 02 11 00", "01 08 19 00 98 70 03 81 31 32"])   # Ruhe → belegen + wählen
+        self.melde("02 12 30 01 98 6c 0d" + b"0101700000000".hex())
+        self.melde("02 02 31 01")
+        self.assertEqual(self.tel.zustand_kurz()["zustand"], "verbunden")
+        self.assertEqual(self.tel.zustand_kurz()["nummer"], "01700000000")
+        self.assertEqual([r.hex() for r in self.tel.auftraege_wahl_oder_ziffern("#")],
+                         ["01 07 19 00 98 70 02 81 23"])                    # Gespräch → nur 19 (Tonwahl)
+        self.melde("02 05 32 01 98 08 00")
+        with self.assertRaises(z.AuftragNichtMoeglich):
+            self.tel.auftraege_ziffern("1")                                 # DISCONNECTED sperrt
+        self.melde("02 05 39 01 98 08 00")
+        self.assertEqual(self.tel.zustand_kurz(), {"zustand": "ruhe"})
+
 
 if __name__ == "__main__":
     unittest.main()

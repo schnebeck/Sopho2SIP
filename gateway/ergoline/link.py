@@ -6,6 +6,7 @@ Jede Sitzung schreibt nach logs/ergo_<zeit>.log: Rohbytes (<< raw / >> raw) und 
 from __future__ import annotations
 
 import datetime as dt
+import os
 import pathlib
 import queue
 import threading
@@ -43,7 +44,9 @@ class ErgoLink:
     def __enter__(self) -> "ErgoLink":
         LOGDIR.mkdir(exist_ok=True)
         self.logfile = LOGDIR / f"ergo_{dt.datetime.now():%Y%m%d_%H%M%S}.log"
-        self._log = open(self.logfile, "x", encoding="utf-8")
+        # O_APPEND, damit logrotate (copytruncate) die Datei kürzen kann, ohne dass Nullbytes entstehen
+        fd = os.open(self.logfile, os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_APPEND, 0o644)
+        self._log = os.fdopen(fd, "w", encoding="utf-8")
         self._ser = serial.Serial(self.port, self.baud, bytesize=8, parity=self.paritaet, stopbits=1,
                                   timeout=0.05, xonxoff=self.xonxoff, rtscts=False, dsrdtr=False)
         self.notiz(f"Port {self.port} {self.baud} 8{self.paritaet}1 xonxoff={self.xonxoff}")

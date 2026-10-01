@@ -83,7 +83,7 @@ User Guide D325/D330 `ref/ergoline_tsp/guide_ergoline_d325_d330_english.pdf`. Se
     Ein anderer Pi 4 bootet mit derselben Karte; Ursache vermutlich SD-Slot des ersten Geräts.
   - Grundeinrichtung: `ssh sopho-gw 'bash -s' < tools/pi_bootstrap.sh` (2026-10-01 ausgeführt: Pakete, Gruppen
     `dialout`/`audio`, NTP synchron). Repo: `~/Sopho2SIP` (Klon von GitHub, Tests laufen mit Python 3.13).
-  - Dienst `sopho2sipd` (`gateway/systemd/sopho2sipd.service`), seit 2026-10-01 aktiv und nach Neustart geprüft.
+  - Dienst `sopho2sipd` (`gateway/betrieb/sopho2sipd.service`), seit 2026-10-01 aktiv und nach Neustart geprüft.
     Aktualisieren: `ssh sopho-gw 'cd ~/Sopho2SIP && git pull && sudo systemctl restart sopho2sipd'`.
     Ereignisse: `journalctl -u sopho2sipd -f`; Anrufe: `~/.local/share/sopho2sip/anrufe.jsonl`.
 - USB-RS232: FTDI FT232R, `/dev/serial/by-id/usb-FTDI_FT232R_USB_UART_A97WEQGD-if00-port0` (am Pi).

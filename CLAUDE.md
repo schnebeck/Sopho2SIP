@@ -81,7 +81,8 @@ Sopho ─UPN─ D340 ─PC-Schnittstelle (Binärrahmen, 1200 8N1)─ USB-RS232 �
 6. **Gateway-Daemon:** Stufe 1 fertig (Zustandsautomat, Anrufdatensätze, Keepalive, Wiederanlauf); Stufe 2:
    Steuerbefehle (Wählen/Annehmen/Auflegen) und Übersetzung seriell ↔ baresip.
 7. **Betrieb:** Dienst `sopho2sipd` läuft auf dem Pi (systemd, startet nach Neustart, Ereignisse im Journal,
-   Wiederanlauf bei Verbindungsverlust). Offen: Rotation der Rohprotokolle `logs/ergo_*.log`.
+   Wiederanlauf bei Verbindungsverlust), Logrotation, Firewall (SIP/RTP/Portal nur aus 130.75.63.128/25 und VPN).
+   Webportal auf Port 8080 (Passwort). Gesprächsaufträge aus dem Portal erst mit `--steuerung`.
 
 ## Arbeitsregeln für Claude Code
 
@@ -89,6 +90,9 @@ Sopho ─UPN─ D340 ─PC-Schnittstelle (Binärrahmen, 1200 8N1)─ USB-RS232 �
   Frei: reines Mitlesen. Jeder Senderahmen, dessen Wirkung nicht aus `Ergoline.tsp` belegt ist, braucht eine
   Freigabe; Wählen nur mit einer vom Nutzer genannten Testnummer. Nichts raten.
   Die Anlage ist nicht rücksetzbar; eine gesperrte Nebenstelle wäre nicht selbst zu beheben.
+  `--steuerung` im Dienst nur nach Freigabe des Nutzers einschalten.
+- Der Pi hat eine öffentliche Adresse: Ports nur über `gateway/betrieb/sopho2sip.nft` öffnen (mit `tools/firewall.sh`),
+  nie SIP/Portal ohne Netzbeschränkung. Externe Wahl (Amtsholung `01`) ist Gebührenbetrugs-Ziel.
 - Serielle Sitzungen mit Zeitstempel und Richtung (`>>`/`<<`, Rohbytes) nach `logs/` schreiben.
   **Nur behalten, was etwas Weiterführendes belegt**; nutzlose Mitschnitte löschen. Behaltene Logs in
   `logs/INDEX.md` eintragen. Sackgassen nur knapp in `docs/sackgassen.md` vermerken, ohne Belegsammlung.
@@ -126,11 +130,15 @@ tools/ergo.py           # Hauptwerkzeug: Rahmen dekodieren/mitlesen/Aufträge se
 tools/serial_probe.py   # Rohmitschnitt ohne Rahmenlogik (Altwerkzeug)
 tools/bitbang_scope.py  # FT232R als Logikanalysator (Bitbang, braucht pyftdi)
 tools/pi_bootstrap.sh   # Grundeinrichtung des Pi (Pakete, Gruppen, NTP)
+tools/asterisk_build.sh # Asterisk 22 LTS aus dem Quelltext (Trixie hat kein Paket)
+tools/firewall.sh       # Firewall laden, mit automatischer Rücknahme gegen Aussperren
 tools/build_protokoll_doc.py  # erzeugt docs/protokoll.html (Standardbibliothek)
 tools/build_audio_doc.py      # erzeugt docs/audio_verkabelung.html (Schaltplan Audio)
 gateway/ergoline/       # protocol.py (Rahmen), link.py (seriell), zustand.py (Zustandsautomat), logdatei.py
 gateway/sopho2sipd.py   # Daemon (Stufe 1: Anrufdatensätze als JSON/Webhook, Format in docs/anrufdaten.md)
-gateway/systemd/        # sopho2sipd.service (Dienst auf dem Pi)
+gateway/betrieb/        # Dienst (sopho2sipd.service), Logrotation, Firewall (nftables) für den Pi
+gateway/portal.py       # Webportal (Anrufliste, Rückruf, Wähltastatur), Thread im Daemon
+gateway/web/index.html  # Oberfläche des Portals (ohne externe Abhängigkeiten)
 gateway/tests/          # Tests (python3 -m unittest discover -s gateway/tests)
 docs/testplan.md        # nächste Tests am Gerät
 logs/                   # Mitschnitte, Übersicht in logs/INDEX.md
