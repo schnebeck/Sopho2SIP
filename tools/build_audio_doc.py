@@ -120,6 +120,60 @@ svg = (f'<svg viewBox="0 0 {W} {H}" role="img" class="diagram" aria-label="Schal
        f'an den Eingang der UCA222; Ausgang der UCA222 über Übertrager T2, Spannungsteiler R1/R2 und C2 an X_IN; '
        f'telefonseitig Bezug GNDA, PC-seitig Cinch-Schirm, galvanisch getrennt">{"".join(s)}</svg>')
 
+# --- Steckerbelegung: Stecker (Blick auf die Kontakte) und Buchse (Blick in die Öffnung) -------------------------
+k = []
+BELEGUNG = [(1, "X_OUT", "Ausgang → C1 → T1", "s-rect"), (2, "X_IN", "Eingang ← C2 ← Teiler", "s-playt"),
+            (3, "GNDA", "Masse analog", "d-head"), (4, "n. c.", "", "d-lbl"), (5, "n. c.", "", "d-lbl"),
+            (6, "n. c.", "", "d-lbl")]
+STRICH = {"s-rect": "s-rec", "s-playt": "s-play", "d-head": "s-gnd", "d-lbl": "s-thin"}
+
+
+def kontakte(xs, y_kontakt, y_label0, links_bis, x_name):
+    """Kontakte 1–6 an den x-Positionen xs; Beschriftung 1–3 links, 4–6 rechts, mit Führungslinien."""
+    for (n, name, wozu, cls), x in zip(BELEGUNG, xs):
+        k.append(f'<text x="{x}" y="{y_kontakt + 52}" text-anchor="middle" class="d-mono s-pinnr">{n}</text>')
+        stufe = (3 - n) if n <= 3 else (n - 4)      # äußere Kontakte tiefer: keine Kreuzungen
+        y = y_label0 + 18 * stufe
+        if n <= 3:
+            k.append(f'<polyline points="{x},{y_kontakt} {x},{y} {links_bis},{y}" class="{STRICH[cls]}" fill="none"/>')
+            k.append(f'<text x="{x_name}" y="{y + 4}" class="{cls}">{n} {name}</text>')
+            if wozu:
+                k.append(f'<text x="{x_name + 62}" y="{y + 4}" class="d-lbl">{wozu}</text>')
+        else:
+            rechts = xs[-1] + 40
+            k.append(f'<polyline points="{x},{y_kontakt} {x},{y} {rechts},{y}" class="s-thin" fill="none"/>')
+            k.append(f'<text x="{rechts + 6}" y="{y + 4}" class="d-lbl">{n} {name}</text>')
+
+
+# Stecker: Kontaktseite zum Betrachter, Spitze oben, Nase hinten, Kabel unten
+k.append('<text x="305" y="22" text-anchor="middle" class="d-colh">Stecker · Blick auf die Kontakte</text>')
+k.append('<rect x="240" y="150" width="130" height="150" rx="5" class="s-cmp"/>')
+k.append('<rect x="270" y="218" width="70" height="76" rx="3" class="s-bar" fill="none"/>')
+k.append('<text x="305" y="268" text-anchor="middle" class="d-lbl">Nase</text>')
+k.append('<text x="305" y="282" text-anchor="middle" class="d-lbl">(hinten)</text>')
+k.append('<rect x="275" y="300" width="60" height="60" class="s-cmp"/>')
+k.append('<text x="305" y="378" text-anchor="middle" class="d-lbl">Kabel nach unten</text>')
+xs_st = [256 + 19.6 * i for i in range(6)]
+for x in xs_st:
+    k.append(f'<rect x="{x - 4}" y="152" width="8" height="30" rx="1" class="s-plate" style="fill:var(--fg);stroke:none"/>')
+kontakte([round(x) for x in xs_st], 152, 58, 226, 20)
+
+# Buchse: Blick in die Öffnung, Aussparung für die Nase unten
+k.append('<text x="780" y="22" text-anchor="middle" class="d-colh">Buchse am Telefon · Blick in die Öffnung</text>')
+k.append('<rect x="680" y="140" width="200" height="170" rx="6" class="d-box"/>')
+k.append('<path d="M712 162 H848 V262 H808 V284 H752 V262 H712 Z" class="s-cmp"/>')
+k.append('<text x="780" y="302" text-anchor="middle" class="d-lbl">Aussparung für die Nase</text>')
+xs_bu = [731 + 19.6 * i for i in range(6)]
+for x in xs_bu:
+    k.append(f'<line x1="{x:.0f}" y1="164" x2="{x:.0f}" y2="190" class="s-core"/>')
+kontakte([round(x) for x in xs_bu], 164, 58, 712, 480)
+k.append('<text x="780" y="378" text-anchor="middle" class="d-lbl">Federkontakte oben, Aussparung unten: Pin 1 links</text>')
+
+stecker_svg = ('<svg viewBox="0 0 940 392" role="img" class="diagram" aria-label="Steckerbelegung RJ11 der Audio-Buchse: '
+               'Stecker mit Blick auf die Kontakte, Spitze oben, Nase hinten, Kabel nach unten: von links Pin 1 X_OUT, Pin 2 X_IN, '
+               'Pin 3 GNDA, Pin 4 bis 6 frei. Buchse mit Blick in die Öffnung, Aussparung für die Nase unten: '
+               'ebenfalls Pin 1 links.">' + "".join(k) + '</svg>')
+
 CSS = (ROOT / "docs" / "protokoll.tpl.html").read_text(encoding="utf-8")
 CSS = re.search(r"<style>(.*?)</style>", CSS, re.S).group(1)
 CSS = CSS.replace("/* Layout: Datenblatt", "/* Layout wie docs/protokoll.html (Datenblatt)")
@@ -168,6 +222,24 @@ BODY = f"""<div class="wrap">
 <figcaption>Oben die Aufnahme (Telefon → PC), unten die Wiedergabe (PC → Telefon). Jeder Übertrager trennt die
 Telefonseite (Bezug GNDA, Pin 3) von der PC-Seite (Bezug Cinch-Schirm). Das Massezeichen steht immer für GNDA.
 GNDA und Cinch-Schirm werden nirgends verbunden.</figcaption></figure>
+
+<h2 id="stecker">Steckerbelegung</h2>
+<figure class="fig wide"><div class="fig-scroll">{stecker_svg}</div>
+<figcaption>Die Signale liegen auf den Kontakten 1–3, also auf einer Seite, nicht in der Mitte. Gezählt nach der
+üblichen RJ-Lage: Stecker mit den Kontakten zum Betrachter, Spitze oben, Nase hinten, Kabel nach unten – Pin 1
+links. In der Buchse, mit Blick in die Öffnung und der Aussparung für die Nase unten, liegt Pin 1 ebenfalls links.
+<span class="st st-v">vorläufig</span> Das Handbuch nennt nur die Nummern, nicht die Lage: vor dem Löten prüfen.</figcaption></figure>
+<div class="col"><p><b>Lage am Gerät prüfen</b> (Multimeter, Minus an Pin 5 der 9-poligen PC-Buchse = Masse):</p>
+<ol class="schritte">
+<li><b>Nachbarbuchse „Static Interface“</b> (gleiche Bauform): Der Kontakt mit +5 V ist dort Pin 1. Sitzt er in der
+Ansicht oben (Aussparung unten) links, stimmt die Zählung; sitzt er rechts, ist sie gespiegelt (1↔6, 2↔5, 3↔4).</li>
+<li><b>Audio-Buchse:</b> Wenn GNDA mit der Gerätemasse verbunden ist, zeigt der Durchgangsprüfer (Telefon dafür vom
+Leitungskabel trennen) Verbindung zum dritten Kontakt von links. Keine Verbindung heißt nur „getrennte Analogmasse“,
+nicht „falsch“.</li>
+<li><b>Kabel:</b> Flache Telefonkabel sind oft gedreht (an einem Ende 1↔6). Gezählt wird immer am Stecker, der ins
+Telefon kommt. Aderfarben (häufig weiß, schwarz, rot, grün, gelb, blau) sind nicht genormt: Adern mit dem
+Durchgangsprüfer den Kontakten zuordnen.</li>
+</ol></div>
 
 <h2 id="vorher">Vor dem Anschließen</h2>
 <ul class="checks">
