@@ -25,7 +25,8 @@ ssh sopho-gw 'cd ~/Sopho2SIP && tools/asterisk_config.sh'   # Passwörter → ~/
 ssh sopho-gw 'cd ~/Sopho2SIP && sudo install -m 644 gateway/betrieb/sopho2sipd.service /etc/systemd/system/ \
   && sudo install -m 644 gateway/betrieb/sopho2sip.logrotate /etc/logrotate.d/sopho2sip \
   && sudo systemctl daemon-reload && sudo systemctl enable --now sopho2sipd'
-ssh -t sopho-gw 'python3 ~/Sopho2SIP/gateway/portal.py passwort' && ssh sopho-gw 'sudo systemctl restart sopho2sipd'
+ssh -t sopho-gw 'python3 ~/Sopho2SIP/gateway/portal.py passwort'
+ssh sopho-gw 'python3 ~/Sopho2SIP/gateway/portal.py zertifikat && sudo systemctl restart sopho2sipd'
 ```
 
 ## Aktualisieren
@@ -35,8 +36,12 @@ ssh -t sopho-gw 'python3 ~/Sopho2SIP/gateway/portal.py passwort' && ssh sopho-gw
 ## Sicherheit
 - Firewall: eingehend nur SSH (Schlüssel) von überall; Portal 8080, SIP 5060, RTP 10000–20000, mDNS nur aus
   `130.75.63.128/25` und dem VPN `10.8.6.0/24`. Zusätzlich PJSIP-ACL mit denselben Netzen.
-- Portal: HTTP-Basic-Auth (PBKDF2); ohne Passwortdatei nur auf 127.0.0.1 (`ssh -L 8080:localhost:8080 sopho-gw`).
-  POST-Aufträge brauchen den Kopf `X-Sopho2SIP: 1`. Kein TLS: Passwort nur im Uni-Netz/VPN verwenden.
+- Portal: `https://130.75.63.159:8080/` mit selbstsigniertem Zertifikat (`python3 gateway/portal.py zertifikat`,
+  Ausnahme einmal im Browser bestätigen, SHA-256-Fingerabdruck vergleichen). HTTPS ist Voraussetzung für
+  Browser-Benachrichtigungen. HTTP-Basic-Auth (PBKDF2); ohne Passwortdatei nur auf 127.0.0.1
+  (`ssh -L 8080:localhost:8080 sopho-gw`). POST-Aufträge brauchen den Kopf `X-Sopho2SIP: 1`.
+- Anrufhinweis im Portal: Browser-Benachrichtigung (Klick holt den Tab nach vorn; selbst nach vorn holen darf
+  sich ein Tab nicht), blinkender Tab-Titel, optional Klingelton. Einstellungen je Browser (localStorage).
 - **Steuerung:** Ohne `--steuerung` sendet der Daemon nur Anmelden/Keepalive. Portal-Wahl, Rückruf und
   SIP-Anrufe zur Sopho werden abgewiesen; eingehende Anrufe lassen die Softphones nur klingeln (Anzeige).
   `--steuerung` erst nach dem Wähltest einschalten (`sudo systemctl edit sopho2sipd`).

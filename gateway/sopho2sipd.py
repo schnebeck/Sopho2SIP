@@ -257,8 +257,10 @@ def main() -> int:
         gw.sip.start()
     if a.portal:
         import portal
-        host, port = portal.starte(a.portal, gw).server_address[:2]
-        print(f"Portal: http://{host}:{port}/ (Steuerung {'frei' if a.steuerung else 'gesperrt'})", flush=True)
+        srv = portal.starte(a.portal, gw)
+        host, port = srv.server_address[:2]
+        print(f"Portal: {'https' if srv.tls else 'http'}://{host}:{port}/ "
+              f"(Steuerung {'frei' if a.steuerung else 'gesperrt'})", flush=True)
     return betrieb(a, gw)
 
 
