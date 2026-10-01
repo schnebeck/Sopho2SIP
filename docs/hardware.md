@@ -72,11 +72,17 @@ User Guide D325/D330 `ref/ergoline_tsp/guide_ergoline_d325_d330_english.pdf`. Se
 
 ## Gateway
 - Konsole: Laptop (KDE neon), Zugriff per `ssh sopho-gw`, Schlüssel `~/.ssh/id_ed25519_sopho-gw`.
-- Pi: Raspberry Pi 4, Raspberry Pi OS Lite 64 bit, Hostname `sopho-gw`, Nutzer `pi`, IP ?
+- Pi: Raspberry Pi 4, Raspberry Pi OS Lite 64 bit (Debian 13 Trixie), Hostname `sopho-gw`, Nutzer `pi`.
+  In Betrieb seit 2026-10-01. Netz: DHCP an eth0 in einem anderen Netz als der Laptop, erreichbar über VPN;
+  `.local` geht dort nicht, die IP steht deshalb nur in `~/.ssh/config` des Laptops (nicht im öffentlichen Repo).
   - Image 2026-09-15-raspios-trixie-arm64-lite, per `dd` geschrieben; Erststart per cloud-init
     (`user-data`/`network-config` auf bootfs): Hostname, Nutzer `pi` nur SSH-Schlüssel + NOPASSWD-sudo,
-    Europe/Berlin, de, DHCP eth0, avahi, kein WLAN. Noch nicht in Betrieb genommen.
-  - Grundeinrichtung: `ssh sopho-gw 'bash -s' < tools/pi_bootstrap.sh`
+    Europe/Berlin, de, DHCP eth0, avahi, kein WLAN.
+  - Der erste Pi 4 (Bootloader 2023-01-11) brach mit `FAT read failed` / `Block device timeout` ab, obwohl
+    Netzteil (5,09 V) und Karte (vollständig gelesen, rootfs bytegleich mit dem Image) in Ordnung waren.
+    Ein anderer Pi 4 bootet mit derselben Karte; Ursache vermutlich SD-Slot des ersten Geräts.
+  - Grundeinrichtung: `ssh sopho-gw 'bash -s' < tools/pi_bootstrap.sh` (2026-10-01 ausgeführt: Pakete, Gruppen
+    `dialout`/`audio`, NTP synchron). Repo: `~/Sopho2SIP` (Klon von GitHub, Tests laufen mit Python 3.13).
 - USB-RS232: FTDI FT232R, `/dev/serial/by-id/usb-FTDI_FT232R_USB_UART_A97WEQGD-if00-port0` (derzeit am Laptop).
   Auch als Logikanalysator nutzbar (`tools/bitbang_scope.py`, synchroner Bitbang, Zugriff über Gruppe `plugdev`).
 - UCA222: ALSA-Karte `hw:?` (noch nicht angeschlossen).

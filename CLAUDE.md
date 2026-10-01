@@ -73,7 +73,7 @@ Sopho ─UPN─ D340 ─PC-Schnittstelle (Binärrahmen, 1200 8N1)─ USB-RS232 �
 
 ## Vorgehen (Phasen)
 
-1. **Pi in Betrieb nehmen:** SD-Karte ist vorbereitet (Trixie Lite, cloud-init), danach `tools/pi_bootstrap.sh`. — offen
+1. **Pi in Betrieb nehmen:** erledigt 2026-10-01 (Trixie Lite, cloud-init, `tools/pi_bootstrap.sh`, Repo unter `~/Sopho2SIP`).
 2. **Seriell verifizieren:** erledigt (1200 8N1, Freischaltung per TAPI-Schalter, Empfangsrahmen mitgeschnitten).
 3. **Protokoll klären:** `Ergoline.tsp` analysieren (Rahmen, ACK, Befehle), dann mit Freigabe Senden testen. — laufend
 4. **Audio verifizieren:** UCA222, X_OUT/X_IN, „Sprache über Zusatzgerät“. Ergebnisse in `docs/hardware.md`.
@@ -141,4 +141,4 @@ logs/                   # Mitschnitte, Übersicht in logs/INDEX.md
 - Audio: Pegel, Wirkung von X_IN, Inhalt von X_OUT, „Sprache über Zusatzgerät“.
 - Gibt es bereits einen SIP-Server, oder wird Asterisk auf dem Pi benötigt?
 - Schnittstelle der Nextcloud-App zu den Telefonen (HTTP-API/Action-URLs, AMI/ARI, SIP)?
-- Pi noch nicht in Betrieb.
+- FTDI-Adapter und Telefon vom Laptop an den Pi umstecken; serielle Tests dort wiederholen.

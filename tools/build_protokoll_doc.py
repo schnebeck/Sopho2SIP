@@ -277,6 +277,14 @@ FEHLER = [
     ("m", "d", "pc", "04 00", "ACK (bestätigt)", "evt"),
 ]
 
+VERPASST = [
+    ("a", "Anruf trifft ein"),
+    ("m", "d", "pc", "02 12 30 01 98 6c 0d 30 31 …", "RINGING · Anrufer „01“ + 01700000000", "evt"),
+    ("g", "klingelt 11 s, niemand nimmt ab"),
+    ("a", "Anrufer legt auf"),
+    ("m", "d", "pc", "02 06 39 01 98 08 01 8f", "RELEASED · Ursache 8f (Gegenseite)", "evt"),
+]
+
 
 def main() -> None:
     teile = {
@@ -288,6 +296,11 @@ def main() -> None:
                           "Meldungen RINGING, Hörer ab, CONNECTED, DTMF, dann DTMF aus, DISCONNECTED, RELEASED, Hörer auf"),
                           "Eingehender Anruf, am Telefon angenommen und aufgelegt. Mitschnitt "
                           "<code>serial_20260930_163534.log</code>, alle Rahmen bestätigt."),
+        "SEQ_VERPASST": figure(sequenz("s6", TN, VERPASST, "Eingehender Anruf, nicht angenommen: auf RINGING folgt "
+                               "direkt RELEASED mit Ursache 8f, ohne DISCONNECTED"),
+                               "Verpasster Anruf: Legt der Anrufer auf, bevor jemand abnimmt, folgt auf RINGING direkt "
+                               "RELEASED mit Ursache <span class=\"hex\">8f</span>, ohne DISCONNECTED und ohne Hörermeldung. "
+                               "Bestätigt (<code>logs/test_20261001_130201_pi_angenommen_verpasst.log</code>)."),
         "SEQ_AUS": figure(sequenz("s2", TN, ABGEHEND, "Abgehender Anruf am Telefon gewählt, Gegenseite legt auf"),
                           "Abgehender Anruf, am Telefon gewählt; die Gegenseite legt auf. Abheben und Einzelziffern "
                           "werden nicht gemeldet, die Nummer kommt als Block. Bestätigt."),
