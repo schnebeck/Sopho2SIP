@@ -219,8 +219,9 @@ nach dem man synchronisieren könnte: Nach einem Fehler den Puffer verwerfen und
 <div class="tbl"><table>
 <thead><tr><th>Typ</th><th>Name</th><th>Bedeutung, Inhalt</th><th>Status</th></tr></thead>
 <tbody>
-<tr><td class="hex">01</td><td>–</td><td>kommt 50 ms nach der Quittung auf „Anmelden“, Nutzdaten <span class="hex">01 01 02 00</span>.
- Der Treiber wertet sie nicht aus (Parser-Zweig <code>default</code>, nur Trace); ein Daemon kann sie ignorieren.</td><td><span class="st st-b">bestätigt</span></td></tr>
+<tr><td class="hex">01</td><td>READY</td><td>kommt nur 50 ms nach der Quittung auf „Anmelden“, Nutzdaten <span class="hex">01 01 02 00</span>;
+ vermutlich Bereitmeldung (<span class="st st-v">vermutet</span>). Der Treiber wertet sie nicht aus (Parser-Zweig <code>default</code>);
+ ein Daemon kann sie als „angemeldet“ werten oder ignorieren.</td><td><span class="st st-b">bestätigt</span></td></tr>
 <tr><td class="hex">30</td><td>RINGING</td><td>Anruf kommt an; IE <span class="hex">6c</span> Anrufernummer</td><td><span class="st st-b">bestätigt</span></td></tr>
 <tr><td class="hex">36</td><td>DIALTONE</td><td>Wählton; beim Wählen am Telefon erst bei Wahlende gemeldet, ohne Wahl alle 10 s wiederholt</td><td><span class="st st-b">bestätigt</span></td></tr>
 <tr><td class="hex">19</td><td>MORE_INFO</td><td>gewählte Nummer als Block; IE <span class="hex">70</span> Ziel</td><td><span class="st st-b">bestätigt</span></td></tr>
@@ -435,7 +436,7 @@ nur dokumentierte Aufträge senden, nichts raten; Wählen nur zu bekannten Testn
 
 <h2 id="offen"><span class="nr">12</span>Offene Fragen</h2>
 <div class="col"><ol>
-<li>Bedeutung der Meldung Typ <span class="hex">01</span> nach dem Anmelden (im Treiber ungenutzt; ändert sie sich je nach Zustand des Telefons?).</li>
+<li>Inhalt der Bereitmeldung <span class="hex">01</span> (<span class="hex">01 02 00</span>): ändert er sich je nach Zustand des Telefons?</li>
 <li>Wählen und Belegen am Gerät erproben (nur mit Testnummer).</li>
 <li>Stören Xon/Xoff, da <span class="hex">11</span>/<span class="hex">13</span> auch Auftragstypen sind?</li>
 <li>Bedeutung von <span class="hex">98</span> und der Aufträge <span class="hex">15</span>, <span class="hex">18</span>, <span class="hex">1b</span>–<span class="hex">24</span>, <span class="hex">27</span>.</li>
