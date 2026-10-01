@@ -78,8 +78,10 @@ button.rot { background: var(--bad); }
 button.blau { background: var(--accent); }
 button:disabled { opacity: .35; cursor: not-allowed; }
 .waehlzeile { display: grid; grid-template-columns: 1fr; margin-top: 12px; }
-.optionen { display: flex; justify-content: space-between; align-items: center; margin-top: 12px;
-  font-size: 13px; color: var(--muted); }
+.optionen { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 6px 14px;
+  margin-top: 12px; font-size: 13px; color: var(--muted); }
+.hinweis { font-size: 12px; color: var(--warn); margin: 6px 0 0; }
+.hinweis:empty { display: none; }
 
 /* Anrufliste */
 .listenkopf { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-bottom: 10px; }
@@ -146,6 +148,11 @@ ul#liste { list-style: none; margin: 0; padding: 0; }
       <label><input type="checkbox" id="ton" checked> Tastentöne lokal</label>
       <span>Extern: <code>01</code> vorwählen</span>
     </div>
+    <div class="optionen">
+      <label><input type="checkbox" id="benachrichtigung"> Benachrichtigung bei Anruf</label>
+      <label><input type="checkbox" id="klingelton"> Klingelton im Browser</label>
+    </div>
+    <p class="hinweis" id="hinweis"></p>
   </section>
 
   <section aria-label="Anrufliste">
@@ -246,6 +253,77 @@ $("waehlen").onclick = () => waehle();
 $("annehmen").onclick = () => post("annehmen");
 $("auflegen").onclick = () => post("auflegen");
 
+// --- Benachrichtigung, Tab-Titel, Klingelton -------------------------------------------------------
+// Ein Tab darf sich nicht selbst nach vorn holen; ein Klick auf die Benachrichtigung holt ihn (window.focus()).
+const KANN_MELDEN = window.isSecureContext && "Notification" in window;
+let meldung = null, blinker = null, klingler = null, vorher = "ruhe";
+function einst(k, std) { try { const v = localStorage.getItem("s2s." + k); return v === null ? std : v === "1"; }
+                         catch (e) { return std; } }
+function merke(k, v) { try { localStorage.setItem("s2s." + k, v ? "1" : "0"); } catch (e) { /* egal */ } }
+function zeigeHinweis() {
+  let h = "";
+  if (!KANN_MELDEN) h = "Benachrichtigungen nur über HTTPS (oder localhost) möglich.";
+  else if (Notification.permission === "denied") h = "Benachrichtigungen sind im Browser für diese Seite blockiert.";
+  $("hinweis").textContent = h;
+  $("benachrichtigung").disabled = !KANN_MELDEN || Notification.permission === "denied";
+}
+$("benachrichtigung").checked = KANN_MELDEN && Notification.permission === "granted" && einst("melden", true);
+$("klingelton").checked = einst("klingeln", false);
+$("benachrichtigung").onchange = async (e) => {
+  if (e.target.checked && Notification.permission !== "granted") {
+    const erlaubt = (await Notification.requestPermission()) === "granted";
+    e.target.checked = erlaubt;
+    if (erlaubt) new Notification("Sopho2SIP", {body: "Benachrichtigungen bei Anrufen sind aktiv.", tag: "sopho-test"});
+  }
+  merke("melden", e.target.checked); zeigeHinweis();
+};
+$("klingelton").onchange = (e) => { merke("klingeln", e.target.checked); if (e.target.checked) audioBereit(); };
+function audioBereit() {
+  try { audio = audio || new (window.AudioContext || window.webkitAudioContext)(); audio.resume(); } catch (e) { /* ohne */ }
+}
+document.addEventListener("pointerdown", audioBereit, {once: true});   // Browser erlauben Ton erst nach Interaktion
+function wer(a) { return a.name || a.nummer || "unbekannt"; }
+function melden(a, neu) {
+  if (!$("benachrichtigung").checked || !KANN_MELDEN || Notification.permission !== "granted") return;
+  const teile = [a.name ? a.nummer : "", a.ort || "", a.nummer ? (a.extern ? "extern" : "intern") : ""].filter(Boolean);
+  try {
+    meldung = new Notification("Anruf: " + wer(a), {body: teile.join(" · "), tag: "sopho-anruf",
+      requireInteraction: true, renotify: neu, silent: !neu});
+    meldung.onclick = () => { window.focus(); meldung.close(); };
+  } catch (e) { /* manche Browser nur über Service Worker */ }
+}
+function klingelTon() {
+  if (!audio || audio.state !== "running") return;
+  const t0 = audio.currentTime;
+  for (const [ab, f] of [[0, 1046], [.12, 1318], [.24, 1046], [.36, 1318], [.9, 1046], [1.02, 1318], [1.14, 1046], [1.26, 1318]]) {
+    const o = audio.createOscillator(), g = audio.createGain();
+    o.frequency.value = f; o.connect(g); g.connect(audio.destination);
+    g.gain.setValueAtTime(0, t0 + ab); g.gain.linearRampToValueAtTime(.08, t0 + ab + .01);
+    g.gain.setValueAtTime(.08, t0 + ab + .1); g.gain.linearRampToValueAtTime(0, t0 + ab + .11);
+    o.start(t0 + ab); o.stop(t0 + ab + .12);
+  }
+}
+function anrufBeginnt(a) {
+  melden(a, true);
+  let an = false;
+  clearInterval(blinker);
+  blinker = setInterval(() => { an = !an; document.title = an ? "📞 " + wer(status.anruf) : "Anruf – Sopho2SIP"; }, 900);
+  if ($("klingelton").checked) { klingelTon(); clearInterval(klingler); klingler = setInterval(klingelTon, 3500); }
+}
+function anrufEndet() {
+  clearInterval(blinker); clearInterval(klingler); blinker = klingler = null;
+  document.title = "Sopho2SIP";
+  if (meldung) { meldung.close(); meldung = null; }
+}
+function benachrichtige(a) {
+  const klingelt = a.zustand === "klingelt";
+  if (klingelt && vorher !== "klingelt") anrufBeginnt(a);
+  else if (klingelt && meldung && a.name && !meldung.title.includes(a.name)) melden(a, false);   // Name nachgeliefert
+  else if (!klingelt && vorher === "klingelt") anrufEndet();
+  vorher = a.zustand;
+}
+zeigeHinweis();
+
 // --- Zustand ---------------------------------------------------------------------------------------
 function dauer(s) { s = Math.max(0, Math.round(s)); const m = Math.floor(s / 60);
   return m >= 60 ? `${Math.floor(m/60)}:${String(m%60).padStart(2,"0")}:${String(s%60).padStart(2,"0")}`
@@ -273,6 +351,7 @@ function zeige(st) {
   for (const b of [$("annehmen"), $("auflegen"), $("waehlen")]) b.disabled = !st.steuerung || !st.verbunden;
   $("tonwahl").textContent = imAnruf() ? "Tasten senden direkt (Nachwahl/Tonwahl)" : "";
   $("tonwahl").className = "tonwahl" + (imAnruf() ? " aktiv" : "");
+  benachrichtige(a);
   tick();
 }
 function tick() {

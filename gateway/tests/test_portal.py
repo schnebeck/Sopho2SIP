@@ -63,6 +63,31 @@ class Portal(unittest.TestCase):
         self.assertEqual(self.anfrage("/api/waehlen", {"nummer": "123"}, kopf=False)[0], 403)
         self.assertEqual(self.anfrage("/api/waehlen", {"nummer": "123"})[0], 409)       # gesperrt
 
+    def test_tls(self):
+        import shutil
+        import ssl
+        import subprocess
+        if not shutil.which("openssl"):
+            self.skipTest("openssl fehlt")
+        crt, key = pathlib.Path(self.tmp.name) / "t.crt", pathlib.Path(self.tmp.name) / "t.key"
+        subprocess.run(["openssl", "req", "-x509", "-newkey", "ec", "-pkeyopt", "ec_paramgen_curve:prime256v1",
+                        "-days", "1", "-nodes", "-subj", "/CN=test", "-keyout", key, "-out", crt],
+                       check=True, capture_output=True)
+        srv = portal.Portal(("127.0.0.1", 0), self.gw, portal.lade_zugang(pathlib.Path(self.tmp.name) / "portal.json"),
+                            (crt, key))
+        threading.Thread(target=srv.serve_forever, daemon=True).start()
+        try:
+            ctx = ssl.create_default_context(cafile=crt)
+            ctx.check_hostname = False
+            req = urllib.request.Request(f"https://127.0.0.1:{srv.server_address[1]}/api/status")
+            req.add_header("Authorization", "Basic " + base64.b64encode(b"sopho:geheim-geheim").decode())
+            with urllib.request.urlopen(req, context=ctx, timeout=5) as r:
+                self.assertEqual(r.status, 200)
+                self.assertIn("max-age", r.headers["Strict-Transport-Security"])
+        finally:
+            srv.shutdown()
+            srv.server_close()
+
     def test_ohne_passwort_nur_lokal(self):
         with self.assertRaises(SystemExit):
             portal.Portal(("0.0.0.0", 0), self.gw, None)
