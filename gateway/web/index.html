@@ -112,6 +112,7 @@ ul#liste { list-style: none; margin: 0; padding: 0; }
 <header>
   <h1>Sopho2SIP</h1>
   <span id="p-telefon" class="pill">Telefon …</span>
+  <span id="p-sip" class="pill" hidden>SIP …</span>
   <span id="p-steuerung" class="pill">…</span>
   <span class="spacer"></span>
   <span id="p-live" class="pill">Live …</span>
@@ -250,6 +251,10 @@ function zeige(st) {
   const tel = $("p-telefon");
   tel.textContent = st.verbunden ? (st.bereit ? "Telefon bereit" : "Telefon verbunden") : "Telefon getrennt";
   tel.className = "pill " + (st.verbunden ? "ok" : "bad");
+  const sip = $("p-sip");
+  sip.hidden = st.sip === null || st.sip === undefined;
+  sip.textContent = st.sip ? "SIP verbunden" : "SIP getrennt";
+  sip.className = "pill " + (st.sip ? "ok" : "bad");
   const sg = $("p-steuerung");
   sg.textContent = st.steuerung ? "Steuerung frei" : "Steuerung gesperrt";
   sg.className = "pill " + (st.steuerung ? "ok" : "warn");
