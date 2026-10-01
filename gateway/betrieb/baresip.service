@@ -1,0 +1,21 @@
+# SPDX-License-Identifier: GPL-3.0-or-later
+# baresip als SIP-Seite des Gateways (Konfiguration ~/.baresip, eingerichtet von tools/asterisk_config.sh).
+[Unit]
+Description=baresip für Sopho2SIP (SIP-Seite, ctrl_tcp auf 127.0.0.1:4444)
+After=network-online.target asterisk.service sound.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=pi
+Group=pi
+SupplementaryGroups=audio
+ExecStart=/usr/bin/baresip -f /home/pi/.baresip
+Restart=always
+RestartSec=5
+NoNewPrivileges=yes
+ProtectSystem=full
+PrivateTmp=yes
+
+[Install]
+WantedBy=multi-user.target

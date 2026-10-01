@@ -1,0 +1,32 @@
+# SPDX-License-Identifier: GPL-3.0-or-later
+# baresip 1.1.0 als SIP-Seite des Gateways (nur lokal: spricht mit Asterisk auf 127.0.0.1, wird vom Daemon
+# über ctrl_tcp gesteuert). Installiert von tools/asterisk_config.sh nach ~/.baresip/config.
+poll_method		epoll
+sip_listen		127.0.0.1:5070
+sip_transports		udp
+call_local_timeout	120
+call_max_calls		1		# eine D340 = ein Gespräch
+call_hold_other_calls	no
+
+# Sprache über die UCA222 (ALSA-Karte "CODEC") an der Audio-Buchse der D340
+audio_player		alsa,plughw:CODEC,0
+audio_source		alsa,plughw:CODEC,0
+audio_alert		alsa,plughw:CODEC,0
+audio_level		no
+ausrc_format		s16
+auplay_format		s16
+auenc_format		s16
+audec_format		s16
+audio_buffer		20-160
+rtp_ports		30000-30099	# nur lokal zu Asterisk, nicht in der Firewall
+rtp_tos			184
+jitter_buffer_type	fixed
+jitter_buffer_delay	5-10
+
+module_path		/usr/lib/baresip/modules
+module			g711.so
+module			alsa.so
+module_tmp		account.so
+module_app		menu.so		# Befehle dial/accept/hangup für ctrl_tcp
+module_app		ctrl_tcp.so
+ctrl_tcp_listen		127.0.0.1:4444

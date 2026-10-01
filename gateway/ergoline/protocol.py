@@ -122,6 +122,25 @@ def extern(nummer: str, amtsholung: str = AMTSHOLUNG) -> tuple[bool, str]:
     return False, nummer
 
 
+def sip_nummer(nummer_roh: str, amtsholung: str = AMTSHOLUNG) -> str:
+    """Anrufernummer vom Telefon → SIP-Caller-ID: externe ohne Amtsholung (0171…), intern unverändert,
+    leer → 'anonymous'."""
+    return extern(nummer_roh, amtsholung)[1] if nummer_roh else "anonymous"
+
+
+def sopho_nummer(nummer: str, amtsholung: str = AMTSHOLUNG) -> str:
+    """Von SIP gewählte Nummer → Wahl an der D340. Nationale/internationale Nummern beginnen mit 0 und brauchen
+    die Amtsholung. Mit Amtsholung 01 sind '0171…' (ohne) und '010171…' (mit) nur über die 0 nach der
+    Amtsholung zu unterscheiden: beginnt die Nummer mit Amtsholung + '0', bleibt sie, sonst wird ergänzt.
+    '+' wird zu '00'. Nummern ohne führende 0 sind Nebenstellen."""
+    nummer = nummer.strip()
+    nummer = ("00" + nummer[1:] if nummer.startswith("+") else nummer)
+    nummer = "".join(c for c in nummer if c in "0123456789*#")
+    if not nummer.startswith("0") or nummer.startswith(amtsholung + "0"):
+        return nummer
+    return amtsholung + nummer
+
+
 def beschreibe(r: Rahmen) -> str:
     kl = KLASSE.get(r.klasse, f"KLASSE_{r.klasse:02x}")
     if r.klasse in QUITTUNGEN or not r.daten:

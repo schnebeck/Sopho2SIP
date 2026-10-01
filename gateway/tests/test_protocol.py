@@ -81,5 +81,21 @@ class Auftraege(unittest.TestCase):
         self.assertEqual(p.FREIE_AUFTRAEGE, {bytes.fromhex("01 02 01 00"), bytes.fromhex("01 02 00 00")})
 
 
+
+class Nummern(unittest.TestCase):
+    def test_sip_nummer(self):
+        self.assertEqual(p.sip_nummer("0101700000000"), "01700000000")      # extern: Amtsholung weg
+        self.assertEqual(p.sip_nummer("123"), "123")                        # Nebenstelle
+        self.assertEqual(p.sip_nummer(""), "anonymous")
+
+    def test_sopho_nummer(self):
+        self.assertEqual(p.sopho_nummer("01700000000"), "0101700000000")    # Mobilnummer: 01 davor
+        self.assertEqual(p.sopho_nummer("0101700000000"), "0101700000000")  # hat Amtsholung schon
+        self.assertEqual(p.sopho_nummer("0049170000000"), "010049170000000")
+        self.assertEqual(p.sopho_nummer("123"), "123")
+        self.assertEqual(p.sopho_nummer("+49 170 0000000"), "0100491700000000")  # + → 00
+        for n in ("01700000000", "123", "0049170000000"):                   # Hin- und Rückweg
+            self.assertEqual(p.sip_nummer(p.sopho_nummer(n)), n)
+
 if __name__ == "__main__":
     unittest.main()

@@ -3,7 +3,8 @@
 """Sopho2SIP-Daemon: hält die Verbindung zur ErgoLine D340, führt den Zustandsautomaten, gibt für jeden beendeten
 Anruf einen Anrufdatensatz aus (JSON-Zeile in eine Datei, optional HTTP-POST) und bedient das Webportal.
 
-Betrieb:     gateway/sopho2sipd.py [--port …] [--anrufe DATEI] [--webhook URL] [--portal HOST:PORT] [--steuerung]
+Betrieb:     gateway/sopho2sipd.py [--port …] [--anrufe DATEI] [--webhook URL] [--portal HOST:PORT]
+                                   [--baresip HOST:PORT] [--steuerung]
 Wiedergabe:  gateway/sopho2sipd.py --wiedergabe logs/serial_20260930_163534.log [--anrufe -]
 
 Ohne --steuerung sendet der Daemon nur Anmelden und Keepalive; Wählen/Annehmen/Auflegen aus dem Portal sind
@@ -61,6 +62,8 @@ class Gateway:
         self.lock = threading.RLock()
         self.telefon = Telefon(amtsholung)
         self.link = None
+        self.zuhoerer: list = []            # f(name, anruf, zusatz), z. B. SipBruecke.bei_telefon
+        self.sip = None                     # BaresipCtrl, falls --baresip
         self._abos: list[queue.Queue] = []
         self._abo_lock = threading.Lock()
 
@@ -90,7 +93,15 @@ class Gateway:
         with self.lock:
             self.link = link
             self.telefon = Telefon(self.amtsholung)
+        self._melde_zuhoerern("VERBINDUNG", None, link is not None)
         self._sende_an_abos("VERBINDUNG")
+
+    def _melde_zuhoerern(self, name, anruf, zusatz) -> None:
+        for f in self.zuhoerer:
+            try:
+                f(name, anruf, zusatz)
+            except Exception as e:          # ein Fehler in der Brücke darf den Empfang nicht stoppen
+                self.ausgabe.echo(f"  FEHLER       {f.__qualname__}: {e!r}")
 
     def verarbeite(self, r: p.Rahmen, zeit: float) -> None:
         with self.lock:
@@ -102,6 +113,7 @@ class Gateway:
                 self.ausgabe.datensatz(zusatz)
             else:
                 self.ausgabe.ereignis(name, anruf, zusatz)
+            self._melde_zuhoerern(name, anruf, zusatz)
             self._sende_an_abos(name)
 
     # --- Abfragen -----------------------------------------------------------------------------------
@@ -109,6 +121,7 @@ class Gateway:
         with self.lock:
             return {"verbunden": self.link is not None, "bereit": self.telefon.bereit,
                     "hoerer_ab": self.telefon.hoerer_ab, "steuerung": self.steuerung,
+                    "sip": None if self.sip is None else self.sip.verbunden,
                     "anruf": self.telefon.zustand_kurz(), "zeit": time.time()}
 
     def anrufliste(self, n: int = 200) -> list[dict]:
@@ -204,17 +217,25 @@ def main() -> int:
     ap.add_argument("--webhook", help="URL, an die jeder Anrufdatensatz per HTTP-POST (JSON) geht")
     ap.add_argument("--amtsholung", default=p.AMTSHOLUNG)
     ap.add_argument("--portal", metavar="HOST:PORT", help="Webportal starten, z. B. 127.0.0.1:8080")
-    ap.add_argument("--steuerung", action="store_true", help="Wählen/Annehmen/Auflegen aus dem Portal erlauben")
+    ap.add_argument("--steuerung", action="store_true", help="Wählen/Annehmen/Auflegen (Portal, SIP) erlauben")
+    ap.add_argument("--baresip", metavar="HOST:PORT", help="SIP-Brücke über baresip ctrl_tcp, z. B. 127.0.0.1:4444")
     ap.add_argument("--wiedergabe", metavar="LOG", help="Mitschnitt statt Telefon verarbeiten")
     a = ap.parse_args()
     ausgabe = Ausgabe(a.anrufe, a.webhook, echo=lambda s: print(s, file=sys.stderr, flush=True))
     if a.wiedergabe:
         return wiedergabe(a.wiedergabe, ausgabe, a.amtsholung)
     gw = Gateway(ausgabe, a.amtsholung, a.steuerung)
+    if a.baresip:
+        from sipbruecke import BaresipCtrl, SipBruecke
+        host, _, port = a.baresip.rpartition(":")
+        bruecke = SipBruecke(gw, None)
+        bruecke.ctrl = gw.sip = BaresipCtrl((host or "127.0.0.1", int(port)), bruecke.bei_sip, echo=ausgabe.echo)
+        gw.zuhoerer.append(bruecke.bei_telefon)
+        gw.sip.start()
     if a.portal:
         import portal
-        portal.starte(a.portal, gw)
-        print(f"Portal: http://{a.portal}/ (Steuerung {'frei' if a.steuerung else 'gesperrt'})", flush=True)
+        host, port = portal.starte(a.portal, gw).server_address[:2]
+        print(f"Portal: http://{host}:{port}/ (Steuerung {'frei' if a.steuerung else 'gesperrt'})", flush=True)
     return betrieb(a, gw)
 
 

@@ -23,7 +23,7 @@ wget -q -N "$QUELLE/$ARCHIV"
 sha256sum -c current.sha256
 VERZ=${ARCHIV%.tar.gz}
 echo "== Quelle: $VERZ"
-if command -v asterisk >/dev/null && [ "$(asterisk -V)" = "Asterisk ${VERZ#asterisk-}" ]; then
+if [ -x /usr/sbin/asterisk ] && [ "$(/usr/sbin/asterisk -V)" = "Asterisk ${VERZ#asterisk-}" ]; then
     echo "== $VERZ ist bereits installiert"; exit 0
 fi
 rm -rf "$VERZ" && tar xzf "$ARCHIV" && cd "$VERZ"
@@ -43,4 +43,4 @@ sudo usermod -aG audio,dialout asterisk
 for d in /var/lib/asterisk /var/log/asterisk /var/spool/asterisk /var/run/asterisk /etc/asterisk; do
     sudo mkdir -p "$d" && sudo chown -R asterisk:asterisk "$d"
 done
-echo "== installiert: $(asterisk -V)"
+echo "== installiert: $(/usr/sbin/asterisk -V)"
