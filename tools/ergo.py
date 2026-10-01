@@ -114,6 +114,10 @@ def waehltest(a, link, nummer: str) -> int:
             ende = warte_auf_eins(link, {"CONNECTED", "BUSY", "DISCONNECTED", "RELEASED"}, a.warte)
             if ende == "CONNECTED":
                 link.notiz(f"verbunden, Gespräch {a.gespraech:.0f} s")
+                if a.nach_verbindung:
+                    link.lausche(1)
+                    q = link.sende(a.nach_verbindung)
+                    link.notiz(f"Zusatzrahmen: {q.beschreibung() if q else 'keine Quittung'}")
                 ende = warte_auf_eins(link, {"DISCONNECTED", "RELEASED"}, a.gespraech)
             link.notiz(f"Zustand vor dem Auflegen: {ende or 'Zeit abgelaufen'}")
         finally:
@@ -164,10 +168,18 @@ def main() -> int:
     ap.add_argument("--freigabe", action="store_true", help="Nutzerfreigabe für gesprächsrelevante Rahmen")
     ap.add_argument("--gespraech", type=float, default=10.0, help="annahmetest: Gesprächsdauer (s)")
     ap.add_argument("--warte", type=float, default=120.0, help="annahmetest: max. Wartezeit auf Anruf (s)")
+    ap.add_argument("--nach-verbindung", metavar="HEX",
+                    help="waehltest: diesen Rahmen 1 s nach CONNECTED senden (z. B. '01 03 26 00 4f'; Freigabe!)")
     a = ap.parse_args()
 
     if a.befehl == "decode":
         return decode(a.argumente)
+    if a.nach_verbindung:
+        roh = bytes.fromhex(a.nach_verbindung)
+        teile = p.Assembler().feed(roh)
+        if len(teile) != 1 or teile[0].to_bytes() != roh:
+            sys.exit(f"--nach-verbindung: kein einzelner gültiger Rahmen: {roh.hex(' ')}")
+        a.nach_verbindung = teile[0]
     if a.befehl not in FREI and not a.freigabe:
         sys.exit(f"'{a.befehl}' beeinflusst Gespräche: nur mit --freigabe (vorher Nutzer fragen)")
 
