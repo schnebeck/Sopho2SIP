@@ -12,6 +12,8 @@ Nur mit --freigabe (Anruf wird ausgelöst/beeinflusst; CLAUDE.md: vorher Nutzer 
   ergo.py belegen | annehmen | auflegen --freigabe
   ergo.py waehlen NUMMER --freigabe     Nummer inkl. Amtsholung (extern: 01…)
   ergo.py roh "01 02 00 00" --freigabe  beliebiger Rahmen
+  ergo.py waehltest NUMMER --freigabe [--warte S] [--gespraech S]
+                                        anmelden, belegen, wählen, auf Verbindung warten, S s halten, auflegen
   ergo.py annahmetest --freigabe [--gespraech S]
                                         anmelden, auf Anruf warten, annehmen, S s halten, auflegen
 
@@ -75,6 +77,56 @@ def warte_auf(link, typ: str, sekunden: float):
     return None
 
 
+def warte_auf_eins(link, typen: set[str], sekunden: float) -> str | None:
+    """Wartet auf die erste Meldung aus typen; liefert deren Namen oder None."""
+    import queue, time
+    ende = time.time() + sekunden
+    while time.time() < ende:
+        try:
+            _, r = link.rahmen.get(timeout=max(0.05, ende - time.time()))
+        except queue.Empty:
+            break
+        if r.klasse == p.MELDUNG and p.MELDUNGSTYP.get(r.typ) in typen:
+            return p.MELDUNGSTYP[r.typ]
+    return None
+
+
+def waehltest(a, link, nummer: str) -> int:
+    """Wie der Treiber bei lineMakeCall: anmelden, belegen (11), auf ACK warten, wählen (19). Danach auf Verbindung
+    warten, a.gespraech s halten, auflegen. Bei fehlender Quittung Abbruch; aufgelegt wird in jedem Fall."""
+    wahl = p.waehlen(nummer)                       # prüft die Nummer vor jedem Senden
+    with link:
+        if (q := link.sende(p.anmelden())) is None or q.klasse != p.ACK:
+            link.notiz("Anmelden fehlgeschlagen, Abbruch")
+            return 1
+        link.lausche(1)
+        q = link.sende(p.belegen())
+        if q is None or q.klasse != p.ACK:
+            link.notiz(f"Belegen nicht quittiert ({q.beschreibung() if q else 'nichts'}), Abbruch")
+            return 1
+        ende = None
+        try:
+            link.notiz(f"Wählton: {warte_auf_eins(link, {'DIALTONE'}, 3) or 'keine Meldung binnen 3 s'}")
+            q = link.sende(wahl)
+            if q is None or q.klasse != p.ACK:
+                link.notiz(f"Wählen nicht quittiert ({q.beschreibung() if q else 'nichts'})")
+                return 1
+            ende = warte_auf_eins(link, {"CONNECTED", "BUSY", "DISCONNECTED", "RELEASED"}, a.warte)
+            if ende == "CONNECTED":
+                link.notiz(f"verbunden, Gespräch {a.gespraech:.0f} s")
+                ende = warte_auf_eins(link, {"DISCONNECTED", "RELEASED"}, a.gespraech)
+            link.notiz(f"Zustand vor dem Auflegen: {ende or 'Zeit abgelaufen'}")
+        finally:
+            if ende != "RELEASED":
+                q = link.sende(p.auflegen())
+                if q is None or q.klasse != p.ACK:
+                    link.notiz("Auflegen nicht quittiert")
+                if warte_auf_eins(link, {"RELEASED"}, 5) is None:
+                    link.notiz("keine RELEASED-Meldung nach Auflegen")
+            link.lausche(3)
+    return 0
+
+
 def annahmetest(a, link) -> int:
     with link:
         if (q := link.sende(p.anmelden())) is None or q.klasse != p.ACK:
@@ -103,7 +155,7 @@ def annahmetest(a, link) -> int:
 
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("befehl", choices=sorted(FREI | {"belegen", "annehmen", "auflegen", "waehlen", "roh", "annahmetest"}))
+    ap.add_argument("befehl", choices=sorted(FREI | {"belegen", "annehmen", "auflegen", "waehlen", "roh", "annahmetest", "waehltest"}))
     ap.add_argument("argumente", nargs="*")
     ap.add_argument("--port", default=None)
     ap.add_argument("--paritaet", choices=["O", "N", "E"], default="O")
@@ -138,6 +190,10 @@ def main() -> int:
         rahmen = teile[0]
 
     from ergoline.link import PORT_STANDARD, ErgoLink
+    if a.befehl == "waehltest":
+        if len(a.argumente) != 1:
+            sys.exit("waehltest braucht genau eine Nummer")
+        return waehltest(a, ErgoLink(a.port or PORT_STANDARD, paritaet=a.paritaet, xonxoff=a.xonxoff), a.argumente[0])
     if a.befehl == "annahmetest":
         return annahmetest(a, ErgoLink(a.port or PORT_STANDARD, paritaet=a.paritaet, xonxoff=a.xonxoff))
     with ErgoLink(a.port or PORT_STANDARD, paritaet=a.paritaet, xonxoff=a.xonxoff) as link:
