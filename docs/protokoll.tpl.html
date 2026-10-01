@@ -327,6 +327,41 @@ Farbige Pfeile: Aufträge des PCs. Gestrichelt: erwartet, am Gerät noch nicht g
 
 <h2 id="zustand"><span class="nr">08</span>Zustandsautomat und SIP</h2>
 {{ZUSTAND}}
+<h3>So führt der Originaltreiber die Zustände <span class="st st-t">Treiber</span></h3>
+<div class="col">
+<p>Die Rahmen tragen <b>keine Anrufkennung</b>; das Byte „Leitung“ ist immer <span class="hex">01</span>. Der Philips-Treiber
+führt deshalb selbst eine Anruftabelle (31 Plätze) und ordnet jede Meldung dem Anruf zu, der gerade in einem passenden
+Zustand ist. Die Zustände sind die TAPI-Werte <code>LINECALLSTATE_*</code>; im Diagramm oben: RUHE = IDLE,
+KLINGELT = OFFERING, WÄHLTON = DIALTONE, WAHL = DIALING, RUFT = PROCEEDING/RINGBACK, VERBUNDEN = CONNECTED,
+AUSGELÖST = DISCONNECTED.</p>
+<p>Je Meldung setzt der Parser einen Ereigniscode, eine Übergangstabelle (<code>0x100069eb</code>) bildet
+„alter Zustand × Code“ auf den neuen Zustand ab, eine zweite Funktion (<code>0x1000b70b</code>) setzt den Modus
+(Wählton-Art, Besetzt-Art, Auslöseursache als <code>LINEDISCONNECTMODE</code>).</p>
+</div>
+<div class="tbl"><table>
+<thead><tr><th>Zustand</th><th>erlaubte Übergänge (zusätzlich immer: Auslösung → DISCONNECTED)</th></tr></thead>
+<tbody>
+<tr><td>neu</td><td>Angebot → OFFERING · Wählton → DIALTONE · weitere Codes setzen den Zustand direkt</td></tr>
+<tr><td>OFFERING</td><td>Accept → ACCEPTED → CONNECTED (bei Annahme: erst Accept, dann Connect)</td></tr>
+<tr><td>DIALTONE</td><td>Wahl → DIALING</td></tr>
+<tr><td>DIALING</td><td>Proceeding → PROCEEDING · besetzt → BUSY</td></tr>
+<tr><td>PROCEEDING</td><td>Ringback → RINGBACK (folgt unmittelbar) · besetzt → BUSY · Konferenz → CONFERENCED</td></tr>
+<tr><td>RINGBACK, BUSY</td><td>Connect → CONNECTED</td></tr>
+<tr><td>CONNECTED</td><td>Halten → ONHOLD · Halten für Übergabe → ONHOLDPENDTRANSFER · Halten für Konferenz → ONHOLDPENDCONF · Konferenz → CONFERENCED</td></tr>
+<tr><td>ONHOLD, ONHOLDPENDTRANSFER</td><td>Connect → CONNECTED</td></tr>
+<tr><td>DISCONNECTED</td><td>Freigabe (RELEASED) → IDLE, Platz in der Tabelle wird frei</td></tr>
+</tbody></table></div>
+<h3>Wann der Treiber einen Auftrag senden darf <span class="st st-t">Treiber</span></h3>
+<ul class="checks">
+<li><b>Wählen:</b> nicht, solange ein Anruf DISCONNECTED ist. Kein Anruf: erst Belegen <span class="hex">11</span>, dann Wählen
+<span class="hex">19</span>. Ein Anruf ONHOLD bzw. ONHOLDPENDTRANSFER: Wählen <span class="hex">19</span> direkt (Rückfrage).</li>
+<li><b>Annehmen:</b> genau ein Anruf in OFFERING → <span class="hex">14</span>. Anklopfender zweiter Anruf →
+<span class="hex">26 … 16</span>, dann <span class="hex">26 … 17</span>.</li>
+<li><b>Auflegen:</b> ein Anruf → <span class="hex">13</span>; bei zwei Anrufen zusätzlich <span class="hex">15</span> bzw. Reconnect
+<span class="hex">26 … c3</span> zum gehaltenen Gespräch.</li>
+</ul>
+<div class="col"><p>Für einen Daemon heißt das: eine eigene Anruftabelle führen, jede Meldung über den aktuellen Zustand zuordnen,
+Aufträge nur bei erfüllter Vorbedingung senden und Modus bzw. Ursache mitführen (für SIP-Statuscodes und Statistik).</p></div>
 <div class="tbl"><table>
 <thead><tr><th>Ereignis</th><th>Daemon tut</th><th>SIP-Seite</th></tr></thead>
 <tbody>

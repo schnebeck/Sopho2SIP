@@ -327,6 +327,41 @@ Farbige Pfeile: Aufträge des PCs. Gestrichelt: erwartet, am Gerät noch nicht g
 
 <h2 id="zustand"><span class="nr">08</span>Zustandsautomat und SIP</h2>
 <figure class="fig wide"><div class="fig-scroll"><svg viewBox="0 0 900 460" role="img" class="diagram" aria-label="Zustandsautomat eines Anrufs: Ruhe, klingelt oder Wählton, Wahl, ruft, verbunden, ausgelöst, zurück in Ruhe; Übergänge durch Meldungen 30, 36, 19, 3e, 31, 32, 39 und PC-Aufträge 14, 11, 19, 13"><defs><marker id="za-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="d-ah"/></marker><marker id="za-r" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="d-ah-req"/></marker></defs><line x1="128" y1="149" x2="279" y2="82" class="d-evt" marker-end="url(#za-a)"/><text x="194" y="110" text-anchor="end" class="d-mono">30 RINGING</text><line x1="397" y1="77" x2="690" y2="152" class="d-evt" marker-end="url(#za-a)"/><text x="562" y="111" text-anchor="start" class="d-mono">31 CONNECTED</text><line x1="113" y1="192" x2="214" y2="257" class="d-evt" marker-end="url(#za-a)"/><text x="156" y="228" text-anchor="end" class="d-mono">36 DIALTONE</text><line x1="317" y1="280" x2="360" y2="280" class="d-evt" marker-end="url(#za-a)"/><text x="338" y="270" text-anchor="middle" class="d-mono">19 MORE_INFO</text><line x1="497" y1="280" x2="540" y2="280" class="d-evt" marker-end="url(#za-a)"/><text x="518" y="270" text-anchor="middle" class="d-mono">3e PROCEEDING</text><line x1="640" y1="258" x2="728" y2="194" class="d-evt" marker-end="url(#za-a)"/><text x="698" y="236" text-anchor="start" class="d-mono">31 CONNECTED</text><line x1="760" y1="193" x2="760" y2="374" class="d-evt" marker-end="url(#za-a)"/><text x="770" y="276" text-anchor="start" class="d-mono">32 DISCONNECTED</text><polyline points="693.0,400 80,400 80,196.0" class="d-evt" fill="none" marker-end="url(#za-a)"/><text x="420" y="392" text-anchor="middle" class="d-mono">39 RELEASED</text><text x="420" y="418" text-anchor="middle" class="d-lbl">auch direkt aus KLINGELT, WÄHLTON, WAHL, RUFT</text><text x="330" y="30" text-anchor="middle" class="d-reqt">Auftrag 14 annehmen</text><text x="80" y="216" text-anchor="middle" class="d-reqt">Auftrag 11 belegen</text><text x="250" y="326" text-anchor="middle" class="d-reqt">Auftrag 19 wählen</text><text x="760" y="140" text-anchor="middle" class="d-reqt">Auftrag 13 auflegen</text><rect x="16.0" y="150.0" width="128" height="40" rx="20" class="d-state"/><text x="80" y="175" text-anchor="middle" class="d-head">RUHE</text><rect x="266.0" y="40.0" width="128" height="40" rx="20" class="d-state"/><text x="330" y="65" text-anchor="middle" class="d-head">KLINGELT</text><rect x="186.0" y="260.0" width="128" height="40" rx="20" class="d-state"/><text x="250" y="285" text-anchor="middle" class="d-head">WÄHLTON</text><rect x="366.0" y="260.0" width="128" height="40" rx="20" class="d-state"/><text x="430" y="285" text-anchor="middle" class="d-head">WAHL</text><rect x="546.0" y="260.0" width="128" height="40" rx="20" class="d-state"/><text x="610" y="285" text-anchor="middle" class="d-head">RUFT</text><rect x="696.0" y="150.0" width="128" height="40" rx="20" class="d-state"/><text x="760" y="175" text-anchor="middle" class="d-head">VERBUNDEN</text><rect x="696.0" y="380.0" width="128" height="40" rx="20" class="d-state"/><text x="760" y="405" text-anchor="middle" class="d-head">AUSGELÖST</text></svg></div><figcaption>Zustände eines Anrufs aus Sicht des Daemons. Schwarze Pfeile sind Meldungen des Telefons, farbige Beschriftungen die Aufträge, mit denen der Daemon den Übergang auslöst.</figcaption></figure>
+<h3>So führt der Originaltreiber die Zustände <span class="st st-t">Treiber</span></h3>
+<div class="col">
+<p>Die Rahmen tragen <b>keine Anrufkennung</b>; das Byte „Leitung“ ist immer <span class="hex">01</span>. Der Philips-Treiber
+führt deshalb selbst eine Anruftabelle (31 Plätze) und ordnet jede Meldung dem Anruf zu, der gerade in einem passenden
+Zustand ist. Die Zustände sind die TAPI-Werte <code>LINECALLSTATE_*</code>; im Diagramm oben: RUHE = IDLE,
+KLINGELT = OFFERING, WÄHLTON = DIALTONE, WAHL = DIALING, RUFT = PROCEEDING/RINGBACK, VERBUNDEN = CONNECTED,
+AUSGELÖST = DISCONNECTED.</p>
+<p>Je Meldung setzt der Parser einen Ereigniscode, eine Übergangstabelle (<code>0x100069eb</code>) bildet
+„alter Zustand × Code“ auf den neuen Zustand ab, eine zweite Funktion (<code>0x1000b70b</code>) setzt den Modus
+(Wählton-Art, Besetzt-Art, Auslöseursache als <code>LINEDISCONNECTMODE</code>).</p>
+</div>
+<div class="tbl"><table>
+<thead><tr><th>Zustand</th><th>erlaubte Übergänge (zusätzlich immer: Auslösung → DISCONNECTED)</th></tr></thead>
+<tbody>
+<tr><td>neu</td><td>Angebot → OFFERING · Wählton → DIALTONE · weitere Codes setzen den Zustand direkt</td></tr>
+<tr><td>OFFERING</td><td>Accept → ACCEPTED → CONNECTED (bei Annahme: erst Accept, dann Connect)</td></tr>
+<tr><td>DIALTONE</td><td>Wahl → DIALING</td></tr>
+<tr><td>DIALING</td><td>Proceeding → PROCEEDING · besetzt → BUSY</td></tr>
+<tr><td>PROCEEDING</td><td>Ringback → RINGBACK (folgt unmittelbar) · besetzt → BUSY · Konferenz → CONFERENCED</td></tr>
+<tr><td>RINGBACK, BUSY</td><td>Connect → CONNECTED</td></tr>
+<tr><td>CONNECTED</td><td>Halten → ONHOLD · Halten für Übergabe → ONHOLDPENDTRANSFER · Halten für Konferenz → ONHOLDPENDCONF · Konferenz → CONFERENCED</td></tr>
+<tr><td>ONHOLD, ONHOLDPENDTRANSFER</td><td>Connect → CONNECTED</td></tr>
+<tr><td>DISCONNECTED</td><td>Freigabe (RELEASED) → IDLE, Platz in der Tabelle wird frei</td></tr>
+</tbody></table></div>
+<h3>Wann der Treiber einen Auftrag senden darf <span class="st st-t">Treiber</span></h3>
+<ul class="checks">
+<li><b>Wählen:</b> nicht, solange ein Anruf DISCONNECTED ist. Kein Anruf: erst Belegen <span class="hex">11</span>, dann Wählen
+<span class="hex">19</span>. Ein Anruf ONHOLD bzw. ONHOLDPENDTRANSFER: Wählen <span class="hex">19</span> direkt (Rückfrage).</li>
+<li><b>Annehmen:</b> genau ein Anruf in OFFERING → <span class="hex">14</span>. Anklopfender zweiter Anruf →
+<span class="hex">26 … 16</span>, dann <span class="hex">26 … 17</span>.</li>
+<li><b>Auflegen:</b> ein Anruf → <span class="hex">13</span>; bei zwei Anrufen zusätzlich <span class="hex">15</span> bzw. Reconnect
+<span class="hex">26 … c3</span> zum gehaltenen Gespräch.</li>
+</ul>
+<div class="col"><p>Für einen Daemon heißt das: eine eigene Anruftabelle führen, jede Meldung über den aktuellen Zustand zuordnen,
+Aufträge nur bei erfüllter Vorbedingung senden und Modus bzw. Ursache mitführen (für SIP-Statuscodes und Statistik).</p></div>
 <div class="tbl"><table>
 <thead><tr><th>Ereignis</th><th>Daemon tut</th><th>SIP-Seite</th></tr></thead>
 <tbody>
