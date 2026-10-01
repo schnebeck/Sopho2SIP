@@ -8,7 +8,8 @@ Rufweg (Asterisk-Wählplan gateway/asterisk/extensions.conf):
                → Wahl an der D340 → Gegenseite meldet sich (VERBUNDEN) → baresip nimmt an.
   Auflegen auf einer Seite löst die andere aus; DTMF vom Softphone (CALL_DTMF_START) wird als Ziffer nachgewählt.
 Ohne --steuerung klingeln die Softphones nur (Anrufanzeige); Annehmen dort beendet den SIP-Anruf wieder.
-Ereignisformat am Gerät mitgeschnitten (baresip 1.1.0, 2026-10-01): type, id, direction, peeruri, param.
+Ereignisformat am Pi mitgeschnitten (baresip 1.1.0 und 4.12.0, 2026-10-01): type, id, direction, peeruri, param;
+Befehle dial/accept/hangup. 4.12 nimmt nur Anrufe an sip:gateway@… an (sonst 404) – Asterisk ruft genau so.
 """
 from __future__ import annotations
 

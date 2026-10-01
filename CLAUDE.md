@@ -80,7 +80,7 @@ Sopho ─UPN─ D340 ─PC-Schnittstelle (Binärrahmen, 1200 8N1)─ USB-RS232 �
 2. **Seriell verifizieren:** erledigt (1200 8N1, Freischaltung per TAPI-Schalter, Empfangsrahmen mitgeschnitten).
 3. **Protokoll klären:** `Ergoline.tsp` analysieren (Rahmen, ACK, Befehle), dann mit Freigabe Senden testen. — laufend
 4. **Audio verifizieren:** UCA222, X_OUT/X_IN, „Sprache über Zusatzgerät“. Ergebnisse in `docs/hardware.md`.
-5. **SIP-Stack:** Asterisk 22 (aus dem Quelltext) und baresip 1.1.0 laufen auf dem Pi (`docs/betrieb.md`).
+5. **SIP-Stack:** Asterisk 22 und baresip 4.12 (beide aus dem Quelltext) laufen auf dem Pi (`docs/betrieb.md`).
    Offen: Test mit echtem Softphone, Sprache über UCA222.
 6. **Gateway-Daemon:** Stufe 1 fertig (Zustandsautomat, Anrufdatensätze, Keepalive, Wiederanlauf); Stufe 2:
    Steuerbefehle und Brücke seriell ↔ baresip (`gateway/sipbruecke.py`) gebaut, Steuerung noch gesperrt.
@@ -138,6 +138,8 @@ tools/pi_bootstrap.sh   # Grundeinrichtung des Pi (Pakete, Gruppen, NTP)
 tools/asterisk_build.sh # Asterisk 22 LTS aus dem Quelltext (Trixie hat kein Paket)
 tools/firewall.sh       # Firewall laden, mit automatischer Rücknahme gegen Aussperren
 tools/asterisk_config.sh # Asterisk/baresip-Konfiguration einspielen, SIP-Passwörter erzeugen
+tools/baresip_build.sh  # baresip 4.x + re aus dem Quelltext (Trixie hat nur 1.1.0)
+tools/audio_test.sh     # Audiotest im Gespräch (Aufnahme X_OUT, Töne/Nachricht auf X_IN), braucht Freigabe
 tools/build_protokoll_doc.py  # erzeugt docs/protokoll.html (Standardbibliothek)
 tools/build_audio_doc.py      # erzeugt docs/audio_verkabelung.html (Schaltplan Audio)
 gateway/ergoline/       # protocol.py (Rahmen), link.py (seriell), zustand.py (Zustandsautomat), logdatei.py
