@@ -91,6 +91,7 @@ class Telefon:
         self.anrufe: dict[int, Anruf] = {}
         self.hoerer_ab = False
         self.dtmf = False
+        self.x_eingang = False              # Merkmal 4f „X-Eingang statt Mikrofon“ (gilt je Gespräch)
         self.bereit = False
         self._kennungen = itertools.count(1)
 
@@ -114,7 +115,7 @@ class Telefon:
         if r.klasse != p.MELDUNG or not r.daten:
             return ev
         typ = p.MELDUNGSTYP.get(r.typ)
-        ies = dict(p.ies(r.daten[2:])) if typ not in ("FACILITY_EIN", "FACILITY_AUS") else {}
+        ies = dict(p.ies(r.daten[2:])) if typ not in ("FACILITY_EIN", "FACILITY_AUS", "FACILITY_ABGELEHNT") else {}
 
         if typ == "READY":
             self.bereit = True
@@ -190,8 +191,14 @@ class Telefon:
                 ev.append(("HOERER_AB" if ein else "HOERER_AUF", None, None))
             elif merkmal == "DTMF":
                 self.dtmf = ein
+            elif merkmal == "X_EINGANG":
+                self.x_eingang = ein
+                ev.append(("X_EINGANG", None, ein))
             else:
-                ev.append(("MERKMAL", None, (merkmal, ein)))
+                ev.append(("MERKMAL", None, (merkmal or f"{r.daten[2]:02x}" if len(r.daten) > 2 else None, ein)))
+        elif typ == "FACILITY_ABGELEHNT":
+            kennung = r.daten[2] if len(r.daten) > 2 else None
+            ev.append(("MERKMAL_ABGELEHNT", None, p.MERKMAL.get(kennung, f"{kennung:02x}" if kennung is not None else "")))
         else:
             ev.append(("UNBEKANNT", None, r.hex()))
         return ev

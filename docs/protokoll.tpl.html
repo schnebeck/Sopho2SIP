@@ -251,7 +251,11 @@ nach dem man synchronisieren könnte: Nach einem Fehler den Puffer verwerfen und
 <tr><td class="hex">1a</td><td>Rückruf (ARB)</td><td><span class="st st-t">Treiber</span></td></tr>
 <tr><td class="hex">1d</td><td>Aufschalten</td><td><span class="st st-t">Treiber</span></td></tr>
 <tr><td class="hex">1f</td><td>Konferenz vorbereiten</td><td><span class="st st-t">Treiber</span></td></tr>
+<tr><td class="hex">4f</td><td>X-Eingang statt Mikrofon: Sprache von der Audio-Buchse statt der Mikrofone; nur im Gespräch (sonst <span class="hex">3c 01 4f</span> abgelehnt), endet mit dem Gespräch</td><td><span class="st st-b">bestätigt</span></td></tr>
+<tr><td class="hex">4b / 4e</td><td>Wechsel Benutzermodus / Special mode des Telefons (je <span class="hex">3a</span> des einen, <span class="hex">3b</span> des anderen)</td><td><span class="st st-v">vermutet</span></td></tr>
 </tbody></table></div>
+<div class="col"><p>Meldung <span class="hex">3c 01 kk</span> (FACILITY_REJECTED): das Telefon hat ein Merkmal abgelehnt, z. B.
+<span class="hex">4f</span> per Funktionstaste im Ruhezustand. <span class="st st-b">bestätigt</span></p></div>
 
 <h3>Informationselemente und Rufnummern</h3>
 <div class="col">
@@ -286,7 +290,7 @@ Alle Rahmen stammen aus dem Philips-Treiber. Anmelden, Keepalive, Annehmen und A
 <tr><td>Wählen</td><td class="hex">01 L 19 00 98 70 n+1 81 Ziffern…</td><td>nach dem Belegen; Telefon bestätigt mit MORE_INFO (<span class="hex">19</span>, Ziel); als Nachwahl/DTMF im Gespräch laut Treiber</td><td><span class="st st-b">bestätigt</span> (Nachwahl: <span class="st st-t">Treiber</span>)</td></tr>
 <tr><td>Annehmen</td><td class="hex">01 02 14 00</td><td>während RINGING; das Telefon hebt ab (Freisprechen bei „Sprache über Telefon“)</td><td><span class="st st-b">bestätigt</span></td></tr>
 <tr><td>Auflegen</td><td class="hex">01 02 13 00</td><td>bei genau einem Gespräch; danach DISCONNECTED, RELEASED, Hörer aus</td><td><span class="st st-b">bestätigt</span></td></tr>
-<tr><td>Merkmal</td><td class="hex">01 03 26 00 kk</td><td><span class="hex">16</span>/<span class="hex">17</span> Anklopfen anzeigen/annehmen, <span class="hex">c3</span> Reconnect bei zwei Gesprächen</td><td><span class="st st-t">Treiber</span></td></tr>
+<tr><td>Merkmal</td><td class="hex">01 03 26 00 kk</td><td><span class="hex">16</span>/<span class="hex">17</span> Anklopfen anzeigen/annehmen, <span class="hex">c3</span> Reconnect bei zwei Gesprächen (Treiber); <span class="hex">4f</span> X-Eingang statt Mikrofon im Gespräch → ACK, dann <span class="hex">3b 01 4f</span> (am Gerät, nicht im Treiber)</td><td><span class="st st-t">Treiber</span> · <span class="st st-b">4f bestätigt</span></td></tr>
 <tr><td>weitere</td><td class="hex">15, 18, 1b, 1c, 1d, 21–24, 27, 25</td><td>Halten, Übergabe, Konferenz, Rückruf, User-to-User</td><td><span class="st st-t">Treiber</span></td></tr>
 </tbody></table></div>
 <div class="col">

@@ -34,6 +34,7 @@ MERKMAL = {
     0x01: "UMLEITUNG", 0x0A: "HOERER", 0x16: "ANKLOPFEN_ANZEIGEN", 0x17: "ANKLOPFEN_ANNEHMEN",
     0x1A: "RUECKRUF", 0x1D: "AUFSCHALTEN", 0x1F: "KONFERENZ_VORBEREITEN", 0x30: "DTMF",
     0xC3: "RECONNECT", 0xEE: "RECONNECT_ALT",
+    0x4F: "X_EINGANG",      # „X-Eingang statt Mikrofon“, nur im Gespräch; am Gerät bestätigt 2026-10-01
 }
 
 # Informationselemente wie Q.931
@@ -195,6 +196,17 @@ def annehmen() -> Rahmen:
 
 def auflegen() -> Rahmen:
     return _auftrag(0x13, 0x00)
+
+
+def merkmal(kennung: int) -> Rahmen:
+    """Merkmalsauftrag 01 03 26 00 <kk> (Kennungen wie bei FACILITY_EIN/AUS)."""
+    return _auftrag(0x26, 0x00, kennung)
+
+
+def x_eingang() -> Rahmen:
+    """Sprache von der Audio-Buchse (X_IN) statt der Mikrofone senden. Nur im Gespräch (sonst 3c 01 4f); gilt bis
+    zum Ende des Gesprächs. Nicht im Treiber, am Gerät bestätigt: ACK, dann 3b 01 4f (test_20261001_171607)."""
+    return merkmal(0x4F)
 
 
 def waehlen(nummer: str) -> Rahmen:

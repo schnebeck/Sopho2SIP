@@ -65,6 +65,7 @@ class Gateway:
         self.zuhoerer: list = []            # f(name, anruf, zusatz), z. B. SipBruecke.bei_telefon
         self.sip = None                     # BaresipCtrl, falls --baresip
         self.rueckwaerts = None             # Rueckwaertssuche, falls --rueckwaertssuche
+        self._pc_anruf = False              # Gespräch vom PC angenommen/gewählt → X-Eingang einschalten
         self._abos: list[queue.Queue] = []
         self._abo_lock = threading.Lock()
 
@@ -114,10 +115,23 @@ class Gateway:
                 self.ausgabe.datensatz(zusatz)
             else:
                 self.ausgabe.ereignis(name, anruf, zusatz)
+            if name == "VERBUNDEN":
+                self._x_eingang_einschalten()
+            elif name == "ANRUF_ENDE":
+                self._pc_anruf = False
             self._melde_zuhoerern(name, anruf, zusatz)
             self._sende_an_abos(name)
             if name in ("ANRUF_EIN", "WAHL") and self.rueckwaerts and anruf.nummer_roh and anruf.name is None:
                 threading.Thread(target=self._rueckwaerts, args=(anruf,), daemon=True).start()
+
+    def _x_eingang_einschalten(self) -> None:
+        """Bei PC-geführten Gesprächen Sprache von X_IN statt der Mikrofone der D340 (Merkmal 4f).
+        Gespräche am Hörer der D340 bleiben unberührt, sonst wäre dort das Mikrofon stumm."""
+        with self.lock:
+            if not (self._pc_anruf and self.steuerung and self.link) or self.telefon.x_eingang:
+                return
+            q = self.link.sende(p.x_eingang())
+        self.ausgabe.echo(f"  AUFTRAG      X-Eingang statt Mikrofon: {q.beschreibung() if q else 'keine Quittung'}")
 
     def _rueckwaerts(self, anruf) -> None:
         ext, nummer = p.extern(anruf.nummer_roh, self.amtsholung)
@@ -182,6 +196,9 @@ class Gateway:
                 if q is None or q.klasse != p.ACK:
                     return {"ok": False, "gesendet": gesendet,
                             "fehler": f"keine Quittung für {r.hex()}" if q is None else q.beschreibung()}
+            # noch unter der Sperre: CONNECTED wird erst danach verarbeitet und findet die Markierung sicher vor
+            if art == "annehmen" or (art == "waehlen" and gesendet[0] == p.belegen().hex()):
+                self._pc_anruf = True
         self.ausgabe.echo(f"  AUFTRAG     {art} {' | '.join(gesendet)}")
         return {"ok": True, "gesendet": gesendet}
 
