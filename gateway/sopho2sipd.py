@@ -25,7 +25,7 @@ from ergoline.logdatei import rohdaten  # noqa: E402
 from ergoline.zustand import AuftragNichtMoeglich, Telefon  # noqa: E402
 
 STANDARD_ANRUFE = pathlib.Path.home() / ".local" / "share" / "sopho2sip" / "anrufe.jsonl"
-KEEPALIVE_S = 15.0
+KEEPALIVE_S = 15.0      # Watchdog der D340: nach 30 s ohne Rahmen vom PC legt sie PC-Gespräche auf
 
 
 class Ausgabe:
@@ -223,19 +223,18 @@ def betrieb(a, gw: Gateway) -> int:
                 with gw.lock:
                     q = link.sende(p.anmelden())
                 print(f"Anmeldung: {q.beschreibung() if q else 'keine Quittung'}", flush=True)
-                letzte = time.time()
                 while True:
+                    # Keepalive nach 15 s ohne SENDEN (nicht nur ohne Empfang wie im Treiber): meldet das Telefon
+                    # laufend etwas, käme sonst nie ein Keepalive und der Watchdog (30 s) legt auf.
+                    if time.time() - link.zuletzt_gesendet > KEEPALIVE_S:
+                        with gw.lock:
+                            q = link.sende(p.keepalive())
+                        if q is None:
+                            raise serial.SerialException("Keepalive ohne Quittung")
                     try:
                         zeit, r = link.rahmen.get(timeout=1.0)
                     except queue.Empty:
-                        if time.time() - letzte > KEEPALIVE_S:
-                            with gw.lock:
-                                q = link.sende(p.keepalive())
-                            if q is None:
-                                raise serial.SerialException("Keepalive ohne Quittung")
-                            letzte = time.time()
                         continue
-                    letzte = zeit
                     gw.verarbeite(r, zeit)
         except (serial.SerialException, OSError) as e:
             gw.verbindung(None)

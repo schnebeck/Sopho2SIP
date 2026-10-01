@@ -2,6 +2,10 @@
 """Serielle Verbindung zur ErgoLine D340: Lesethread, Senden mit Quittung, Sitzungslog.
 
 Jede Sitzung schreibt nach logs/ergo_<zeit>.log: Rohbytes (<< raw / >> raw) und dekodierte Rahmen.
+
+Watchdog der D340 (am Gerät bestätigt 2026-10-01): Kommt 30 s lang kein Rahmen vom PC, legt das Telefon ein vom PC
+geführtes Gespräch selbst auf (DISCONNECTED ohne Ursache). Mit keepalive_s sendet ErgoLink selbst ein Keepalive,
+sobald so lange nichts gesendet wurde.
 """
 from __future__ import annotations
 
@@ -29,12 +33,15 @@ class ErgoLink:
     Bytes 0x11/0x13 in Rahmen nicht als Flusssteuerung verschluckt werden."""
 
     def __init__(self, port: str = PORT_STANDARD, baud: int = 1200, paritaet: str = "O",
-                 xonxoff: bool = False, echo=print) -> None:
+                 xonxoff: bool = False, echo=print, keepalive_s: float | None = None) -> None:
         self.port, self.baud, self.paritaet, self.xonxoff = port, baud, paritaet, xonxoff
         self.echo = echo
         self.rahmen: queue.Queue[tuple[float, Rahmen]] = queue.Queue()
         self._quittung: queue.Queue[Rahmen] = queue.Queue()
         self._stop = threading.Event()
+        self._sende_lock = threading.Lock()     # ein Auftrag nach dem anderen (Quittungen nicht vertauschen)
+        self.keepalive_s = keepalive_s
+        self.zuletzt_gesendet = time.time()
         self._asm = Assembler()
         self._ser = None
         self._log = None
@@ -52,7 +59,19 @@ class ErgoLink:
         self.notiz(f"Port {self.port} {self.baud} 8{self.paritaet}1 xonxoff={self.xonxoff}")
         self._thread = threading.Thread(target=self._leser, daemon=True)
         self._thread.start()
+        if self.keepalive_s:
+            threading.Thread(target=self._wach, daemon=True).start()
         return self
+
+    def _wach(self) -> None:
+        """Keepalive, sobald keepalive_s s lang nichts gesendet wurde (Watchdog der D340: 30 s)."""
+        while not self._stop.wait(0.5):
+            if time.time() - self.zuletzt_gesendet > self.keepalive_s:
+                from .protocol import keepalive
+                try:
+                    self.sende(keepalive())
+                except (serial.SerialException, OSError, ValueError):
+                    return
 
     def __exit__(self, *exc) -> None:
         self._stop.set()
@@ -103,6 +122,10 @@ class ErgoLink:
     # --- Senden ---------------------------------------------------------------------------------
     def sende(self, r: Rahmen, warte_quittung: float = 5.0) -> Rahmen | None:
         """Sendet einen Rahmen; wartet bis zu warte_quittung s auf ACK/REJ/ERR (0 = nicht warten)."""
+        with self._sende_lock:
+            return self._sende(r, warte_quittung)
+
+    def _sende(self, r: Rahmen, warte_quittung: float) -> Rahmen | None:
         while not self._quittung.empty():
             self._quittung.get_nowait()
         roh = r.to_bytes()
@@ -110,6 +133,7 @@ class ErgoLink:
         self._schreibe(f"{ts()} >> raw {roh!r}", anzeigen=False)
         self._ser.write(roh)
         self._ser.flush()
+        self.zuletzt_gesendet = time.time()
         if not warte_quittung:
             return None
         try:

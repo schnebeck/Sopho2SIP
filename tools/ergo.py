@@ -205,10 +205,12 @@ def main() -> int:
     if a.befehl == "waehltest":
         if len(a.argumente) != 1:
             sys.exit("waehltest braucht genau eine Nummer")
-        return waehltest(a, ErgoLink(a.port or PORT_STANDARD, paritaet=a.paritaet, xonxoff=a.xonxoff), a.argumente[0])
+        return waehltest(a, ErgoLink(a.port or PORT_STANDARD, paritaet=a.paritaet, xonxoff=a.xonxoff,
+                                     keepalive_s=10), a.argumente[0])
     if a.befehl == "annahmetest":
-        return annahmetest(a, ErgoLink(a.port or PORT_STANDARD, paritaet=a.paritaet, xonxoff=a.xonxoff))
-    with ErgoLink(a.port or PORT_STANDARD, paritaet=a.paritaet, xonxoff=a.xonxoff) as link:
+        return annahmetest(a, ErgoLink(a.port or PORT_STANDARD, paritaet=a.paritaet, xonxoff=a.xonxoff,
+                                       keepalive_s=10))
+    with ErgoLink(a.port or PORT_STANDARD, paritaet=a.paritaet, xonxoff=a.xonxoff, keepalive_s=10) as link:
         if rahmen is not None:
             q = link.sende(rahmen)
             if q is None:
