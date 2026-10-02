@@ -39,6 +39,17 @@ class Auswertung(unittest.TestCase):
             self.assertFalse(r.Rueckwaertssuche.suchbar(n))
 
 
+class Http404(unittest.TestCase):
+    def test_404_ist_kein_eintrag(self):
+        import io
+        import urllib.error
+        from unittest import mock
+        fehler = urllib.error.HTTPError("https://x/", 404, "Not Found", {}, io.BytesIO(b""))
+        with mock.patch("urllib.request.urlopen", side_effect=fehler):
+            self.assertEqual(r._hole("https://x/", 1), ("https://x/", ""))
+            self.assertIsNone(r.suche_online("01700000000"))              # beide Quellen „leer“ → kein Treffer
+
+
 class Zwischenspeicher(unittest.TestCase):
     def test_einmal_online_dann_gespeichert(self):
         aufrufe = []
