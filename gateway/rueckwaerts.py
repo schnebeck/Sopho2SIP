@@ -16,6 +16,7 @@ import pathlib
 import re
 import threading
 import time
+import urllib.error
 import urllib.parse
 import urllib.request
 
@@ -30,9 +31,16 @@ def ziffern(s: str) -> str:
 
 
 def _hole(url: str, timeout: float) -> tuple[str, str]:
+    """(End-URL, Seite). HTTP 404 heißt bei den Verzeichnissen „kein Eintrag“ (11880 für unbekannte Mobilnummern,
+    beobachtet 2026-10-02) und liefert eine leere Seite statt eines Fehlers."""
     req = urllib.request.Request(url, headers={"User-Agent": AGENT, "Accept-Language": "de-DE,de;q=0.9"})
-    with urllib.request.urlopen(req, timeout=timeout) as r:
-        return r.geturl(), r.read(1_000_000).decode("utf-8", errors="replace")
+    try:
+        with urllib.request.urlopen(req, timeout=timeout) as r:
+            return r.geturl(), r.read(1_000_000).decode("utf-8", errors="replace")
+    except urllib.error.HTTPError as e:
+        if e.code == 404:
+            return url, ""
+        raise
 
 
 def aus_11880(seite: str, nummer: str) -> dict | None:
