@@ -60,7 +60,10 @@ ssh sopho-gw 'python3 ~/Sopho2SIP/gateway/portal.py zertifikat && sudo systemctl
 ## Rufweg und Nummern
 - Sopho → SIP: baresip ruft `sip:<Anrufernummer>@127.0.0.1`; Asterisk (`von-sopho`) setzt daraus die Caller-ID
   (extern ohne Amtsholung, z. B. `0171…`; ohne Nummer `anonymous`) und ruft `tel1` und `tel2` 60 s lang.
-  Nimmt ein Softphone ab, sendet der Daemon „Annehmen“ an die D340.
+  Nimmt ein Softphone ab, sendet der Daemon „Annehmen“ an die D340 und schaltet X-Eingang ein.
+  **Vorrang der D340:** Hebt jemand vorher am Hörer ab, beendet die Brücke nur den SIP-Ruf (Softphones verstummen) und
+  lässt das Gespräch an der D340 unberührt. Grenzfall: Hörer abheben *während* eines SIP-Gesprächs übernimmt es nicht
+  (X-Eingang bleibt an, das Hörermikrofon ist dann stumm).
 - SIP → Sopho: Asterisk (`von-intern`) ruft baresip mit der gewählten Nummer als Absender; der Daemon wählt sie
   an der D340 (`0…` bekommt die Amtsholung `01`, `010…` gilt als schon mit Amtsholung, `+` → `00`,
   ohne führende 0 = Nebenstelle). Meldet sich die Gegenseite, nimmt baresip an.
@@ -83,7 +86,9 @@ Mobilnummern stehen selten in Verzeichnissen. Abschalten: Option aus der Unit en
   RTP in beiden Richtungen 0 Pakete verloren, Jitter ≤ 3,5 ms; Aufnahme „vom Pi“ (Anrufer) 54 s ohne Aussetzer;
   Nachricht kam beim Anrufer gut an. Zerhackter Ton im ersten Versuch: Laptop-Seite (Bluetooth-Headset an zwei
   Geräten, ALSA→PipeWire in baresip 1.0.0), nicht die Strecke über den Pi.
-- Die Sprache vom Pi hat einen Gleichanteil von etwa −49 dBFS (UCA222-Eingang); unhörbar, Hochpass noch offen.
+- Die Sprache vom Pi hatte einen Gleichanteil von etwa −49 dBFS (Nullpunktfehler des UCA222-Wandlers, nicht der
+  Leitung – Übertrager und C1 sperren Gleichspannung). Entfernt vom eigenen baresip-Modul `dcsperre`
+  (`gateway/baresip/dcsperre/`, DC-Blocker 10 Hz; Test: 0,02 → 0,000034).
 - Betriebsart: Standard ist „nur Anrufliste/Portal“ (Drop-in `/etc/systemd/system/sopho2sipd.service.d/steuerung.conf`);
   für SIP-Betrieb dort `--baresip 127.0.0.1:4444 --steuerung` ergänzen (Freigabe Nutzer).
 

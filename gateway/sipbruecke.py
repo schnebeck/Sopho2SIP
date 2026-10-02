@@ -7,6 +7,8 @@ Rufweg (Asterisk-Wählplan gateway/asterisk/extensions.conf):
   SIP → Sopho: Softphone wählt → Asterisk ruft baresip mit der gewählten Nummer als Absender (CALL_INCOMING)
                → Wahl an der D340 → Gegenseite meldet sich (VERBUNDEN) → baresip nimmt an.
   Auflegen auf einer Seite löst die andere aus; DTMF vom Softphone (CALL_DTMF_START) wird als Ziffer nachgewählt.
+  Vorrang der D340: Nimmt jemand am Hörer ab, bevor ein Softphone annimmt (CONNECTED ohne SIP-Annahme), wird nur der
+  SIP-Ruf beendet (Softphones verstummen); das Gespräch an der D340 bleibt unberührt (kein X-Eingang, kein Auflegen).
 Ohne --steuerung klingeln die Softphones nur (Anrufanzeige); Annehmen dort beendet den SIP-Anruf wieder.
 Ereignisformat am Pi mitgeschnitten (baresip 1.1.0 und 4.12.0, 2026-10-01): type, id, direction, peeruri, param;
 Befehle dial/accept/hangup. 4.12 nimmt nur Anrufe an sip:gateway@… an (sonst 404) – Asterisk ruft genau so.
@@ -113,7 +115,7 @@ class SipBruecke:
 
     def __init__(self, gateway, ctrl) -> None:
         self.gw, self.ctrl = gateway, ctrl
-        self.modus: str | None = None      # "ein" = Sopho → SIP, "aus" = SIP → Sopho
+        self.modus: str | None = None      # "ein" = Sopho → SIP, "aus" = SIP → Sopho, "lokal" = an der D340 angenommen
         self.sip_aktiv = False             # SIP-Anruf besteht (klingelt oder verbunden)
         self.sip_verbunden = False
         self.sopho_verbunden = False
@@ -140,7 +142,11 @@ class SipBruecke:
                     self.sip_aktiv = True
             elif name == "VERBUNDEN":
                 self.sopho_verbunden = True
-                if self.modus == "aus" and self.sip_aktiv and not self.sip_verbunden:
+                if self.modus == "ein" and not self.sip_verbunden:
+                    self._log("an der D340 abgenommen: SIP-Ruf beendet")
+                    self._sip_auflegen()
+                    self.modus = "lokal"
+                elif self.modus == "aus" and self.sip_aktiv and not self.sip_verbunden:
                     self.ctrl.befehl("accept")
             elif name == "BESETZT" and self.modus == "aus":
                 self._log("Ziel besetzt")

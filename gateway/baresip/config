@@ -29,6 +29,7 @@ audio_jitter_buffer_ms	40-100		# nur lokal zu Asterisk
 module_path		/usr/local/lib/baresip/modules
 module			g711.so
 module			alsa.so
+module			dcsperre.so	# eigener DC-Blocker (gateway/baresip/dcsperre), Gleichanteil der UCA222
 module_app		account.so	# v4: module_app (module_tmp gibt es nicht mehr)
 module_app		menu.so		# Befehle dial/accept/hangup für ctrl_tcp
 module_app		ctrl_tcp.so

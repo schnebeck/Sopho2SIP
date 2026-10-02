@@ -149,7 +149,7 @@ gateway/portal.py       # Webportal (Anrufliste, Rückruf, Wähltastatur), Threa
 gateway/sipbruecke.py   # Brücke Telefon ⇄ baresip (ctrl_tcp)
 gateway/rueckwaerts.py  # Rückwärtssuche (11880, Das Örtliche) mit Zwischenspeicher
 gateway/asterisk/       # Asterisk-Konfiguration (PJSIP, Wählplan); Passwörter nur auf dem Pi
-gateway/baresip/        # baresip-Konfiguration
+gateway/baresip/        # baresip-Konfiguration, eigenes Modul dcsperre/ (DC-Blocker, C)
 gateway/web/index.html  # Oberfläche des Portals (ohne externe Abhängigkeiten)
 gateway/tests/          # Tests (python3 -m unittest discover -s gateway/tests)
 docs/testplan.md        # nächste Tests am Gerät
