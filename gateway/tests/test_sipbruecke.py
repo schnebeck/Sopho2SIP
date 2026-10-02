@@ -107,6 +107,20 @@ class Bruecke(unittest.TestCase):
         self.assertEqual(self.link.gesendet[-1], "01 02 13 00")
 
 
+    def test_abheben_an_d340_hat_vorrang(self):
+        self.aufbau()
+        self.melde("02 12 30 01 98 6c 0d " + NUMMER)                      # klingelt an D340 und Softphones
+        self.assertEqual(self.ctrl.befehle, ["dial sip:01700000000@127.0.0.1"])
+        self.melde("02 03 3b 01 0a 02 02 31 01")                             # jemand hebt den Hörer ab
+        self.assertEqual(self.ctrl.befehle[-1], "hangup")                   # Softphones verstummen
+        self.assertEqual(self.br.modus, "lokal")
+        self.sip("CALL_CLOSED")                                             # Folge des hangup
+        self.sip("CALL_ESTABLISHED")                                        # verspätete Annahme: wirkungslos
+        self.assertEqual(self.link.gesendet, [])                            # nichts an die D340
+        self.melde("02 03 3a 01 30 02 05 32 01 98 08 00 02 05 39 01 98 08 00 02 03 3a 01 0a")
+        self.assertIsNone(self.br.modus)
+        self.assertEqual(self.ctrl.befehle.count("hangup"), 1)
+
     def test_gespraech_am_hoerer_ohne_x_eingang(self):
         self.aufbau()
         self.gw.zuhoerer.remove(self.br.bei_telefon)                      # ohne SIP: jemand hebt an der D340 ab
