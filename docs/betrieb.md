@@ -76,6 +76,17 @@ Das Örtliche (nur bei Weiterleitung auf einen Eintrag). Name/Ort erscheinen im 
 `~/.local/share/sopho2sip/rueckwaerts.json` (Treffer 30 Tage, ohne Treffer 7 Tage). Nebenstellen werden nie gesucht.
 Mobilnummern stehen selten in Verzeichnissen. Abschalten: Option aus der Unit entfernen.
 
+## Erste SIP-Gespräche (2026-10-02/03)
+- Handy → Nebenstelle → Softphone `tel1` (Laptop, baresip 1.0.0 über VPN) angenommen: Brücke nimmt an der D340 an,
+  schaltet X-Eingang ein, Gespräch 118 s ohne Abbruch, Auflegen vom Softphone löst an der D340 aus.
+- Messung mit automatisch annehmendem Testprofil (spielt eine Sprachnachricht, Asterisk-Mitschnitt `MITSCHNITT=1`):
+  RTP in beiden Richtungen 0 Pakete verloren, Jitter ≤ 3,5 ms; Aufnahme „vom Pi“ (Anrufer) 54 s ohne Aussetzer;
+  Nachricht kam beim Anrufer gut an. Zerhackter Ton im ersten Versuch: Laptop-Seite (Bluetooth-Headset an zwei
+  Geräten, ALSA→PipeWire in baresip 1.0.0), nicht die Strecke über den Pi.
+- Die Sprache vom Pi hat einen Gleichanteil von etwa −49 dBFS (UCA222-Eingang); unhörbar, Hochpass noch offen.
+- Betriebsart: Standard ist „nur Anrufliste/Portal“ (Drop-in `/etc/systemd/system/sopho2sipd.service.d/steuerung.conf`);
+  für SIP-Betrieb dort `--baresip 127.0.0.1:4444 --steuerung` ergänzen (Freigabe Nutzer).
+
 ## Beobachten
 ```
 ssh sopho-gw journalctl -u sopho2sipd -f            # Telefon, Brücke, Aufträge
