@@ -22,6 +22,7 @@ audec_format		s16
 audio_buffer		20-160
 rtp_ports		30000-30099	# nur lokal zu Asterisk, nicht in der Firewall
 rtp_tos			184
+rtp_stats		yes		# Verlust/Jitter am Gesprächsende im Journal
 audio_jitter_buffer_type	fixed
 audio_jitter_buffer_ms	40-100		# nur lokal zu Asterisk
 
