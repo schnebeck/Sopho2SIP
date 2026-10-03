@@ -155,6 +155,7 @@ gateway/tests/          # Tests (python3 -m unittest discover -s gateway/tests)
 docs/testplan.md        # nächste Tests am Gerät
 docs/betrieb.md         # Dienste, Ports, Einrichtung und Sicherheit auf dem Pi
 logs/                   # Mitschnitte, Übersicht in logs/INDEX.md
+hardware/hat/           # HAT-Entwurf (KiCad, aus erzeuge_schaltplan.py), README mit offenen Prüfpunkten
 ```
 
 ## Offene Punkte

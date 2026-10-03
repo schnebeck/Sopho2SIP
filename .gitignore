@@ -15,3 +15,9 @@ docs/img/d340_menuebaum.png
 # Sitzungslogs enthalten echte Rufnummern: nur bereinigte Kopien committen
 logs/ergo_*.log
 logs/audio_*.wav
+
+# KiCad: lokale Sitzungsdaten, Sperren, Sicherungen
+hardware/**/*.lck
+hardware/**/*.kicad_prl
+hardware/**/*-backups/
+hardware/**/fp-info-cache
