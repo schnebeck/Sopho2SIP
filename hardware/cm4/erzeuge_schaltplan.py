@@ -246,10 +246,10 @@ def blatt_cm4(p: Blatt) -> None:
     p.text(x0 - 15.24, yd + 33.02, "D10 = Aktivität (grün), D11 = Spannung (rot, über Q10 gepuffert)")
     # Unbenutztes
     p.nc_alle("J11"); p.nc_alle("J12")
-    p.text(20, 27, "Pinbelegung nach CM4-Datenblatt (Pins 1–200) · GPIO_VREF = 3,3 V · Ethernet 10/100 über Paar 0/1")
-    p.text(20, 31, "WLAN/Bluetooth auf dem Modul (CM4 mit Funk): WL_nDisable/BT_nDisable offen = an; "
+    p.text(35.56, 45.72, "Pinbelegung nach CM4-Datenblatt (Pins 1–200) · GPIO_VREF = 3,3 V · Ethernet 10/100 über Paar 0/1")
+    p.text(35.56, 49.53, "WLAN/Bluetooth auf dem Modul (CM4 mit Funk): WL_nDisable/BT_nDisable offen = an; "
            "Antenne intern oder U.FL am Modul (dtparam=ant2)")
-    p.text(20, 35, "eMMC: CM4 mit eMMC bootet davon; Flashen mit JP10 gesteckt über USB-C (rpiboot). "
+    p.text(35.56, 53.34, "eMMC: CM4 mit eMMC bootet davon; Flashen mit JP10 gesteckt über USB-C (rpiboot). "
            "CM4 Lite: Start von der µSD-Karte (Blatt µSD)")
 
 
@@ -291,8 +291,8 @@ def blatt_versorgung(p: Blatt) -> None:
     w((xg, yg + 1.27), (xg + 5.08, yg + 1.27)); p.flag((xg + 5.08, yg + 1.27))
     p.ab("J10", "SH", "GND")
     p.offen(("J10", "A8"), ("J10", "B8"))
-    p.text(20, 27, "5 V über USB-C (Rd 5,1 kΩ: Senke); dieselbe Buchse dient mit gestecktem nRPIBOOT zum Flashen des eMMC")
-    p.text(20, 31, "Strombedarf CM4 bis ~1,4 A + Peripherie: Netzteil mit 5 V/3 A verwenden")
+    p.text(45.72, 142.24, "5 V über USB-C (Rd 5,1 kΩ: Senke); dieselbe Buchse dient mit gestecktem nRPIBOOT zum Flashen des eMMC")
+    p.text(45.72, 146.05, "Strombedarf CM4 bis ~1,4 A + Peripherie: Netzteil mit 5 V/3 A verwenden")
 
 
 def blatt_sd(p: Blatt) -> None:
@@ -321,8 +321,8 @@ def blatt_sd(p: Blatt) -> None:
     w(P("R14", "2"), (50.8, ye))
     p.ab("U11", "2", "GND")
     p.offen(("U11", "3"))
-    p.text(20, 27, "Nur beim CM4 Lite belegt; beim CM4 mit eMMC sind die SD-Pins offen, der Sockel stört nicht")
-    p.text(20, 31, "R14 hält den Lastschalter ohne Ansteuerung an (Start von der Karte möglich), wie im CM4-Datenblatt")
+    p.text(25.4, 137.16, "Nur beim CM4 Lite belegt; beim CM4 mit eMMC sind die SD-Pins offen, der Sockel stört nicht")
+    p.text(25.4, 140.97, "R14 hält den Lastschalter ohne Ansteuerung an (Start von der Karte möglich), wie im CM4-Datenblatt")
 
 
 def blatt_ethernet(p: Blatt) -> None:
@@ -354,8 +354,8 @@ def blatt_ethernet(p: Blatt) -> None:
         p.setze(r, xk + 15.24, yk, rot=90)
         w((xk, yk), P(r, "1"))
         xr, yr = P(r, "2"); w((xr, yr), (xr + 7.62, yr)); p.lbl(netz, (xr + 7.62, yr), "r")
-    p.text(20, 27, "MagJack 1:1 wie CM4-Datenblatt (Figure 2): Mittelanzapfungen über C45 an GND, ESD-Schutz U12, LED 470 Ω")
-    p.text(20, 31, "10/100 genügt für VoIP; für Gigabit 4-Paar-MagJack verwenden und Paare 2/3 des CM4 anschließen")
+    p.text(38.1, 135.89, "MagJack 1:1 wie CM4-Datenblatt (Figure 2): Mittelanzapfungen über C45 an GND, ESD-Schutz U12, LED 470 Ω")
+    p.text(38.1, 139.7, "10/100 genügt für VoIP; für Gigabit 4-Paar-MagJack verwenden und Paare 2/3 des CM4 anschließen")
     p.text(190, 92, "LED 12/11: Aktivität (nLED3)")
     p.text(190, 96, "LED 9/10: Link (nLED2)")
 
@@ -372,14 +372,14 @@ def main() -> int:
                     export={"SD_CLK", "SD_CMD", "SD_DAT0", "SD_DAT1", "SD_DAT2", "SD_DAT3", "SD_PWR_ON"}),
         "eth": Blatt("Ethernet", SOLL_ETH, "ethernet.kicad_sch", papier="A3",
                      export={"ETH_P0_P", "ETH_P0_N", "ETH_P1_P", "ETH_P1_N", "ETH_nLED2", "ETH_nLED3"}),
-        "codec": Blatt("Audio-Codec", hat.teil_soll("codec"), "codec.kicad_sch", papier="A3", versatz=(-121.92, 0),
+        "codec": Blatt("Audio-Codec", hat.teil_soll("codec"), "codec.kicad_sch", papier="A3",
                        export={"I2S_BCLK", "I2S_LRCLK", "I2S_DIN", "I2S_DOUT", "I2C_SDA", "I2C_SCL", "HP_L", "LINE_IN"}),
         "sprechweg": Blatt("Sprechweg", hat.teil_soll("sprechweg"), "sprechweg.kicad_sch", papier="A3",
-                           versatz=(-257.81, 0), export={"HP_L", "LINE_IN"}),
-        "rs232": Blatt("RS-232", hat.teil_soll("rs232"), "rs232.kicad_sch", papier="A3", versatz=(-121.92, -142.24),
+                           export={"HP_L", "LINE_IN"}),
+        "rs232": Blatt("RS-232", hat.teil_soll("rs232"), "rs232.kicad_sch", papier="A3",
                        export={"UART3_TXD", "UART3_RXD"}),
         "bedienung": Blatt("Bedienung", hat.teil_soll("bedienung"), "bedienung.kicad_sch", papier="A3",
-                           versatz=(0, -187.96), export={"LED_TELEFON", "LED_GESPRAECH", "TASTE"}),
+                           export={"LED_TELEFON", "LED_GESPRAECH", "TASTE"}),
     }
     blatt_cm4(blaetter["cm4"]); blatt_versorgung(blaetter["versorgung"]); blatt_sd(blaetter["sd"])
     blatt_ethernet(blaetter["eth"]); hat.codec(blaetter["codec"]); hat.sprechweg(blaetter["sprechweg"])
@@ -433,11 +433,11 @@ def main() -> int:
         pos = root.blatt(blaetter[kind], x_links, top, b_links, pins, hoehe=max(dy for _, _, dy in pins) + 7.62)
         for n, _ in gruppe:
             root.w(pos[n], pos_cm4[n])
-    root.text(20, 225, "Speicher: CM4 mit eMMC (Flashen per USB-C, nRPIBOOT-Jumper im Blatt CM4) oder CM4 Lite mit µSD-Karte")
-    root.text(20, 230, "Netz: WLAN/Bluetooth des CM4 (Antenne am Modul) oder Ethernet 10/100 (MagJack); beides gleichzeitig möglich")
-    root.text(20, 235, "D340: Audio-Codec + Sprechweg (Übertrager, RJ12) und RS-232 (isoliert, UART3) wie beim HAT; "
+    root.text(20, 195.58, "Speicher: CM4 mit eMMC (Flashen per USB-C, nRPIBOOT-Jumper im Blatt CM4) oder CM4 Lite mit µSD-Karte")
+    root.text(20, 200.66, "Netz: WLAN/Bluetooth des CM4 (Antenne am Modul) oder Ethernet 10/100 (MagJack); beides gleichzeitig möglich")
+    root.text(20, 205.74, "D340: Audio-Codec + Sprechweg (Übertrager, RJ12) und RS-232 (isoliert, UART3) wie beim HAT; "
               "Versorgungsnetze +5V/+3V3/GND global")
-    root.text(20, 240, "Erzeugt von hardware/cm4/erzeuge_schaltplan.py; Prüfung --pruefen (ERC + Netzliste gegen SOLL)")
+    root.text(20, 210.82, "Erzeugt von hardware/cm4/erzeuge_schaltplan.py; Prüfung --pruefen (ERC + Netzliste gegen SOLL)")
 
     rootpfad = kg.schreibe_projekt(HIER, NAME, root)
     alle = list(blaetter.values())
