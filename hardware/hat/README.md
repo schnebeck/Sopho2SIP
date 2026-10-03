@@ -1,23 +1,29 @@
-# Sopho2SIP-HAT (Entwurf 0.1)
+# Sopho2SIP-HAT (Entwurf 0.2)
 
 HAT für den Raspberry Pi 4, der die Verbindung zur ErgoLine D340 auf eine Platine bringt: **isolierte RS-232** zur
 PC-Schnittstelle (statt FTDI-Adapter) und **Audio-Codec mit Übertragern** zur Audio-Buchse (statt UCA222).
 
 | Datei | Inhalt |
 |---|---|
-| `erzeuge_schaltplan.py` | erzeugt den Schaltplan aus den KiCad-Standardbibliotheken; **Quelle** der Verdrahtung |
+| `erzeuge_schaltplan.py` | erzeugt den Schaltplan aus den KiCad-Standardbibliotheken: `SOLL` (Verbindungen) und `zeichne()` (Anordnung, Leitungen) |
 | `sopho2sip-hat.kicad_sch/.kicad_pro` | KiCad-10-Projekt (erzeugt) |
 | `sopho2sip-hat.pdf` | Schaltplan zum Ansehen |
-| `netzliste.txt` | Soll-Netzliste (Netz → Pins); wird gegen den KiCad-Export geprüft |
+| `netzliste.txt` | Soll-Netzliste (Netz → Pins) aus `SOLL` |
 | `stueckliste.csv` | Stückliste (KiCad-Export) |
 
 Neu erzeugen und prüfen:
 ```
-hardware/hat/erzeuge_schaltplan.py
-kicad-cli sch erc --severity-all hardware/hat/sopho2sip-hat.kicad_sch        # Stand: 0 Verstöße
+hardware/hat/erzeuge_schaltplan.py --pruefen     # ERC + Abgleich der KiCad-Netzliste mit SOLL (Stand: 0 / 0)
 kicad-cli sch export pdf -o hardware/hat/sopho2sip-hat.pdf hardware/hat/sopho2sip-hat.kicad_sch
 ```
-Verdrahtung nur im Skript ändern; in KiCad höchstens die Anordnung verschönern (sonst geht der Abgleich verloren).
+Der Plan ist gezeichnet wie von Hand: Funktionsblöcke mit Rahmen, Signalfluss von links nach rechts, Leitungen
+innerhalb der Blöcke, Abblockkondensatoren an den Versorgungsschienen, Labels nur zwischen den Blöcken, galvanische
+Trennung als Strichpunktlinie. Die Prüfung vergleicht die Pin-Gruppen der KiCad-Netzliste mit `SOLL`; so kann die
+Zeichnung umgestaltet werden, ohne unbemerkt Verbindungen zu ändern. Änderungen am besten im Skript; wer in KiCad
+weiterzeichnet, verlässt den Generator (dann ERC und Netzliste dort prüfen).
+
+Versorgungsnetze: `GND`, `+3V3`, `+5V` (Pi), `+3.3VA` (Codec analog), `GNDA` (Telefonseite Audio),
+`GND_ISO`, `+3V3_ISO` (isolierte RS-232-Seite) – jeweils als Power-Symbol mit sichtbarem Netznamen.
 
 ## Blöcke und Begründungen
 
