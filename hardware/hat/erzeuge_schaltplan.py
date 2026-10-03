@@ -211,7 +211,7 @@ class Plan:
         self.libs: dict[str, str] = {}
 
     def setze(self, ref: str, x: float, y: float, rot: int = 0, spiegel: str | None = None,
-              ref_at=None, wert_at=None) -> None:
+              ref_at=None, wert_at=None, links: bool = False) -> None:
         """ref_at/wert_at: (dx, dy[, Ausrichtung]) relativ zum Bauteil, waagerecht; sonst Lage aus der Bibliothek.
         Waagerecht liegende Zweipole (R/C gedreht) bekommen Name oben, Wert unten."""
         lib_id = SOLL[ref][0]
@@ -220,6 +220,10 @@ class Plan:
             d = 3.3 if lib_id == "Device:C" else 2.54
             ref_at = ref_at or (0, -d)
             wert_at = wert_at or (0, d + 0.25)
+        elif lib_id in ("Device:R", "Device:C"):     # senkrecht: Name und Wert neben das Bauteil, nicht darüber
+            dx, ausr = (-3.0, "right") if links else (3.0, "left")
+            ref_at = ref_at or (dx, -1.27, ausr)
+            wert_at = wert_at or (dx, 1.27, ausr)
         self.teile.append((ref, lib_id, SOLL[ref][1], SOLL[ref][2], rd(x), rd(y), rot, spiegel,
                            {"Reference": ref_at, "Value": wert_at}))
         for nr, (px, py, _a) in lib_pins(sym).items():
@@ -277,7 +281,7 @@ def zeichne(p: Plan) -> None:
     P, w = p.P, p.w
 
     # ===== Raspberry Pi =========================================================================================
-    p.rahmen_(10, 15, 132, 126, "Raspberry Pi 4 (40-polige Leiste)")
+    p.rahmen_(15, 15, 132, 126, "Raspberry Pi 4 (40-polige Leiste)")
     p.setze("J1", 71.12, 81.28)
     for nr, netz in (("12", "I2S_BCLK"), ("35", "I2S_LRCLK"), ("38", "I2S_DIN"), ("40", "I2S_DOUT"),
                      ("16", "LED_TELEFON"), ("18", "LED_GESPRAECH"), ("22", "TASTE")):
@@ -299,16 +303,16 @@ def zeichne(p: Plan) -> None:
     w((xg, yg), (xg, 119.38)); p.pw("GND", (xg, 119.38))
     w((xg, 116.84), (78.74, 116.84)); p.flag((78.74, 116.84))
     p.nc_alle("J1")
-    p.text(14, 25, "UART3 = GPIO4/5 (PL011, kann 8O1) · I²S = GPIO18–21 · I²C1 = GPIO2/3")
+    p.text(18, 25, "UART3 = GPIO4/5 (PL011, kann 8O1) · I²S = GPIO18–21 · I²C1 = GPIO2/3")
 
     # ===== HAT-ID-EEPROM ========================================================================================
-    p.rahmen_(10, 131, 132, 198, "HAT-ID-EEPROM")
+    p.rahmen_(15, 131, 132, 198, "HAT-ID-EEPROM")
     p.setze("U1", 76.2, 167.64, ref_at=(-5.08, -6.6), wert_at=(9.5, 7.6))
     p.setze("C1", 55.88, 156.21)
-    for ref, x in (("R1", 96.52), ("R2", 104.14), ("R3", 111.76)):
+    for ref, x in (("R1", 93.98), ("R2", 104.14), ("R3", 114.3)):
         p.setze(ref, x, 156.21)
-    p.setze("JP1", 121.92, 170.18)
-    w((50.8, 152.4), (111.76, 152.4)); p.pw("+3V3", (50.8, 152.4))
+    p.setze("JP1", 114.3, 175.26, rot=270, ref_at=(3.0, -1.27, "left"), wert_at=(3.0, 1.27, "left"))
+    w((50.8, 152.4), (114.3, 152.4)); p.pw("+3V3", (50.8, 152.4))
     for ref in ("C1", "R1", "R2", "R3"):
         x, y = P(ref, "1")
         w((x, 152.4), (x, y))
@@ -316,50 +320,51 @@ def zeichne(p: Plan) -> None:
     p.ab("C1", "2", "GND")
     for nr, netz, r in (("5", "ID_SD", "R1"), ("6", "ID_SC", "R2")):
         x, y = P("U1", nr)
-        w((x, y), (124.46, y)); p.lbl(netz, (124.46, y), "r")
+        w((x, y), (119.38, y)); p.lbl(netz, (119.38, y), "r")
         rx, ry = P(r, "2"); w((rx, ry), (rx, y))
-    x, y = P("U1", "7"); w((x, y), P("JP1", "1"))
+    x, y = P("U1", "7"); w((x, y), P("JP1", "1"))   # endet an R3 und JP1 (senkrecht darunter)
     rx, ry = P("R3", "2"); w((rx, ry), (rx, y))
     p.ab("JP1", "2", "GND")
     for nr in ("1", "2", "3"):
         x, y = P("U1", nr); w((x, y), (60.96, y))
     w((60.96, P("U1", "1")[1]), (60.96, 172.72)); p.pw("GND", (60.96, 172.72))
     p.ab("U1", "4", "GND")
-    p.text(14, 142, "Adresse 0x50 (A0–A2 = GND); WP hoch = schreibgeschützt, JP1 schließen zum Programmieren")
+    p.text(18, 142, "Adresse 0x50 (A0–A2 = GND); WP hoch = schreibgeschützt, JP1 schließen zum Programmieren")
 
     # ===== Bedienung ============================================================================================
-    p.rahmen_(10, 203, 132, 285, "Bedienung")
+    p.rahmen_(15, 203, 132, 280, "Bedienung")
     for (r, d, netz, y) in (("R6", "D1", "LED_TELEFON", 220.98), ("R7", "D2", "LED_GESPRAECH", 236.22)):
-        p.setze(r, 50.8, y, rot=90)
-        p.setze(d, 68.58, y, rot=180)
-        p.lbl(netz, (33.02, y), "l"); w((33.02, y), P(r, "1"))
+        p.setze(r, 55.88, y, rot=90)
+        p.setze(d, 73.66, y, rot=180)
+        p.lbl(netz, (40.64, y), "l"); w((40.64, y), P(r, "1"))
         w(P(r, "2"), P(d, "2"))
-        x, yy = P(d, "1"); w((x, yy), (78.74, yy), (78.74, yy + 2.54)); p.pw("GND", (78.74, yy + 2.54))
-    p.setze("SW1", 55.88, 254.0)
-    p.lbl("TASTE", (33.02, 254.0), "l"); w((33.02, 254.0), P("SW1", "1"))
-    x, y = P("SW1", "2"); w((x, y), (78.74, y), (78.74, y + 2.54)); p.pw("GND", (78.74, y + 2.54))
-    p.text(88, 222, "D1: Telefon verbunden")
-    p.text(88, 237, "D2: Gespräch")
-    p.text(88, 255, "Annehmen/Auflegen (Pull-up im Pi)")
+        x, yy = P(d, "1"); w((x, yy), (83.82, yy), (83.82, yy + 2.54)); p.pw("GND", (83.82, yy + 2.54))
+    p.setze("SW1", 60.96, 251.46)
+    p.lbl("TASTE", (40.64, 251.46), "l"); w((40.64, 251.46), P("SW1", "1"))
+    x, y = P("SW1", "2"); w((x, y), (83.82, y), (83.82, y + 2.54)); p.pw("GND", (83.82, y + 2.54))
+    p.text(92, 222, "D1: Telefon verbunden")
+    p.text(92, 237, "D2: Gespräch")
+    p.text(92, 252, "Annehmen/Auflegen")
+    p.text(92, 255, "(Pull-up im Pi)")
     for i, h in enumerate(("H1", "H2", "H3", "H4")):
-        p.setze(h, 25.4 + i * 12.7, 274.32)
-    p.text(76, 275, "M2,5, Raster 58 × 49 mm")
+        p.setze(h, 27.94 + i * 12.7, 267.97)
+    p.text(80, 269, "M2,5, Raster 58 × 49 mm")
 
     # ===== Codec ================================================================================================
     p.rahmen_(137, 15, 268, 150, "Audio-Codec WM8731")
     p.setze("U2", 203.2, 88.9)
     # Versorgung oben: +3V3 digital (links), +3.3VA analog (rechts)
-    w((172.72, 50.8), (200.66, 50.8)); p.pw("+3V3", (172.72, 50.8))
+    w((167.64, 50.8), (200.66, 50.8)); p.pw("+3V3", (167.64, 50.8))
     for nr in ("27", "1"):
         x, y = P("U2", nr); w((x, y), (x, 50.8))
-    for ref, x in (("C12", 177.8), ("C13", 185.42)):
+    for ref, x in (("C12", 175.26), ("C13", 185.42)):
         p.setze(ref, x, 54.61)
         w(P(ref, "1"), (x, 50.8))
         p.ab(ref, "2", "GND")
-    w((205.74, 50.8), (243.84, 50.8)); p.pw("+3.3VA", (243.84, 50.8))
+    w((205.74, 50.8), (248.92, 50.8)); p.pw("+3.3VA", (248.92, 50.8))
     for nr in ("14", "8"):
         x, y = P("U2", nr); w((x, y), (x, 50.8))
-    for ref, x in (("C14", 220.98), ("C15", 228.6), ("C16", 236.22)):
+    for ref, x in (("C14", 218.44), ("C15", 228.6), ("C16", 238.76)):
         p.setze(ref, x, 54.61)
         w(P(ref, "1"), (x, 50.8))
         p.ab(ref, "2", "GND")
@@ -374,7 +379,7 @@ def zeichne(p: Plan) -> None:
     w((180.34, P("U2", "22")[1]), (180.34, 96.52)); p.pw("GND", (180.34, 96.52))
     # Quarz mit Lastkondensatoren
     p.setze("Y1", 160.02, 107.95, rot=270, ref_at=(4.0, -1.27, "left"), wert_at=(4.0, 1.27, "left"))
-    p.setze("C10", 152.4, 105.41)
+    p.setze("C10", 152.4, 105.41, links=True)
     p.setze("C11", 167.64, 115.57)
     x, y = P("U2", "25"); w((x, y), (160.02, y), P("Y1", "1"))
     w((152.4, y), (160.02, y)); w(P("C10", "1"), (152.4, y))
@@ -389,8 +394,8 @@ def zeichne(p: Plan) -> None:
     # Analoge Ein-/Ausgänge rechts, VMID
     x, y = P("U2", "9"); w((x, y), (241.3, y)); p.lbl("HP_L", (241.3, y), "r")
     x, y = P("U2", "20"); w((x, y), (241.3, y)); p.lbl("LINE_IN", (241.3, y), "r")
-    x, y = P("U2", "16"); w((x, y), (236.22, y))
-    for ref, xc in (("C17", 228.6), ("C18", 236.22)):
+    x, y = P("U2", "16"); w((x, y), (238.76, y))
+    for ref, xc in (("C17", 228.6), ("C18", 238.76)):
         p.setze(ref, xc, y + 3.81)
         p.ab(ref, "2", "GND")
     p.nc_alle("U2")
@@ -399,7 +404,7 @@ def zeichne(p: Plan) -> None:
     # Analogversorgung
     p.text(222, 131, "Analogversorgung 3,3 V", 1.524)
     p.setze("U4", 190.5, 134.62, ref_at=(-6.35, -6.35), wert_at=(5.08, -6.35))
-    p.setze("C19", 172.72, 135.89)
+    p.setze("C19", 172.72, 135.89, links=True)
     p.setze("C20", 205.74, 135.89)
     xv, yv = P("U4", "1")
     w((165.1, yv), (xv, yv)); p.pw("+5V", (165.1, yv))
@@ -413,45 +418,45 @@ def zeichne(p: Plan) -> None:
     p.offen(("U4", "4"))
 
     # ===== Sprechweg ============================================================================================
-    p.rahmen_(273, 15, 410, 150, "Sprechweg zur D340 (galvanisch getrennt)")
-    p.setze("J2", 398.78, 81.28, rot=180)
-    p.setze("T1", 330.2, 50.8, spiegel="y")
-    p.setze("T2", 330.2, 116.84)
-    p.setze("C21", 359.41, 45.72, rot=270)
-    p.setze("C22", 309.88, 45.72, rot=270)
-    p.setze("C23", 309.88, 111.76, rot=90)
-    p.setze("R4", 349.25, 111.76, rot=90)
-    p.setze("C24", 364.49, 111.76, rot=90)
-    p.setze("R5", 356.87, 115.57)
+    p.rahmen_(273, 15, 405, 150, "Sprechweg zur D340 (galvanisch getrennt)")
+    p.setze("J2", 393.7, 81.28, rot=180)
+    p.setze("T1", 325.12, 50.8, spiegel="y")
+    p.setze("T2", 325.12, 116.84)
+    p.setze("C21", 354.33, 45.72, rot=270)
+    p.setze("C22", 304.8, 45.72, rot=270)
+    p.setze("C23", 304.8, 111.76, rot=90)
+    p.setze("R4", 344.17, 111.76, rot=90)
+    p.setze("C24", 359.41, 111.76, rot=90)
+    p.setze("R5", 351.79, 115.57, links=True)
     # Aufnahme: X_OUT → C21 → T1 → C22 → LINE_IN
-    x, y = P("J2", "1"); w((x, y), (373.38, y), (373.38, 45.72), P("C21", "1"))
+    x, y = P("J2", "1"); w((x, y), (368.3, y), (368.3, 45.72), P("C21", "1"))
     w(P("C21", "2"), P("T1", "1"))
-    x, y = P("T1", "2"); w((x, y), (345.44, y), (345.44, y + 2.54)); p.pw("GNDA", (345.44, y + 2.54))
-    w((345.44, y), (350.52, y)); p.flag((350.52, y))
+    x, y = P("T1", "2"); w((x, y), (340.36, y), (340.36, y + 2.54)); p.pw("GNDA", (340.36, y + 2.54))
+    w((340.36, y), (345.44, y)); p.flag((345.44, y))
     w(P("T1", "4"), P("C22", "1"))
-    x, y = P("C22", "2"); w((x, y), (287.02, y)); p.lbl("LINE_IN", (287.02, y), "l")
-    x, y = P("T1", "3"); w((x, y), (317.5, y), (317.5, y + 2.54)); p.pw("GND", (317.5, y + 2.54))
+    x, y = P("C22", "2"); w((x, y), (281.94, y)); p.lbl("LINE_IN", (281.94, y), "l")
+    x, y = P("T1", "3"); w((x, y), (312.42, y), (312.42, y + 2.54)); p.pw("GND", (312.42, y + 2.54))
     # Wiedergabe: HP_L → C23 → T2 → R4 (R5) → C24 → X_IN
-    x, y = P("C23", "1"); w((287.02, y), (x, y)); p.lbl("HP_L", (287.02, y), "l")
+    x, y = P("C23", "1"); w((281.94, y), (x, y)); p.lbl("HP_L", (281.94, y), "l")
     w(P("C23", "2"), P("T2", "1"))
-    x, y = P("T2", "2"); w((x, y), (317.5, y), (317.5, y + 2.54)); p.pw("GND", (317.5, y + 2.54))
+    x, y = P("T2", "2"); w((x, y), (312.42, y), (312.42, y + 2.54)); p.pw("GND", (312.42, y + 2.54))
     w(P("T2", "4"), P("R4", "1"))
     w(P("R4", "2"), P("C24", "1"))
     x, y = P("C24", "2"); xi, yi = P("J2", "2")
-    w((x, y), (378.46, y), (378.46, yi), (xi, yi))
+    w((x, y), (373.38, y), (373.38, yi), (xi, yi))
     p.ab("R5", "2", "GNDA")
-    x, y = P("T2", "3"); w((x, y), (345.44, y), (345.44, y + 2.54)); p.pw("GNDA", (345.44, y + 2.54))
-    x, y = P("J2", "3"); w((x, y), (383.54, y), (383.54, y + 5.08)); p.pw("GNDA", (383.54, y + 5.08))
+    x, y = P("T2", "3"); w((x, y), (340.36, y), (340.36, y + 2.54)); p.pw("GNDA", (340.36, y + 2.54))
+    x, y = P("J2", "3"); w((x, y), (378.46, y), (378.46, y + 5.08)); p.pw("GNDA", (378.46, y + 5.08))
     p.offen(("J2", "4"), ("J2", "5"), ("J2", "6"))
     for y0, y1 in ((32, 39), (62, 104), (128, 142)):
-        p.trenn(330.2, y0, y1)
+        p.trenn(325.12, y0, y1)
     p.text(292, 146, "Pi-Seite (GND)")
     p.text(338, 146, "Telefonseite (GNDA)")
     p.text(276, 25, "oben Aufnahme (X_OUT → Codec), unten Wiedergabe (Codec → X_IN); R4 = 0R, R5 unbestückt")
     p.text(352, 70, "RJ12 1:1 zur Audio-Buchse")
 
     # ===== RS-232 ===============================================================================================
-    p.rahmen_(137, 160, 410, 250, "RS-232 zur D340 (galvanisch getrennt)")
+    p.rahmen_(137, 158, 405, 248, "RS-232 zur D340 (galvanisch getrennt)")
     p.setze("U3", 203.2, 203.2, ref_at=(-12.7, -14.6), wert_at=(-14.5, 15.0))
     p.setze("U5", 271.78, 203.2, ref_at=(-12.7, -27.3), wert_at=(12.7, -27.3))
     p.setze("J3", 345.44, 210.82, ref_at=(0, -16.5), wert_at=(0, -14.2))
@@ -459,11 +464,11 @@ def zeichne(p: Plan) -> None:
     x, y = P("U3", "3"); w((x, y), (177.8, y)); p.lbl("UART3_RXD", (177.8, y), "l")
     x, y = P("U3", "4"); w((x, y), (177.8, y)); p.lbl("UART3_TXD", (177.8, y), "l")
     x, y = P("U3", "8"); w((x, y), (185.42, y), (185.42, y + 2.54)); p.pw("GND", (185.42, y + 2.54))
-    x1, y1 = P("U3", "1"); w((152.4, 172.72), (x1, 172.72), (x1, y1)); p.pw("+3V3", (152.4, 172.72))
+    x1, y1 = P("U3", "1"); w((149.86, 172.72), (x1, 172.72), (x1, y1)); p.pw("+3V3", (149.86, 172.72))
     x9, y9 = P("U3", "9"); w((165.1, 180.34), (x9, 180.34), (x9, y9)); p.pw("+5V", (165.1, 180.34))
-    p.setze("C30", 157.48, 176.53)
+    p.setze("C30", 154.94, 176.53)
     p.setze("C31", 170.18, 184.15)
-    p.setze("C32", 177.8, 184.15)
+    p.setze("C32", 180.34, 184.15)
     for ref, schiene in (("C30", 172.72), ("C31", 180.34), ("C32", 180.34)):
         x, y = P(ref, "1"); w((x, y), (x, schiene))
         p.ab(ref, "2", "GND")
@@ -475,8 +480,8 @@ def zeichne(p: Plan) -> None:
     w((215.9, 180.34), (215.9, 177.8)); p.flag((215.9, 177.8))
     for nr in ("12", "20"):
         x, y = P("U3", nr); w((x, y), (x, 180.34))
-    p.setze("C33", 223.52, 184.15)
-    p.setze("C34", 236.22, 184.15)
+    p.setze("C33", 220.98, 184.15)
+    p.setze("C34", 233.68, 184.15)
     for ref in ("C33", "C34"):
         x, y = P(ref, "1"); w((x, y), (x, 180.34))
         p.ab(ref, "2", "GND_ISO")
