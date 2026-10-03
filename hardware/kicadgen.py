@@ -297,8 +297,66 @@ def _auf_strecke(pt, a, b) -> bool:
     return False
 
 
+SEITE = {"A4": (297.0, 210.0), "A3": (420.0, 297.0), "A2": (594.0, 420.0)}
+RAND, SCHRIFTFELD = 10.0, 44.0      # Blattrand; unten für das Schriftfeld freigehaltene Höhe
+
+
+def _textkasten(x, y, s, groesse, ausr=None, unten=False):
+    """Grob geschätzte Ausdehnung eines Textes (für die Zentrierung)."""
+    br, h = len(s) * groesse * 0.9, groesse * 1.4
+    x0 = x if ausr == "left" else x - br if ausr == "right" else x - br / 2
+    y0 = y - h if unten else y - h / 2
+    return [(x0, y0), (x0 + br, y0 + h)]
+
+
+def _ausdehnung(b: Blatt) -> tuple[float, float, float, float]:
+    """Umgebendes Rechteck aller Inhalte eines Blatts (Bibliothekskoordinaten vor dem Versatz)."""
+    pts = [pt for seg in b.segmente for pt in seg] + list(b.pinpos.values()) + list(b.nc) + list(b.flaggen)
+    pts += [pt for seg in b.striche for pt in seg]
+    for ref, lib_id, wert, _fp, x, y, rot, spiegel, texte in b.teile:
+        sym = b.libs[lib_id]
+        for m in re.finditer(r"\((?:start|end|xy|center|mid) ([-\d.]+) ([-\d.]+)\)", sym):
+            dx, dy = transform(float(m.group(1)), float(m.group(2)), rot, spiegel)
+            pts.append((x + dx, y + dy))
+        for name, s in (("Reference", ref), ("Value", wert)):
+            vorgabe = (texte or {}).get(name)
+            if vorgabe:
+                pts += _textkasten(x + vorgabe[0], y + vorgabe[1], s, 1.27, vorgabe[2] if len(vorgabe) > 2 else None)
+            else:
+                lx, ly, _ = lage(sym, name)
+                dx, dy = transform(lx, ly, rot, spiegel)
+                pts += _textkasten(x + dx, y + dy, s, 1.27)
+    for netz, (x, y), richtung in b.labels:
+        br = len(netz) * 1.15 + 2.5
+        pts += [(x - br if richtung == "l" else x, y - 1.5), (x + br if richtung == "r" else x, y + 1.5)]
+    for netz, (x, y), _rot, _s in b.power:
+        pts += [(x - 3.0, y - 5.0), (x + 3.0, y + 5.0)] + _textkasten(x, y, netz, 1.27)
+    for x, y, s, g in b.texte:
+        pts += _textkasten(x, y, s, g, "left", unten=True)
+    for bl in b.blaetter:
+        pts += [(bl["x"], bl["y"] - 3.0), (bl["x"] + bl["b"], bl["y"] + bl["h"] + 3.0)]
+    xs, ys = [p_[0] for p_ in pts], [p_[1] for p_ in pts]
+    return min(xs), min(ys), max(xs), max(ys)
+
+
+def _einzelblock(b: Blatt) -> None:
+    """Steht nur ein Block auf dem Blatt: Rahmen weglassen (sein Titel wird Blatttitel), Inhalt zentrieren."""
+    if len(b.rahmen) > 1:
+        return
+    if b.rahmen:
+        b.titel = b.titel or b.rahmen[0][4]
+        b.rahmen = []
+    breite, hoehe = SEITE[b.papier]
+    x0, y0, x1, y1 = _ausdehnung(b)
+    raster = 1.27
+    dx = round(((breite / 2) - (x0 + x1) / 2) / raster) * raster
+    dy = round(((RAND + hoehe - SCHRIFTFELD) / 2 - (y0 + y1) / 2) / raster) * raster
+    b.versatz = (round(dx, 2), round(dy, 2))
+
+
 def schreibe_blatt(b: Blatt, projekt: str, pfad: str, wurzel: Blatt | None = None) -> str:
     """Text der .kicad_sch-Datei. pfad = Instanzpfad der Bauteile ("/<wurzel>" oder "/<wurzel>/<blatt>")."""
+    _einzelblock(b)
     ox, oy = b.versatz
     v = lambda pt: (rd(pt[0] + ox), rd(pt[1] + oy))
     anschluss: dict[tuple, set] = {}

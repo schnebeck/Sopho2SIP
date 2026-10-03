@@ -11,7 +11,7 @@ Trägerplatine für das Raspberry Pi **Compute Module 4** mit derselben D340-Anb
 | Datei | Inhalt |
 |---|---|
 | `erzeuge_schaltplan.py` | erzeugt das hierarchische Projekt: `SOLL_*` (Verbindungen je Blatt), `blatt_*()` (Zeichnung), `main()` (Wurzelblatt) |
-| `sopho2sip-cm4.kicad_sch` | Wurzelblatt: Funktionsblöcke als hierarchische Blätter, über Blattpins verdrahtet |
+| `sopho2sip-cm4.kicad_sch` | Wurzelblatt: Funktionsblöcke als hierarchische Blätter, über Blattpins verdrahtet. Blätter mit nur einem Block ohne Rahmen, Inhalt zentriert |
 | `cm4.kicad_sch`, `versorgung.kicad_sch`, `sd.kicad_sch`, `ethernet.kicad_sch`, `codec.kicad_sch`, `sprechweg.kicad_sch`, `rs232.kicad_sch`, `bedienung.kicad_sch` | Kindblätter (erzeugt) |
 | `sopho2sip.kicad_sym`, `sym-lib-table` | Projektbibliothek mit den beiden CM4-Steckern (erzeugt) |
 | `sopho2sip-cm4.pdf` | alle 9 Blätter zum Ansehen |

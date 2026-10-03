@@ -5,39 +5,39 @@
   },
   "sheets": [
     [
-      "7df548e1-cccf-4b0a-bd0b-62279478ded5",
+      "4a9740d4-98df-4f49-9691-e6a39846794f",
       "Root"
     ],
     [
-      "5e1576b2-07dd-4256-ba1d-fe3654fb4477",
+      "3284d3d8-c2e6-44f5-affa-4a3faad8f207",
       "CM4"
     ],
     [
-      "0b268b49-25e9-487b-bed5-39cf0b14316b",
+      "42f5ee7a-c3ac-4787-8301-92de14f14410",
       "Ethernet"
     ],
     [
-      "dc3a327f-cdef-4982-92ed-2092972fbe4d",
+      "fc725e45-1779-4c94-851c-d545cde09981",
       "\u00b5SD"
     ],
     [
-      "74a840af-5e3f-4f43-873d-9a715d663c4e",
+      "16aba123-e0cc-4e3b-982b-0f9762fe7422",
       "Audio-Codec"
     ],
     [
-      "74379219-4734-4370-b8ff-0c2955969547",
+      "d4fa3405-d604-40a8-b765-5b696e4fbcdc",
       "RS-232"
     ],
     [
-      "7dd129ef-9e63-4a17-9cb4-4359dd0a3462",
+      "88d67aee-9efd-4f4b-8061-66a780267997",
       "Sprechweg"
     ],
     [
-      "8fa4347b-bdaa-48e7-8e37-b02088485bc4",
+      "2963fa3a-cbf7-4f37-8139-5308647e8f8a",
       "Versorgung"
     ],
     [
-      "f5f2bb6d-86e8-4d20-b42a-a787f6aa6f85",
+      "9f7bcd79-0dfc-4843-bc17-fbc3134151e8",
       "Bedienung"
     ]
   ]
