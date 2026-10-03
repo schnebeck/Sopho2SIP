@@ -1,0 +1,1140 @@
+(kicad_sch
+	(version 20250114)
+	(generator "sopho2sip")
+	(generator_version "3.0")
+	(uuid "f5f2bb6d-86e8-4d20-b42a-a787f6aa6f85")
+	(paper "A3")
+	(title_block
+		(title "Bedienung")
+		(rev "0.2")
+		(company "Sopho2SIP")
+	)
+	(lib_symbols
+		(symbol "Device:R"
+				(pin_numbers
+					(hide yes)
+				)
+				(pin_names
+					(offset 0)
+				)
+				(exclude_from_sim no)
+				(in_bom yes)
+				(on_board yes)
+				(in_pos_files yes)
+				(duplicate_pin_numbers_are_jumpers no)
+				(property "Reference" "R"
+					(at 2.032 0 90)
+					(show_name no)
+					(do_not_autoplace no)
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(property "Value" "R"
+					(at 0 0 90)
+					(show_name no)
+					(do_not_autoplace no)
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(property "Footprint" ""
+					(at -1.778 0 90)
+					(show_name no)
+					(do_not_autoplace no)
+					(hide yes)
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(property "Datasheet" ""
+					(at 0 0 0)
+					(show_name no)
+					(do_not_autoplace no)
+					(hide yes)
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(property "Description" "Resistor"
+					(at 0 0 0)
+					(show_name no)
+					(do_not_autoplace no)
+					(hide yes)
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(property "ki_keywords" "R res resistor"
+					(at 0 0 0)
+					(show_name no)
+					(do_not_autoplace no)
+					(hide yes)
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(property "ki_fp_filters" "R_*"
+					(at 0 0 0)
+					(show_name no)
+					(do_not_autoplace no)
+					(hide yes)
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(symbol "R_0_1"
+					(rectangle
+						(start -1.016 -2.54)
+						(end 1.016 2.54)
+						(stroke
+							(width 0.254)
+							(type default)
+						)
+						(fill
+							(type none)
+						)
+					)
+				)
+				(symbol "R_1_1"
+					(pin passive line
+						(at 0 3.81 270)
+						(length 1.27)
+						(name ""
+							(effects
+								(font
+									(size 1.27 1.27)
+								)
+							)
+						)
+						(number "1"
+							(effects
+								(font
+									(size 1.27 1.27)
+								)
+							)
+						)
+					)
+					(pin passive line
+						(at 0 -3.81 90)
+						(length 1.27)
+						(name ""
+							(effects
+								(font
+									(size 1.27 1.27)
+								)
+							)
+						)
+						(number "2"
+							(effects
+								(font
+									(size 1.27 1.27)
+								)
+							)
+						)
+					)
+				)
+				(embedded_fonts no)
+			)
+		(symbol "Device:LED"
+				(pin_numbers
+					(hide yes)
+				)
+				(pin_names
+					(offset 1.016)
+					(hide yes)
+				)
+				(exclude_from_sim no)
+				(in_bom yes)
+				(on_board yes)
+				(in_pos_files yes)
+				(duplicate_pin_numbers_are_jumpers no)
+				(property "Reference" "D"
+					(at 0 2.54 0)
+					(show_name no)
+					(do_not_autoplace no)
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(property "Value" "LED"
+					(at 0 -2.54 0)
+					(show_name no)
+					(do_not_autoplace no)
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(property "Footprint" ""
+					(at 0 0 0)
+					(show_name no)
+					(do_not_autoplace no)
+					(hide yes)
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(property "Datasheet" ""
+					(at 0 0 0)
+					(show_name no)
+					(do_not_autoplace no)
+					(hide yes)
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(property "Description" "Light emitting diode"
+					(at 0 0 0)
+					(show_name no)
+					(do_not_autoplace no)
+					(hide yes)
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(property "Sim.Pins" "1=K 2=A"
+					(at 0 0 0)
+					(show_name no)
+					(do_not_autoplace no)
+					(hide yes)
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(property "ki_keywords" "LED diode"
+					(at 0 0 0)
+					(show_name no)
+					(do_not_autoplace no)
+					(hide yes)
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(property "ki_fp_filters" "LED* LED_SMD:* LED_THT:*"
+					(at 0 0 0)
+					(show_name no)
+					(do_not_autoplace no)
+					(hide yes)
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(symbol "LED_0_1"
+					(polyline
+						(pts
+							(xy -3.048 -0.762) (xy -4.572 -2.286) (xy -3.81 -2.286) (xy -4.572 -2.286) (xy -4.572 -1.524)
+						)
+						(stroke
+							(width 0)
+							(type default)
+						)
+						(fill
+							(type none)
+						)
+					)
+					(polyline
+						(pts
+							(xy -1.778 -0.762) (xy -3.302 -2.286) (xy -2.54 -2.286) (xy -3.302 -2.286) (xy -3.302 -1.524)
+						)
+						(stroke
+							(width 0)
+							(type default)
+						)
+						(fill
+							(type none)
+						)
+					)
+					(polyline
+						(pts
+							(xy -1.27 0) (xy 1.27 0)
+						)
+						(stroke
+							(width 0)
+							(type default)
+						)
+						(fill
+							(type none)
+						)
+					)
+					(polyline
+						(pts
+							(xy -1.27 -1.27) (xy -1.27 1.27)
+						)
+						(stroke
+							(width 0.254)
+							(type default)
+						)
+						(fill
+							(type none)
+						)
+					)
+					(polyline
+						(pts
+							(xy 1.27 -1.27) (xy 1.27 1.27) (xy -1.27 0) (xy 1.27 -1.27)
+						)
+						(stroke
+							(width 0.254)
+							(type default)
+						)
+						(fill
+							(type none)
+						)
+					)
+				)
+				(symbol "LED_1_1"
+					(pin passive line
+						(at -3.81 0 0)
+						(length 2.54)
+						(name "K"
+							(effects
+								(font
+									(size 1.27 1.27)
+								)
+							)
+						)
+						(number "1"
+							(effects
+								(font
+									(size 1.27 1.27)
+								)
+							)
+						)
+					)
+					(pin passive line
+						(at 3.81 0 180)
+						(length 2.54)
+						(name "A"
+							(effects
+								(font
+									(size 1.27 1.27)
+								)
+							)
+						)
+						(number "2"
+							(effects
+								(font
+									(size 1.27 1.27)
+								)
+							)
+						)
+					)
+				)
+				(embedded_fonts no)
+			)
+		(symbol "Switch:SW_Push"
+				(pin_numbers
+					(hide yes)
+				)
+				(pin_names
+					(offset 1.016)
+					(hide yes)
+				)
+				(exclude_from_sim no)
+				(in_bom yes)
+				(on_board yes)
+				(in_pos_files yes)
+				(duplicate_pin_numbers_are_jumpers no)
+				(property "Reference" "SW"
+					(at 1.27 2.54 0)
+					(show_name no)
+					(do_not_autoplace no)
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+						(justify left)
+					)
+				)
+				(property "Value" "SW_Push"
+					(at 0 -1.524 0)
+					(show_name no)
+					(do_not_autoplace no)
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(property "Footprint" ""
+					(at 0 5.08 0)
+					(show_name no)
+					(do_not_autoplace no)
+					(hide yes)
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(property "Datasheet" ""
+					(at 0 5.08 0)
+					(show_name no)
+					(do_not_autoplace no)
+					(hide yes)
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(property "Description" "Push button switch, generic, two pins"
+					(at 0 0 0)
+					(show_name no)
+					(do_not_autoplace no)
+					(hide yes)
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(property "ki_keywords" "switch normally-open pushbutton push-button"
+					(at 0 0 0)
+					(show_name no)
+					(do_not_autoplace no)
+					(hide yes)
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(symbol "SW_Push_0_1"
+					(circle
+						(center -2.032 0)
+						(radius 0.508)
+						(stroke
+							(width 0)
+							(type default)
+						)
+						(fill
+							(type none)
+						)
+					)
+					(polyline
+						(pts
+							(xy 0 1.27) (xy 0 3.048)
+						)
+						(stroke
+							(width 0)
+							(type default)
+						)
+						(fill
+							(type none)
+						)
+					)
+					(circle
+						(center 2.032 0)
+						(radius 0.508)
+						(stroke
+							(width 0)
+							(type default)
+						)
+						(fill
+							(type none)
+						)
+					)
+					(polyline
+						(pts
+							(xy 2.54 1.27) (xy -2.54 1.27)
+						)
+						(stroke
+							(width 0)
+							(type default)
+						)
+						(fill
+							(type none)
+						)
+					)
+					(pin passive line
+						(at -5.08 0 0)
+						(length 2.54)
+						(name "1"
+							(effects
+								(font
+									(size 1.27 1.27)
+								)
+							)
+						)
+						(number "1"
+							(effects
+								(font
+									(size 1.27 1.27)
+								)
+							)
+						)
+					)
+					(pin passive line
+						(at 5.08 0 180)
+						(length 2.54)
+						(name "2"
+							(effects
+								(font
+									(size 1.27 1.27)
+								)
+							)
+						)
+						(number "2"
+							(effects
+								(font
+									(size 1.27 1.27)
+								)
+							)
+						)
+					)
+				)
+				(embedded_fonts no)
+			)
+		(symbol "Mechanical:MountingHole"
+				(pin_names
+					(offset 1.016)
+				)
+				(exclude_from_sim no)
+				(in_bom no)
+				(on_board yes)
+				(in_pos_files yes)
+				(duplicate_pin_numbers_are_jumpers no)
+				(property "Reference" "H"
+					(at 0 5.08 0)
+					(show_name no)
+					(do_not_autoplace no)
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(property "Value" "MountingHole"
+					(at 0 3.175 0)
+					(show_name no)
+					(do_not_autoplace no)
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(property "Footprint" ""
+					(at 0 0 0)
+					(show_name no)
+					(do_not_autoplace no)
+					(hide yes)
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(property "Datasheet" ""
+					(at 0 0 0)
+					(show_name no)
+					(do_not_autoplace no)
+					(hide yes)
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(property "Description" "Mounting Hole without connection"
+					(at 0 0 0)
+					(show_name no)
+					(do_not_autoplace no)
+					(hide yes)
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(property "ki_keywords" "mounting hole"
+					(at 0 0 0)
+					(show_name no)
+					(do_not_autoplace no)
+					(hide yes)
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(property "ki_fp_filters" "MountingHole*"
+					(at 0 0 0)
+					(show_name no)
+					(do_not_autoplace no)
+					(hide yes)
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(symbol "MountingHole_0_1"
+					(circle
+						(center 0 0)
+						(radius 1.27)
+						(stroke
+							(width 1.27)
+							(type default)
+						)
+						(fill
+							(type none)
+						)
+					)
+				)
+				(embedded_fonts no)
+			)
+		(symbol "power:GND"
+				(power global)
+				(pin_numbers
+					(hide yes)
+				)
+				(pin_names
+					(offset 0)
+					(hide yes)
+				)
+				(exclude_from_sim no)
+				(in_bom yes)
+				(on_board yes)
+				(in_pos_files yes)
+				(duplicate_pin_numbers_are_jumpers no)
+				(property "Reference" "#PWR"
+					(at 0 -6.35 0)
+					(show_name no)
+					(do_not_autoplace no)
+					(hide yes)
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(property "Value" "GND"
+					(at 0 -3.81 0)
+					(show_name no)
+					(do_not_autoplace no)
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(property "Footprint" ""
+					(at 0 0 0)
+					(show_name no)
+					(do_not_autoplace no)
+					(hide yes)
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(property "Datasheet" ""
+					(at 0 0 0)
+					(show_name no)
+					(do_not_autoplace no)
+					(hide yes)
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+					(at 0 0 0)
+					(show_name no)
+					(do_not_autoplace no)
+					(hide yes)
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(property "ki_keywords" "global power"
+					(at 0 0 0)
+					(show_name no)
+					(do_not_autoplace no)
+					(hide yes)
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(symbol "GND_0_1"
+					(polyline
+						(pts
+							(xy 0 0) (xy 0 -1.27) (xy 1.27 -1.27) (xy 0 -2.54) (xy -1.27 -1.27) (xy 0 -1.27)
+						)
+						(stroke
+							(width 0)
+							(type default)
+						)
+						(fill
+							(type none)
+						)
+					)
+				)
+				(symbol "GND_1_1"
+					(pin power_in line
+						(at 0 0 270)
+						(length 0)
+						(name ""
+							(effects
+								(font
+									(size 1.27 1.27)
+								)
+							)
+						)
+						(number "1"
+							(effects
+								(font
+									(size 1.27 1.27)
+								)
+							)
+						)
+					)
+				)
+				(embedded_fonts no)
+			)
+	)
+	(symbol
+		(lib_id "Device:R")
+		(at 55.88 33.02 90)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "09e2ba09-1e6b-44d8-940e-a51512ec363e")
+		(property "Reference" "R6"
+			(at 55.88 30.48 90)
+			(effects (font (size 1.27 1.27)))
+		)
+		(property "Value" "330"
+			(at 55.88 35.81 90)
+			(effects (font (size 1.27 1.27)))
+		)
+		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
+			(at 55.88 33.02 0)
+			(effects (font (size 1.27 1.27)) (hide yes))
+		)
+		(property "Datasheet" ""
+			(at 55.88 33.02 0)
+			(effects (font (size 1.27 1.27)) (hide yes))
+		)
+		(pin "1" (uuid "7b83aa7a-8760-4cb3-b8db-1ec8383f7e18"))
+		(pin "2" (uuid "a2037a08-0b84-4bdb-b3a7-1b675ce7f241"))
+		(instances
+			(project "sopho2sip-cm4"
+				(path "/7df548e1-cccf-4b0a-bd0b-62279478ded5/f5f2bb6d-86e8-4d20-b42a-a787f6aa6f85" (reference "R6") (unit 1))
+			)
+		)
+	)
+	(symbol
+		(lib_id "Device:LED")
+		(at 73.66 33.02 180)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "e41c7adc-9643-493c-b589-ea2a9e16bbe1")
+		(property "Reference" "D1"
+			(at 73.66 35.56 0)
+			(effects (font (size 1.27 1.27)))
+		)
+		(property "Value" "grün"
+			(at 73.66 30.48 0)
+			(effects (font (size 1.27 1.27)))
+		)
+		(property "Footprint" "LED_SMD:LED_0603_1608Metric"
+			(at 73.66 33.02 0)
+			(effects (font (size 1.27 1.27)) (hide yes))
+		)
+		(property "Datasheet" ""
+			(at 73.66 33.02 0)
+			(effects (font (size 1.27 1.27)) (hide yes))
+		)
+		(pin "1" (uuid "f2841079-de74-49f1-8a00-75e051b61f09"))
+		(pin "2" (uuid "966d88aa-4832-41c5-b0da-f0c07b7534fa"))
+		(instances
+			(project "sopho2sip-cm4"
+				(path "/7df548e1-cccf-4b0a-bd0b-62279478ded5/f5f2bb6d-86e8-4d20-b42a-a787f6aa6f85" (reference "D1") (unit 1))
+			)
+		)
+	)
+	(symbol
+		(lib_id "Device:R")
+		(at 55.88 48.26 90)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "b30df635-b26c-4e91-a1e6-e0bfae7d908d")
+		(property "Reference" "R7"
+			(at 55.88 45.72 90)
+			(effects (font (size 1.27 1.27)))
+		)
+		(property "Value" "330"
+			(at 55.88 51.05 90)
+			(effects (font (size 1.27 1.27)))
+		)
+		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
+			(at 55.88 48.26 0)
+			(effects (font (size 1.27 1.27)) (hide yes))
+		)
+		(property "Datasheet" ""
+			(at 55.88 48.26 0)
+			(effects (font (size 1.27 1.27)) (hide yes))
+		)
+		(pin "1" (uuid "25d49a79-88a4-4fcb-beb9-077a253298b8"))
+		(pin "2" (uuid "29cef223-2ea1-46da-b194-fe68b9549f28"))
+		(instances
+			(project "sopho2sip-cm4"
+				(path "/7df548e1-cccf-4b0a-bd0b-62279478ded5/f5f2bb6d-86e8-4d20-b42a-a787f6aa6f85" (reference "R7") (unit 1))
+			)
+		)
+	)
+	(symbol
+		(lib_id "Device:LED")
+		(at 73.66 48.26 180)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "8625e526-0945-4ba4-98c3-0425c5ad7d24")
+		(property "Reference" "D2"
+			(at 73.66 50.8 0)
+			(effects (font (size 1.27 1.27)))
+		)
+		(property "Value" "gelb"
+			(at 73.66 45.72 0)
+			(effects (font (size 1.27 1.27)))
+		)
+		(property "Footprint" "LED_SMD:LED_0603_1608Metric"
+			(at 73.66 48.26 0)
+			(effects (font (size 1.27 1.27)) (hide yes))
+		)
+		(property "Datasheet" ""
+			(at 73.66 48.26 0)
+			(effects (font (size 1.27 1.27)) (hide yes))
+		)
+		(pin "1" (uuid "f3e88143-3e6f-44b4-bf6a-6833a299d90f"))
+		(pin "2" (uuid "cd6457fc-b634-408c-96c3-9c389543f4fb"))
+		(instances
+			(project "sopho2sip-cm4"
+				(path "/7df548e1-cccf-4b0a-bd0b-62279478ded5/f5f2bb6d-86e8-4d20-b42a-a787f6aa6f85" (reference "D2") (unit 1))
+			)
+		)
+	)
+	(symbol
+		(lib_id "Switch:SW_Push")
+		(at 60.96 63.5 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "4d39cb45-10bd-4ebe-9809-dceb0ce80a96")
+		(property "Reference" "SW1"
+			(at 62.23 60.96 0)
+			(effects (font (size 1.27 1.27)))
+		)
+		(property "Value" "Taste"
+			(at 60.96 65.02 0)
+			(effects (font (size 1.27 1.27)))
+		)
+		(property "Footprint" "Button_Switch_SMD:SW_SPST_TL3342"
+			(at 60.96 63.5 0)
+			(effects (font (size 1.27 1.27)) (hide yes))
+		)
+		(property "Datasheet" ""
+			(at 60.96 63.5 0)
+			(effects (font (size 1.27 1.27)) (hide yes))
+		)
+		(pin "1" (uuid "67e61118-9074-4bc9-aab4-f16261dc53f9"))
+		(pin "2" (uuid "c72c61a6-ddac-45e9-b932-1f544b2aa70b"))
+		(instances
+			(project "sopho2sip-cm4"
+				(path "/7df548e1-cccf-4b0a-bd0b-62279478ded5/f5f2bb6d-86e8-4d20-b42a-a787f6aa6f85" (reference "SW1") (unit 1))
+			)
+		)
+	)
+	(symbol
+		(lib_id "Mechanical:MountingHole")
+		(at 27.94 80.01 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "ebd2eb70-006e-4729-910e-727b45014986")
+		(property "Reference" "H1"
+			(at 27.94 74.93 0)
+			(effects (font (size 1.27 1.27)))
+		)
+		(property "Value" "M2.5"
+			(at 27.94 76.84 0)
+			(effects (font (size 1.27 1.27)))
+		)
+		(property "Footprint" "MountingHole:MountingHole_2.7mm_M2.5"
+			(at 27.94 80.01 0)
+			(effects (font (size 1.27 1.27)) (hide yes))
+		)
+		(property "Datasheet" ""
+			(at 27.94 80.01 0)
+			(effects (font (size 1.27 1.27)) (hide yes))
+		)
+		(instances
+			(project "sopho2sip-cm4"
+				(path "/7df548e1-cccf-4b0a-bd0b-62279478ded5/f5f2bb6d-86e8-4d20-b42a-a787f6aa6f85" (reference "H1") (unit 1))
+			)
+		)
+	)
+	(symbol
+		(lib_id "Mechanical:MountingHole")
+		(at 40.64 80.01 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "b9ea938e-833f-4824-8c44-9c7b8cead236")
+		(property "Reference" "H2"
+			(at 40.64 74.93 0)
+			(effects (font (size 1.27 1.27)))
+		)
+		(property "Value" "M2.5"
+			(at 40.64 76.84 0)
+			(effects (font (size 1.27 1.27)))
+		)
+		(property "Footprint" "MountingHole:MountingHole_2.7mm_M2.5"
+			(at 40.64 80.01 0)
+			(effects (font (size 1.27 1.27)) (hide yes))
+		)
+		(property "Datasheet" ""
+			(at 40.64 80.01 0)
+			(effects (font (size 1.27 1.27)) (hide yes))
+		)
+		(instances
+			(project "sopho2sip-cm4"
+				(path "/7df548e1-cccf-4b0a-bd0b-62279478ded5/f5f2bb6d-86e8-4d20-b42a-a787f6aa6f85" (reference "H2") (unit 1))
+			)
+		)
+	)
+	(symbol
+		(lib_id "Mechanical:MountingHole")
+		(at 53.34 80.01 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "c6219d8d-cf24-4aad-8c5d-6205d0e23f50")
+		(property "Reference" "H3"
+			(at 53.34 74.93 0)
+			(effects (font (size 1.27 1.27)))
+		)
+		(property "Value" "M2.5"
+			(at 53.34 76.84 0)
+			(effects (font (size 1.27 1.27)))
+		)
+		(property "Footprint" "MountingHole:MountingHole_2.7mm_M2.5"
+			(at 53.34 80.01 0)
+			(effects (font (size 1.27 1.27)) (hide yes))
+		)
+		(property "Datasheet" ""
+			(at 53.34 80.01 0)
+			(effects (font (size 1.27 1.27)) (hide yes))
+		)
+		(instances
+			(project "sopho2sip-cm4"
+				(path "/7df548e1-cccf-4b0a-bd0b-62279478ded5/f5f2bb6d-86e8-4d20-b42a-a787f6aa6f85" (reference "H3") (unit 1))
+			)
+		)
+	)
+	(symbol
+		(lib_id "Mechanical:MountingHole")
+		(at 66.04 80.01 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "6e19298c-e533-4d55-95e7-a2fa03c4bb8b")
+		(property "Reference" "H4"
+			(at 66.04 74.93 0)
+			(effects (font (size 1.27 1.27)))
+		)
+		(property "Value" "M2.5"
+			(at 66.04 76.84 0)
+			(effects (font (size 1.27 1.27)))
+		)
+		(property "Footprint" "MountingHole:MountingHole_2.7mm_M2.5"
+			(at 66.04 80.01 0)
+			(effects (font (size 1.27 1.27)) (hide yes))
+		)
+		(property "Datasheet" ""
+			(at 66.04 80.01 0)
+			(effects (font (size 1.27 1.27)) (hide yes))
+		)
+		(instances
+			(project "sopho2sip-cm4"
+				(path "/7df548e1-cccf-4b0a-bd0b-62279478ded5/f5f2bb6d-86e8-4d20-b42a-a787f6aa6f85" (reference "H4") (unit 1))
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:GND")
+		(at 83.82 35.56 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom no)
+		(on_board yes)
+		(dnp no)
+		(uuid "bca80d12-22bc-4df2-aa12-6ded04712a59")
+		(property "Reference" "#PWRBED001"
+			(at 83.82 41.91 0)
+			(effects (font (size 1.27 1.27)) (hide yes))
+		)
+		(property "Value" "GND"
+			(at 83.82 39.37 0)
+			(effects (font (size 1.27 1.27)))
+		)
+		(property "Footprint" ""
+			(at 83.82 35.56 0)
+			(effects (font (size 1.27 1.27)) (hide yes))
+		)
+		(property "Datasheet" ""
+			(at 83.82 35.56 0)
+			(effects (font (size 1.27 1.27)) (hide yes))
+		)
+		(pin "1" (uuid "3d894106-81ee-4bce-8ad4-267c94fcf7ca"))
+		(instances
+			(project "sopho2sip-cm4"
+				(path "/7df548e1-cccf-4b0a-bd0b-62279478ded5/f5f2bb6d-86e8-4d20-b42a-a787f6aa6f85" (reference "#PWRBED001") (unit 1))
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:GND")
+		(at 83.82 50.8 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom no)
+		(on_board yes)
+		(dnp no)
+		(uuid "b385570a-1346-4f5c-bd69-a146a0dc4d6d")
+		(property "Reference" "#PWRBED002"
+			(at 83.82 57.15 0)
+			(effects (font (size 1.27 1.27)) (hide yes))
+		)
+		(property "Value" "GND"
+			(at 83.82 54.61 0)
+			(effects (font (size 1.27 1.27)))
+		)
+		(property "Footprint" ""
+			(at 83.82 50.8 0)
+			(effects (font (size 1.27 1.27)) (hide yes))
+		)
+		(property "Datasheet" ""
+			(at 83.82 50.8 0)
+			(effects (font (size 1.27 1.27)) (hide yes))
+		)
+		(pin "1" (uuid "70ad6302-ecf2-4de9-8c12-bbca38d0fa6a"))
+		(instances
+			(project "sopho2sip-cm4"
+				(path "/7df548e1-cccf-4b0a-bd0b-62279478ded5/f5f2bb6d-86e8-4d20-b42a-a787f6aa6f85" (reference "#PWRBED002") (unit 1))
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:GND")
+		(at 83.82 66.04 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom no)
+		(on_board yes)
+		(dnp no)
+		(uuid "7be57a98-20b6-40d7-8c62-7ad671c34623")
+		(property "Reference" "#PWRBED003"
+			(at 83.82 72.39 0)
+			(effects (font (size 1.27 1.27)) (hide yes))
+		)
+		(property "Value" "GND"
+			(at 83.82 69.85 0)
+			(effects (font (size 1.27 1.27)))
+		)
+		(property "Footprint" ""
+			(at 83.82 66.04 0)
+			(effects (font (size 1.27 1.27)) (hide yes))
+		)
+		(property "Datasheet" ""
+			(at 83.82 66.04 0)
+			(effects (font (size 1.27 1.27)) (hide yes))
+		)
+		(pin "1" (uuid "1357917f-236e-4642-8458-ecfe83adc952"))
+		(instances
+			(project "sopho2sip-cm4"
+				(path "/7df548e1-cccf-4b0a-bd0b-62279478ded5/f5f2bb6d-86e8-4d20-b42a-a787f6aa6f85" (reference "#PWRBED003") (unit 1))
+			)
+		)
+	)
+	(wire (pts (xy 40.64 33.02) (xy 52.07 33.02)) (stroke (width 0) (type default)) (uuid "c074a057-b2e8-41cb-bc4e-d9a0aefe3d90"))
+	(wire (pts (xy 59.69 33.02) (xy 69.85 33.02)) (stroke (width 0) (type default)) (uuid "d68cb909-86c5-467d-85f8-42bfab899dbe"))
+	(wire (pts (xy 77.47 33.02) (xy 83.82 33.02)) (stroke (width 0) (type default)) (uuid "288c6ce1-cfd3-43a0-a8d6-7d2778d95da6"))
+	(wire (pts (xy 83.82 33.02) (xy 83.82 35.56)) (stroke (width 0) (type default)) (uuid "815623e5-7ba9-4f96-bef6-e4de47b9cf0a"))
+	(wire (pts (xy 40.64 48.26) (xy 52.07 48.26)) (stroke (width 0) (type default)) (uuid "01dafb64-e794-40ae-b124-1ad5962a139d"))
+	(wire (pts (xy 59.69 48.26) (xy 69.85 48.26)) (stroke (width 0) (type default)) (uuid "237e2942-223e-430b-8ad1-180e8a1faa8c"))
+	(wire (pts (xy 77.47 48.26) (xy 83.82 48.26)) (stroke (width 0) (type default)) (uuid "e02e8ce9-386d-4fcb-998f-c757f93db76d"))
+	(wire (pts (xy 83.82 48.26) (xy 83.82 50.8)) (stroke (width 0) (type default)) (uuid "897033cd-a8b3-4749-a139-0d08cd3a9cc9"))
+	(wire (pts (xy 40.64 63.5) (xy 55.88 63.5)) (stroke (width 0) (type default)) (uuid "1b8ec7f6-87f4-4247-abc4-20d3160e9871"))
+	(wire (pts (xy 66.04 63.5) (xy 83.82 63.5)) (stroke (width 0) (type default)) (uuid "b693eb6b-e736-42a6-9750-504745907700"))
+	(wire (pts (xy 83.82 63.5) (xy 83.82 66.04)) (stroke (width 0) (type default)) (uuid "9c1b5d64-172c-447b-80e7-e8b159075aaf"))
+	(hierarchical_label "LED_TELEFON" (shape bidirectional) (at 40.64 33.02 180) (effects (font (size 1.27 1.27)) (justify right)) (uuid "61b92b86-10b2-4415-911d-899f0412fcda"))
+	(hierarchical_label "LED_GESPRAECH" (shape bidirectional) (at 40.64 48.26 180) (effects (font (size 1.27 1.27)) (justify right)) (uuid "a048ba73-0183-4121-ae31-39638c061c91"))
+	(hierarchical_label "TASTE" (shape bidirectional) (at 40.64 63.5 180) (effects (font (size 1.27 1.27)) (justify right)) (uuid "6f1cfa8d-3c95-4c07-84a7-4cc2eabab9b2"))
+	(rectangle (start 15 15.04) (end 132 92.04) (stroke (width 0.3) (type dash) (color 72 72 72 1)) (fill (type none)) (uuid "320b2cc8-cd8f-4e44-a945-68841ba6b7be"))
+	(text "Bedienung" (exclude_from_sim no) (at 17 20.04 0) (effects (font (size 2.2 2.2) bold) (justify left bottom)) (uuid "d4253eb6-7449-4736-8109-1188927ca0c3"))
+	(text "D1: Telefon verbunden" (exclude_from_sim no) (at 92 34.04 0) (effects (font (size 1.27 1.27) italic) (justify left bottom)) (uuid "5bb84a5c-6088-43b0-b79a-b873c91fb1ce"))
+	(text "D2: Gespräch" (exclude_from_sim no) (at 92 49.04 0) (effects (font (size 1.27 1.27) italic) (justify left bottom)) (uuid "57b60a51-72bd-4543-937e-17edb545850c"))
+	(text "Annehmen/Auflegen" (exclude_from_sim no) (at 92 64.04 0) (effects (font (size 1.27 1.27) italic) (justify left bottom)) (uuid "c7919171-ac29-46fc-ad83-3384e4649623"))
+	(text "(Pull-up im Pi)" (exclude_from_sim no) (at 92 67.04 0) (effects (font (size 1.27 1.27) italic) (justify left bottom)) (uuid "381f14ee-2937-4efd-ad89-c7a4e9eb2599"))
+	(text "H1–H4: Gehäusebefestigung M2,5 (Lage nach Gehäuse); CM4 auf 4 Abstandsbolzen M2,5" (exclude_from_sim no) (at 80 81.04 0) (effects (font (size 1.27 1.27) italic) (justify left bottom)) (uuid "ccf27551-a595-4c73-b7b9-c8e54fcfe0d2"))
+	(embedded_fonts no)
+)

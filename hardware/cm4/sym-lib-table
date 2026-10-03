@@ -1,0 +1,4 @@
+(sym_lib_table
+	(version 7)
+	(lib (name "Sopho2SIP") (type "KiCad") (uri "${KIPRJMOD}/sopho2sip.kicad_sym") (options "") (descr "Sopho2SIP, vom Generator erzeugt"))
+)
