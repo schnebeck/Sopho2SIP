@@ -155,7 +155,9 @@ gateway/tests/          # Tests (python3 -m unittest discover -s gateway/tests)
 docs/testplan.md        # nächste Tests am Gerät
 docs/betrieb.md         # Dienste, Ports, Einrichtung und Sicherheit auf dem Pi
 logs/                   # Mitschnitte, Übersicht in logs/INDEX.md
+hardware/kicadgen.py    # gemeinsamer KiCad-Generator (Symbole, Leitungen, hierarchische Blätter, ERC/Netzlisten-Prüfung)
 hardware/hat/           # HAT-Entwurf (KiCad, aus erzeuge_schaltplan.py), README mit offenen Prüfpunkten
+hardware/cm4/           # CM4-Träger (hierarchisch; eMMC/µSD, WLAN/Ethernet), nutzt die HAT-Blöcke
 ```
 
 ## Offene Punkte

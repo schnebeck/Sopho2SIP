@@ -1,4 +1,12 @@
 {
-  "meta": {"filename": "sopho2sip-hat.kicad_pro", "version": 1},
-  "sheets": [["ae543785-b42d-4681-8007-6fc6ddbff57e", "Root"]]
+  "meta": {
+    "filename": "sopho2sip-hat.kicad_pro",
+    "version": 1
+  },
+  "sheets": [
+    [
+      "a84a4d85-c306-4846-93c9-a0421e5957b3",
+      "Root"
+    ]
+  ]
 }

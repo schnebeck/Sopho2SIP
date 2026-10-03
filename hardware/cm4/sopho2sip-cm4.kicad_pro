@@ -1,0 +1,44 @@
+{
+  "meta": {
+    "filename": "sopho2sip-cm4.kicad_pro",
+    "version": 1
+  },
+  "sheets": [
+    [
+      "7df548e1-cccf-4b0a-bd0b-62279478ded5",
+      "Root"
+    ],
+    [
+      "5e1576b2-07dd-4256-ba1d-fe3654fb4477",
+      "CM4"
+    ],
+    [
+      "0b268b49-25e9-487b-bed5-39cf0b14316b",
+      "Ethernet"
+    ],
+    [
+      "dc3a327f-cdef-4982-92ed-2092972fbe4d",
+      "\u00b5SD"
+    ],
+    [
+      "74a840af-5e3f-4f43-873d-9a715d663c4e",
+      "Audio-Codec"
+    ],
+    [
+      "74379219-4734-4370-b8ff-0c2955969547",
+      "RS-232"
+    ],
+    [
+      "7dd129ef-9e63-4a17-9cb4-4359dd0a3462",
+      "Sprechweg"
+    ],
+    [
+      "8fa4347b-bdaa-48e7-8e37-b02088485bc4",
+      "Versorgung"
+    ],
+    [
+      "f5f2bb6d-86e8-4d20-b42a-a787f6aa6f85",
+      "Bedienung"
+    ]
+  ]
+}

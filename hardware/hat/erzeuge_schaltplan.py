@@ -5,28 +5,25 @@
   hardware/hat/erzeuge_schaltplan.py            → sopho2sip-hat.kicad_sch/.kicad_pro, netzliste.txt
   hardware/hat/erzeuge_schaltplan.py --pruefen  → zusätzlich ERC und Abgleich der KiCad-Netzliste mit SOLL
 
-Zwei getrennte Teile:
-  SOLL      – was womit verbunden ist (Bauteil, Pin → Netz). Das ist die elektrische Wahrheit.
-  zeichne() – wie es aussieht: Lage der Bauteile, Leitungen, Labels zwischen Blöcken, Rahmen.
-Die Prüfung exportiert die Netzliste mit kicad-cli und vergleicht sie Pin für Pin mit SOLL; jede Abweichung der
-Zeichnung (fehlende Leitung, ungewollte Berührung) fällt dort auf.
-
-Begründungen der Schaltung: hardware/hat/README.md.
+SOLL (Verbindungen) und die Block-Funktionen (Zeichnung) sind getrennt; der Generator und die Prüfung stecken in
+hardware/kicadgen.py. Die Blöcke codec, sprechweg, rs232 und bedienung verwendet auch der CM4-Träger
+(hardware/cm4/) – dort als hierarchische Blätter. Begründungen der Schaltung: hardware/hat/README.md.
 """
 from __future__ import annotations
 
-import math
 import pathlib
-import re
-import subprocess
 import sys
-import tempfile
-import uuid
 
-LIB = pathlib.Path("/usr/share/kicad/symbols")
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parents[1]))
+from kicadgen import Blatt, pruefe_projekt, schreibe_projekt, soll_netze  # noqa: E402
+
 HIER = pathlib.Path(__file__).resolve().parent
 NAME = "sopho2sip-hat"
 
+# ------------------------------------------------------------------------------------------------------------------
+# SOLL: Referenz → (Symbol, Wert, Footprint, {Pin: Netz}); "NC" = bewusst offen
+# Versorgung: GND, +3V3, +5V (Pi) · +3.3VA (Codec analog) · GNDA (Telefonseite Audio) · GND_ISO, +3V3_ISO (RS-232)
+# ------------------------------------------------------------------------------------------------------------------
 FP_R, FP_C, FP_C10 = "Resistor_SMD:R_0603_1608Metric", "Capacitor_SMD:C_0603_1608Metric", "Capacitor_SMD:C_0805_2012Metric"
 FP_LED = "LED_SMD:LED_0603_1608Metric"
 FP_LOCH = "MountingHole:MountingHole_2.7mm_M2.5"
@@ -116,171 +113,27 @@ SOLL = {
     **{h: ("Mechanical:MountingHole", "M2.5", FP_LOCH, {}) for h in ("H1", "H2", "H3", "H4")},
 }
 
-# Power-Symbol je Netz (der Wert des Symbols ist der Netzname)
-POWER = {"GND": "power:GND", "+3V3": "power:+3V3", "+5V": "power:+5V", "+3.3VA": "power:+3.3VA",
-         "GNDA": "power:GNDA", "GND_ISO": "power:GND", "+3V3_ISO": "power:+3V3"}
+# Bauteile je Block (für die Wiederverwendung im CM4-Träger)
+BLOCK_REFS = {
+    "pi_leiste": ["J1"],
+    "hat_eeprom": ["U1", "C1", "R1", "R2", "R3", "JP1"],
+    "codec": ["U2", "Y1", "C10", "C11", "C12", "C13", "C14", "C15", "C16", "C17", "C18", "U4", "C19", "C20"],
+    "sprechweg": ["J2", "C21", "T1", "C22", "C23", "T2", "R4", "R5", "C24"],
+    "rs232": ["U3", "C30", "C31", "C32", "C33", "C34", "U5", "C35", "C36", "C37", "C38", "C39", "J3"],
+    "bedienung": ["R6", "D1", "R7", "D2", "SW1", "H1", "H2", "H3", "H4"],
+}
+
+
+def teil_soll(*bloecke: str) -> dict:
+    return {r: SOLL[r] for b in bloecke for r in BLOCK_REFS[b]}
 
 
 # ------------------------------------------------------------------------------------------------------------------
-# Bibliothek
+# Zeichnung je Block (Koordinaten in mm auf dem 1,27-mm-Raster; A3 quer)
 # ------------------------------------------------------------------------------------------------------------------
-def u() -> str:
-    return str(uuid.uuid4())
-
-
-def block(text: str, start: int) -> str:
-    tiefe = 0
-    for j in range(start, len(text)):
-        if text[j] == "(":
-            tiefe += 1
-        elif text[j] == ")":
-            tiefe -= 1
-            if tiefe == 0:
-                return text[start:j + 1]
-    raise ValueError("unvollständiger Block")
-
-
-_cache: dict[str, str] = {}
-
-
-def lib_symbol(lib_id: str) -> str:
-    """Symbolblock mit aufgelöstem 'extends' (Schaltpläne enthalten nur flache Symbole)."""
-    bib, name = lib_id.split(":")
-    if bib not in _cache:
-        _cache[bib] = (LIB / f"{bib}.kicad_sym").read_text(encoding="utf-8")
-    text = _cache[bib]
-    i = text.find(f'(symbol "{name}"')
-    if i < 0:
-        raise KeyError(lib_id)
-    sym = block(text, i)
-    m = re.search(r'\(extends "([^"]+)"\)', sym)
-    if not m:
-        return sym.replace(f'(symbol "{name}"', f'(symbol "{lib_id}"', 1)
-    basis_name = m.group(1)
-    basis = lib_symbol(f"{bib}:{basis_name}")
-    for p in re.finditer(r'\(property "([^"]+)".*?\n\t\t\)', sym, re.S):
-        basis = re.sub(r'\(property "%s".*?\n\t\t\)' % re.escape(p.group(1)), lambda _m, s=p.group(0): s, basis,
-                       count=1, flags=re.S)
-    basis = basis.replace(f'(symbol "{bib}:{basis_name}"', f'(symbol "{bib}:{name}"', 1)
-    return basis.replace(f'(symbol "{basis_name}_', f'(symbol "{name}_')
-
-
-def lib_pins(sym: str) -> dict[str, tuple[float, float, int]]:
-    return {m.group(4): (float(m.group(1)), float(m.group(2)), int(m.group(3)))
-            for m in re.finditer(r'\(pin \w+ \w+\s*\(at ([-\d.]+) ([-\d.]+) (\d+)\).*?\(number "([^"]*)"', sym, re.S)}
-
-
-def lage(sym: str, name: str) -> tuple[float, float, float]:
-    m = re.search(r'\(property "%s" "[^"]*"\s*\(at ([-\d.]+) ([-\d.]+)(?: ([-\d.]+))?\)' % name, sym)
-    return (float(m.group(1)), float(m.group(2)), float(m.group(3) or 0)) if m else (0.0, 0.0, 0.0)
-
-
-def transform(px: float, py: float, rot: int, spiegel: str | None) -> tuple[float, float]:
-    """Bibliothekskoordinate (y nach oben) → Versatz im Schaltplan (y nach unten).
-    KiCad (am Testschaltplan bestimmt): erst gegen den Uhrzeigersinn drehen, dann spiegeln, dann y umkehren."""
-    a = math.radians(rot)
-    x = px * math.cos(a) - py * math.sin(a)
-    y = px * math.sin(a) + py * math.cos(a)
-    if spiegel == "y":
-        x = -x
-    elif spiegel == "x":
-        y = -y
-    return round(x, 3), round(-y, 3)
-
-
-def rd(v: float) -> float:
-    return round(v, 2)
-
-
-# ------------------------------------------------------------------------------------------------------------------
-# Plan: Zeichenelemente
-# ------------------------------------------------------------------------------------------------------------------
-class Plan:
-    def __init__(self) -> None:
-        self.wurzel = u()
-        self.teile: list[tuple] = []          # (ref, lib_id, wert, fp, x, y, rot, spiegel, texte)
-        self.pinpos: dict[tuple[str, str], tuple[float, float]] = {}
-        self.segmente: list[tuple[tuple[float, float], tuple[float, float]]] = []
-        self.labels: list[tuple[str, tuple[float, float], str]] = []
-        self.power: list[tuple[str, tuple[float, float], int]] = []
-        self.flaggen: list[tuple[float, float]] = []
-        self.nc: list[tuple[float, float]] = []
-        self.rahmen: list[tuple[float, float, float, float, str]] = []
-        self.texte: list[tuple[float, float, str, float]] = []
-        self.striche: list[tuple[tuple[float, float], tuple[float, float]]] = []
-        self.libs: dict[str, str] = {}
-
-    def setze(self, ref: str, x: float, y: float, rot: int = 0, spiegel: str | None = None,
-              ref_at=None, wert_at=None, links: bool = False) -> None:
-        """ref_at/wert_at: (dx, dy[, Ausrichtung]) relativ zum Bauteil, waagerecht; sonst Lage aus der Bibliothek.
-        Waagerecht liegende Zweipole (R/C gedreht) bekommen Name oben, Wert unten."""
-        lib_id = SOLL[ref][0]
-        sym = self.libs.setdefault(lib_id, lib_symbol(lib_id))
-        if rot in (90, 270) and lib_id in ("Device:R", "Device:C"):
-            d = 3.3 if lib_id == "Device:C" else 2.54
-            ref_at = ref_at or (0, -d)
-            wert_at = wert_at or (0, d + 0.25)
-        elif lib_id in ("Device:R", "Device:C"):     # senkrecht: Name und Wert neben das Bauteil, nicht darüber
-            dx, ausr = (-3.0, "right") if links else (3.0, "left")
-            ref_at = ref_at or (dx, -1.27, ausr)
-            wert_at = wert_at or (dx, 1.27, ausr)
-        self.teile.append((ref, lib_id, SOLL[ref][1], SOLL[ref][2], rd(x), rd(y), rot, spiegel,
-                           {"Reference": ref_at, "Value": wert_at}))
-        for nr, (px, py, _a) in lib_pins(sym).items():
-            dx, dy = transform(px, py, rot, spiegel)
-            self.pinpos[(ref, nr)] = (rd(x + dx), rd(y + dy))
-
-    def P(self, ref: str, nr: str) -> tuple[float, float]:
-        return self.pinpos[(ref, nr)]
-
-    def w(self, *punkte) -> None:
-        pts = [(rd(x), rd(y)) for x, y in punkte]
-        for a, b in zip(pts, pts[1:]):
-            if a == b:
-                continue
-            if a[0] != b[0] and a[1] != b[1]:
-                raise ValueError(f"schräge Leitung {a}–{b}")
-            self.segmente.append((a, b))
-
-    def lbl(self, netz: str, p, richtung: str) -> None:
-        self.labels.append((netz, (rd(p[0]), rd(p[1])), richtung))
-
-    def pw(self, netz: str, p, rot: int = 0, senkrecht: bool = False) -> None:
-        self.power.append((netz, (rd(p[0]), rd(p[1])), rot, senkrecht))
-
-    def flag(self, p) -> None:
-        self.flaggen.append((rd(p[0]), rd(p[1])))
-
-    def offen(self, *refs_pins) -> None:
-        for ref, nr in refs_pins:
-            self.nc.append(self.P(ref, nr))
-
-    def rahmen_(self, x0, y0, x1, y1, titel) -> None:
-        self.rahmen.append((x0, y0, x1, y1, titel))
-
-    def text(self, x, y, s, groesse=1.27) -> None:
-        self.texte.append((x, y, s, groesse))
-
-    def trenn(self, x, y0, y1) -> None:
-        self.striche.append(((x, y0), (x, y1)))
-
-    def nc_alle(self, ref: str) -> None:
-        self.offen(*[(ref, n) for n, netz in SOLL[ref][3].items() if netz == "NC"])
-
-    def ab(self, ref: str, nr: str, netz: str, laenge: float = 2.54) -> None:
-        """Kurzer Draht senkrecht nach unten zu einem Masse-/Versorgungssymbol."""
-        x, y = self.P(ref, nr)
-        self.w((x, y), (x, y + laenge))
-        self.pw(netz, (x, y + laenge))
-
-
-# ------------------------------------------------------------------------------------------------------------------
-# Zeichnung (Koordinaten in mm auf dem 1,27-mm-Raster; A3 quer)
-# ------------------------------------------------------------------------------------------------------------------
-def zeichne(p: Plan) -> None:
+def pi_leiste(p: Blatt) -> None:
+    """Block Raspberry Pi."""
     P, w = p.P, p.w
-
-    # ===== Raspberry Pi =========================================================================================
     p.rahmen_(15, 15, 132, 126, "Raspberry Pi 4 (40-polige Leiste)")
     p.setze("J1", 71.12, 81.28)
     for nr, netz in (("12", "I2S_BCLK"), ("35", "I2S_LRCLK"), ("38", "I2S_DIN"), ("40", "I2S_DOUT"),
@@ -305,7 +158,10 @@ def zeichne(p: Plan) -> None:
     p.nc_alle("J1")
     p.text(18, 25, "UART3 = GPIO4/5 (PL011, kann 8O1) · I²S = GPIO18–21 · I²C1 = GPIO2/3")
 
-    # ===== HAT-ID-EEPROM ========================================================================================
+
+def hat_eeprom(p: Blatt) -> None:
+    """Block HAT-ID-EEPROM."""
+    P, w = p.P, p.w
     p.rahmen_(15, 131, 132, 198, "HAT-ID-EEPROM")
     p.setze("U1", 76.2, 167.64, ref_at=(-5.08, -6.6), wert_at=(9.5, 7.6))
     p.setze("C1", 55.88, 156.21)
@@ -331,7 +187,10 @@ def zeichne(p: Plan) -> None:
     p.ab("U1", "4", "GND")
     p.text(18, 142, "Adresse 0x50 (A0–A2 = GND); WP hoch = schreibgeschützt, JP1 schließen zum Programmieren")
 
-    # ===== Bedienung ============================================================================================
+
+def bedienung(p: Blatt) -> None:
+    """Block Bedienung."""
+    P, w = p.P, p.w
     p.rahmen_(15, 203, 132, 280, "Bedienung")
     for (r, d, netz, y) in (("R6", "D1", "LED_TELEFON", 220.98), ("R7", "D2", "LED_GESPRAECH", 236.22)):
         p.setze(r, 55.88, y, rot=90)
@@ -350,7 +209,10 @@ def zeichne(p: Plan) -> None:
         p.setze(h, 27.94 + i * 12.7, 267.97)
     p.text(80, 269, "M2,5, Raster 58 × 49 mm")
 
-    # ===== Codec ================================================================================================
+
+def codec(p: Blatt) -> None:
+    """Block Codec."""
+    P, w = p.P, p.w
     p.rahmen_(137, 15, 268, 150, "Audio-Codec WM8731")
     p.setze("U2", 203.2, 88.9)
     # Versorgung oben: +3V3 digital (links), +3.3VA analog (rechts)
@@ -417,7 +279,10 @@ def zeichne(p: Plan) -> None:
     p.ab("U4", "2", "GND")
     p.offen(("U4", "4"))
 
-    # ===== Sprechweg ============================================================================================
+
+def sprechweg(p: Blatt) -> None:
+    """Block Sprechweg."""
+    P, w = p.P, p.w
     p.rahmen_(273, 15, 405, 150, "Sprechweg zur D340 (galvanisch getrennt)")
     p.setze("J2", 393.7, 81.28, rot=180)
     p.setze("T1", 325.12, 50.8, spiegel="y")
@@ -455,7 +320,10 @@ def zeichne(p: Plan) -> None:
     p.text(276, 25, "oben Aufnahme (X_OUT → Codec), unten Wiedergabe (Codec → X_IN); R4 = 0R, R5 unbestückt")
     p.text(352, 70, "RJ12 1:1 zur Audio-Buchse")
 
-    # ===== RS-232 ===============================================================================================
+
+def rs232(p: Blatt) -> None:
+    """Block RS-232."""
+    P, w = p.P, p.w
     p.rahmen_(137, 158, 405, 248, "RS-232 zur D340 (galvanisch getrennt)")
     p.setze("U3", 203.2, 203.2, ref_at=(-12.7, -14.6), wert_at=(-14.5, 15.0))
     p.setze("U5", 271.78, 203.2, ref_at=(-12.7, -27.3), wert_at=(12.7, -27.3))
@@ -505,7 +373,7 @@ def zeichne(p: Plan) -> None:
     w((xv, 168.91), P("C39", "1"))
     x2, y2 = P("C39", "2"); w((x2, y2), (287.02, y2)); p.pw("GND_ISO", (287.02, y2), rot=90)
     p.ab("U5", "15", "GND_ISO")
-    x, y = P("U5", "10"); w((x, y), (246.38, y)); p.pw("GND_ISO", (246.38, y), rot=270, senkrecht=True)
+    x, y = P("U5", "10"); w((x, y), (x - 2.54, y)); p.pw("GND_ISO", (x - 2.54, y), rot=270)
     p.offen(("U5", "7"), ("U5", "8"), ("U5", "9"))
     # MAX3232 ⇄ DE9
     x, y = P("U5", "14"); xj, yj = P("J3", "3"); w((x, y), (314.96, y), (314.96, yj), (xj, yj))
@@ -524,200 +392,22 @@ def zeichne(p: Plan) -> None:
     p.text(356, 232, "1200 Bd 8O1")
 
 
-# ------------------------------------------------------------------------------------------------------------------
-# Ausgabe
-# ------------------------------------------------------------------------------------------------------------------
-def eigenschaft(name, wert, x, y, winkel=0, versteckt=False, ausrichtung=None) -> str:
-    hide = " (hide yes)" if versteckt else ""
-    j = f" (justify {ausrichtung})" if ausrichtung else ""
-    return (f'\t\t(property "{name}" "{wert}"\n\t\t\t(at {rd(x)} {rd(y)} {winkel:g})\n'
-            f'\t\t\t(effects (font (size 1.27 1.27)){j}{hide})\n\t\t)\n')
-
-
-def symbol_text(p: Plan, ref, lib_id, wert, fp, x, y, rot, spiegel, pinnummern, versteckt_ref=False,
-                versteckt_wert=False, texte=None) -> str:
-    sym = p.libs[lib_id]
-    m = f"\t\t(mirror {spiegel})\n" if spiegel else ""
-    s = (f'\t(symbol\n\t\t(lib_id "{lib_id}")\n\t\t(at {rd(x)} {rd(y)} {rot})\n{m}\t\t(unit 1)\n\t\t(exclude_from_sim no)\n'
-         f'\t\t(in_bom {"no" if ref.startswith("#") else "yes"})\n\t\t(on_board yes)\n'
-         f'\t\t(dnp {"yes" if wert == "DNP" else "no"})\n\t\t(uuid "{u()}")\n')
-    for name, wertx, versteckt in (("Reference", ref, versteckt_ref), ("Value", wert, versteckt_wert)):
-        # Textwinkel ist in KiCad relativ zur Bauteildrehung: bei 90°/270° ergibt 90° waagerechte Schrift
-        waagerecht = 90 if rot in (90, 270) else 0
-        vorgabe = (texte or {}).get(name)
-        if vorgabe:
-            dx, dy = vorgabe[0], vorgabe[1]
-            s += eigenschaft(name, wertx, x + dx, y + dy, waagerecht, versteckt, vorgabe[2] if len(vorgabe) > 2 else None)
-            continue
-        lx, ly, la = lage(sym, name)
-        dx, dy = transform(lx, ly, rot, spiegel)
-        s += eigenschaft(name, wertx, x + dx, y + dy, waagerecht if rot in (90, 270) else la, versteckt)
-    s += eigenschaft("Footprint", fp, x, y, versteckt=True)
-    s += eigenschaft("Datasheet", "", x, y, versteckt=True)
-    for n in pinnummern:
-        s += f'\t\t(pin "{n}" (uuid "{u()}"))\n'
-    s += (f'\t\t(instances\n\t\t\t(project "{NAME}"\n\t\t\t\t(path "/{p.wurzel}" (reference "{ref}") (unit 1))\n'
-          f'\t\t\t)\n\t\t)\n\t)\n')
-    return s
-
-
-def auf_strecke(pt, a, b) -> bool:
-    (x, y), (x1, y1), (x2, y2) = pt, a, b
-    if x1 == x2 == x:
-        return min(y1, y2) < y < max(y1, y2)
-    if y1 == y2 == y:
-        return min(x1, x2) < x < max(x1, x2)
-    return False
-
-
-def schreibe(p: Plan) -> str:
-    anschluss: dict[tuple, set] = {}
-    for (ref, nr), pt in p.pinpos.items():
-        netz = SOLL[ref][3].get(nr)
-        if netz and netz != "NC":
-            anschluss.setdefault(pt, set()).add(f"{ref}.{nr}")
-    # T-Stellen: Endpunkte, die im Inneren einer anderen Strecke liegen → Strecke dort teilen (KiCad braucht das)
-    punkte = {pt for seg in p.segmente for pt in seg} | set(anschluss) | {lp for _, lp, _ in p.labels} \
-        | {pp for _, pp, _, _ in p.power} | set(p.flaggen)
-    segmente = list(dict.fromkeys(p.segmente))
-    i = 0
-    while i < len(segmente):
-        a, b = segmente[i]
-        teil = next((pt for pt in punkte if auf_strecke(pt, a, b)), None)
-        if teil:
-            segmente[i:i + 1] = [(a, teil), (teil, b)]
-            continue
-        i += 1
-    grad: dict[tuple, int] = {}
-    for a, b in segmente:
-        grad[a] = grad.get(a, 0) + 1
-        grad[b] = grad.get(b, 0) + 1
-    for pt in set(anschluss) | {pp for _, pp, _, _ in p.power} | set(p.flaggen) | {lp for _, lp, _ in p.labels}:
-        if pt in grad:
-            grad[pt] += 1
-    junctions = sorted(pt for pt, g in grad.items() if g >= 3)
-    beruehrt = {pt for seg in segmente for pt in seg} | {lp for _, lp, _ in p.labels} | {pp for _, pp, _, _ in p.power}
-    offen = sorted(", ".join(sorted(v)) for pt, v in anschluss.items() if pt not in beruehrt)
-    if offen:
-        raise SystemExit(f"Pins ohne Anschluss in der Zeichnung: {offen}")
-    nc_ohne = [(r, n) for (r, n), pt in p.pinpos.items() if SOLL[r][3].get(n) == "NC" and pt not in p.nc]
-    if nc_ohne:
-        raise SystemExit(f"NC-Pins ohne Markierung: {nc_ohne}")
-
-    t = []
-    for ref, lib_id, wert, fp, x, y, rot, spiegel, texte in p.teile:
-        t.append(symbol_text(p, ref, lib_id, wert, fp, x, y, rot, spiegel, sorted(lib_pins(p.libs[lib_id])),
-                             texte=texte))
-    for i, (netz, (x, y), rot, senkrecht) in enumerate(p.power, 1):
-        lib_id = POWER[netz]
-        p.libs.setdefault(lib_id, lib_symbol(lib_id))
-        texte = None
-        if rot in (90, 270) and not senkrecht:      # Wert waagerecht neben das gedrehte Symbol
-            # bei 90° kippt KiCad die (relativ gespeicherte) Schrift auf 180° und kehrt dabei die Ausrichtung um
-            texte = {"Value": (3.3, 0, "right") if rot == 90 else (-3.3, 0, "right")}
-        t.append(symbol_text(p, f"#PWR{i:03d}", lib_id, netz, "", x, y, rot, None, ["1"], versteckt_ref=True,
-                             texte=texte))
-    p.libs.setdefault("power:PWR_FLAG", lib_symbol("power:PWR_FLAG"))
-    for i, (x, y) in enumerate(p.flaggen, 1):
-        t.append(symbol_text(p, f"#FLG{i:03d}", "power:PWR_FLAG", "PWR_FLAG", "", x, y, 0, None, ["1"],
-                             versteckt_ref=True, versteckt_wert=True))
-    for a, b in segmente:
-        t.append(f'\t(wire (pts (xy {a[0]} {a[1]}) (xy {b[0]} {b[1]})) (stroke (width 0) (type default)) (uuid "{u()}"))\n')
-    for x, y in junctions:
-        t.append(f'\t(junction (at {x} {y}) (diameter 0) (color 0 0 0 0) (uuid "{u()}"))\n')
-    for x, y in p.nc:
-        t.append(f'\t(no_connect (at {x} {y}) (uuid "{u()}"))\n')
-    ausr = {"l": (180, "right"), "r": (0, "left"), "u": (90, "left"), "d": (270, "right")}
-    for netz, (x, y), richtung in p.labels:
-        a, j = ausr[richtung]
-        t.append(f'\t(label "{netz}" (at {x} {y} {a}) (effects (font (size 1.27 1.27)) (justify {j} bottom)) (uuid "{u()}"))\n')
-    for x0, y0, x1, y1, titel in p.rahmen:
-        t.append(f'\t(rectangle (start {x0} {y0}) (end {x1} {y1}) (stroke (width 0.3) (type dash) (color 72 72 72 1)) '
-                 f'(fill (type none)) (uuid "{u()}"))\n')
-        t.append(f'\t(text "{titel}" (exclude_from_sim no) (at {x0 + 2} {y0 + 5} 0) (effects (font (size 2.2 2.2) bold) '
-                 f'(justify left bottom)) (uuid "{u()}"))\n')
-    for x, y, s, g in p.texte:
-        t.append(f'\t(text "{s}" (exclude_from_sim no) (at {x} {y} 0) (effects (font (size {g} {g}) italic) '
-                 f'(justify left bottom)) (uuid "{u()}"))\n')
-    for (x0, y0), (x1, y1) in p.striche:
-        t.append(f'\t(polyline (pts (xy {x0} {y0}) (xy {x1} {y1})) (stroke (width 0.4) (type dash_dot) '
-                 f'(color 194 0 0 1)) (uuid "{u()}"))\n')
-
-    kopf = (f'(kicad_sch\n\t(version 20250114)\n\t(generator "sopho2sip")\n\t(generator_version "2.0")\n'
-            f'\t(uuid "{p.wurzel}")\n\t(paper "A3")\n'
-            f'\t(title_block\n\t\t(title "Sopho2SIP-HAT")\n\t\t(rev "0.2")\n\t\t(company "Sopho2SIP")\n'
-            f'\t\t(comment 1 "Pi 4 ⇄ ErgoLine D340: RS-232 isoliert, Audio X_OUT/X_IN")\n'
-            f'\t\t(comment 2 "Entwurf – Datenblätter vor Fertigung prüfen")\n\t)\n\t(lib_symbols\n')
-    libteil = "".join("\t\t" + s.replace("\n", "\n\t\t") + "\n" for s in p.libs.values())
-    fuss = '\t(sheet_instances\n\t\t(path "/" (page "1"))\n\t)\n\t(embedded_fonts no)\n)\n'
-    return kopf + libteil + "\t)\n" + "".join(t) + fuss
-
-
-def soll_netze() -> dict[str, list[str]]:
-    netze: dict[str, list[str]] = {}
-    for ref, (_, _, _, belegung) in SOLL.items():
-        for nr, netz in belegung.items():
-            if netz != "NC":
-                netze.setdefault(netz, []).append(f"{ref}.{nr}")
-    return {n: sorted(v) for n, v in netze.items()}
-
-
-def pruefe(sch: pathlib.Path) -> int:
-    with tempfile.TemporaryDirectory() as tmp:
-        erc = pathlib.Path(tmp) / "erc.txt"
-        net = pathlib.Path(tmp) / "hat.net"
-        subprocess.run(["kicad-cli", "sch", "erc", "--severity-all", "-o", str(erc), str(sch)], capture_output=True)
-        subprocess.run(["kicad-cli", "sch", "export", "netlist", "--format", "kicadsexpr", "-o", str(net), str(sch)],
-                       capture_output=True)
-        bericht = erc.read_text()
-        m = re.search(r"ERC messages: (\d+)\s+Errors (\d+)\s+Warnings (\d+)", bericht)
-        print(f"ERC: {m.group(0) if m else bericht[:300]}")
-        if m and m.group(1) != "0":
-            print("\n".join(z for z in bericht.splitlines() if z.startswith("[") or z.startswith("    @"))[:4000])
-        teil = net.read_text()
-        teil = teil[teil.index("(nets"):]
-        ist = {}
-        for b in re.split(r'\n\t\t\(net\n', teil)[1:]:
-            name = re.search(r'\(name "([^"]+)"\)', b).group(1).lstrip("/")
-            k = sorted(f"{r}.{pn}" for r, pn in re.findall(r'\(ref "([^"]+)"\)\s*\(pin "([^"]+)"\)', b)
-                       if not r.startswith("#"))
-            if k and not name.startswith("unconnected"):
-                ist[name] = k
-        # Vergleich der Pin-Gruppen (reine Leitungsnetze tragen in KiCad automatische Namen wie Net-(U5-VS-))
-        soll = soll_netze()
-        ist_gruppen = {frozenset(v): n for n, v in ist.items()}
-        abw = []
-        for n, v in sorted(soll.items()):
-            gefunden = ist_gruppen.pop(frozenset(v), None)
-            if gefunden is None:
-                abw.append(n)
-                naechstes = max(ist.items(), key=lambda kv: len(set(kv[1]) & set(v)))
-                print(f"  ABWEICHUNG {n}:\n    soll {v}\n    ähnlichstes ist-Netz {naechstes[0]}: {naechstes[1]}")
-            elif not gefunden.startswith("Net-") and gefunden != n:
-                print(f"  Hinweis: {n} heißt in KiCad {gefunden}")
-        for g, n in ist_gruppen.items():
-            abw.append(n)
-            print(f"  ZUSÄTZLICHES NETZ in KiCad {n}: {sorted(g)}")
-        print(f"Netzliste: {len(soll)} Netze soll, {len(ist)} ist, Abweichungen: {len(abw)}")
-        return 1 if abw or (m and m.group(1) != "0") else 0
-
-
 def main() -> int:
-    p = Plan()
-    zeichne(p)
-    fehlt = set(SOLL) - {t[0] for t in p.teile}
+    alle = [r for refs in BLOCK_REFS.values() for r in refs]
+    assert sorted(alle) == sorted(SOLL), set(alle) ^ set(SOLL)
+    b = Blatt("HAT", SOLL, f"{NAME}.kicad_sch", titel="Sopho2SIP-HAT",
+              kommentare=("Pi 4 ⇄ ErgoLine D340: RS-232 isoliert, Audio X_OUT/X_IN", "Entwurf – Datenblätter vor Fertigung prüfen"))
+    for block in (pi_leiste, hat_eeprom, bedienung, codec, sprechweg, rs232):
+        block(b)
+    fehlt = set(SOLL) - {t[0] for t in b.teile}
     if fehlt:
         raise SystemExit(f"nicht platziert: {sorted(fehlt)}")
-    sch = HIER / f"{NAME}.kicad_sch"
-    sch.write_text(schreibe(p), encoding="utf-8")
-    (HIER / f"{NAME}.kicad_pro").write_text(
-        '{\n  "meta": {"filename": "%s.kicad_pro", "version": 1},\n  "sheets": [["%s", "Root"]]\n}\n' % (NAME, p.wurzel),
-        encoding="utf-8")
+    root = schreibe_projekt(HIER, NAME, b)
     (HIER / "netzliste.txt").write_text("# Netz: Pins (SOLL aus erzeuge_schaltplan.py)\n"
-                                        + "".join(f"{n}: {' '.join(v)}\n" for n, v in sorted(soll_netze().items())),
+                                        + "".join(f"{n}: {' '.join(v)}\n" for n, v in sorted(soll_netze([b]).items())),
                                         encoding="utf-8")
-    print(f"{len(SOLL)} Bauteile, {len(soll_netze())} Netze, {len(p.segmente)} Leitungszüge → {sch.name}")
-    return pruefe(sch) if "--pruefen" in sys.argv else 0
+    print(f"{len(SOLL)} Bauteile, {len(soll_netze([b]))} Netze, {len(b.segmente)} Leitungszüge → {root.name}")
+    return pruefe_projekt(root, [b]) if "--pruefen" in sys.argv else 0
 
 
 if __name__ == "__main__":

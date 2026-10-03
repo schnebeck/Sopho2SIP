@@ -5,7 +5,7 @@ PC-Schnittstelle (statt FTDI-Adapter) und **Audio-Codec mit Übertragern** zur A
 
 | Datei | Inhalt |
 |---|---|
-| `erzeuge_schaltplan.py` | erzeugt den Schaltplan aus den KiCad-Standardbibliotheken: `SOLL` (Verbindungen) und `zeichne()` (Anordnung, Leitungen) |
+| `erzeuge_schaltplan.py` | erzeugt den Schaltplan aus den KiCad-Standardbibliotheken: `SOLL` (Verbindungen) und je Block eine Zeichenfunktion (`pi_leiste`, `hat_eeprom`, `codec`, `sprechweg`, `rs232`, `bedienung`); Generator-Grundlage `hardware/kicadgen.py` |
 | `sopho2sip-hat.kicad_sch/.kicad_pro` | KiCad-10-Projekt (erzeugt) |
 | `sopho2sip-hat.pdf` | Schaltplan zum Ansehen |
 | `netzliste.txt` | Soll-Netzliste (Netz → Pins) aus `SOLL` |
@@ -64,4 +64,4 @@ HAT-EEPROM kann der Pi die Overlays auch selbst laden (EEPROM mit `eepromutils` 
 - **Mechanik:** HAT-Maß 65 × 56,5 mm, Befestigungslöcher 58 × 49 mm; ein liegender DE9 ist hoch – evtl. auf die
   Kante setzen oder Pfostenstecker + Kabel.
 - **ESD:** MAX3232**E** (±15 kV) wählen; TVS-Dioden an X_IN/X_OUT erwägen.
-- Später: Trägerplatine für Compute Module (eMMC, PoE, ein Kabel) mit derselben Schaltung.
+- Trägerplatine für das Compute Module 4 mit denselben Blöcken: `hardware/cm4/`.
