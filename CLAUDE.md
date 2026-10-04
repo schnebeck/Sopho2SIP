@@ -158,6 +158,7 @@ logs/                   # Mitschnitte, Übersicht in logs/INDEX.md
 hardware/kicadgen.py    # gemeinsamer KiCad-Generator (Symbole, Leitungen, hierarchische Blätter, ERC/Netzlisten-Prüfung)
 hardware/hat/           # HAT-Entwurf (KiCad, aus erzeuge_schaltplan.py), README mit offenen Prüfpunkten
 hardware/cm4/           # CM4-Träger: Schaltplan, Layout (erzeuge_layout.py, FreeRouting 1.9 über xvfb), Bestellliste
+hardware/gehaeuse/      # Gehäuse (FreeCAD-Skript, FDM-Druck), Druckteile in druck/, Kollisionsprüfung gegen die Platine
 hardware/bibliothek/    # eigene Footprints (erzeuge_footprints.py), 3D-Ausrichtung (richte_3d_aus.py); Herstellermodelle nur lokal
 ```
 

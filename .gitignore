@@ -29,6 +29,11 @@ hardware/**/*.ses
 hardware/cm4/fertigung/
 hardware/cm4/zwischenstand/
 hardware/**/logs/freerouting.log
+# bestückte Platine als STEP (enthält Herstellermodelle) und Zwischenstände der Gehäusekonstruktion
+hardware/gehaeuse/platine_bestueckt.step
+hardware/gehaeuse/schnitte.json
+hardware/gehaeuse/*.FCStd1
+__pycache__/
 
 # Herstellermodelle (nicht weitergebbar) und daraus ausgerichtete Modelle; Bezugsquellen in hardware/bibliothek/3d/QUELLEN.md
 hardware/bibliothek/3d/*

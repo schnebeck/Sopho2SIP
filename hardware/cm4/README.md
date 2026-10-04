@@ -109,6 +109,6 @@ nicht. eMMC beschreiben: JP10 stecken, USB-C mit dem Rechner verbinden, `rpiboot
 - **AP22804 statt RT9742:** Pinbelegung, EN-Polarität und Strombegrenzung gegen das Datenblatt prüfen.
 - **USB_OTG_ID** (Pin 101) ist offen. Normalbetrieb mit `dtoverlay=dwc2,dr_mode=…` festlegen.
 - **RJ12-Footprint:** aus der Würth-Zeichnung abgeleitet; Lage der Steckseite zur Platinenkante am Muster prüfen.
-- **Mechanik:** Gehäuse an `fertigung/sopho2sip-cm4.step` konstruieren; Lichtleiter über D1–D3, D10, D11; Taster
-  SW1/SW2 von oben betätigt.
+- **Mechanik:** Gehäuse für den FDM-Druck in `hardware/gehaeuse/` (Lichtleiter über D1–D3, D10, D11; Biegezungen mit
+  Stößel über SW1–SW3; Lüfter 30 mm). Erstdruck steht aus.
 - Die Prüfpunkte des HAT gelten weiter (ADuM5211, Übertrager, RJ12-Kabel, MAX3232E): `hardware/hat/README.md`.
