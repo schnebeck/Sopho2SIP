@@ -265,4 +265,16 @@
 	)
 	(embedded_fonts no)
 )
+(symbol "CM4_Modul" (pin_names (offset 1.016)) (exclude_from_sim no) (in_bom yes) (on_board yes)
+	(property "Reference" "J" (at -15.24 8.89 0) (effects (font (size 1.27 1.27)) (justify left)))
+	(property "Value" "CM4_Modul" (at 15.24 8.89 0) (effects (font (size 1.27 1.27)) (justify right)))
+	(property "Footprint" "Sopho2SIP:CM4_Modul_Platzhalter" (at 0 0 0) (effects (font (size 1.27 1.27)) (hide yes)))
+	(property "Datasheet" "https://datasheets.raspberrypi.com/cm4/cm4-datasheet.pdf" (at 0 0 0) (effects (font (size 1.27 1.27)) (hide yes)))
+	(property "Description" "Raspberry Pi Compute Module 4 (gesteckt auf J11/J12)" (at 0 0 0) (effects (font (size 1.27 1.27)) (hide yes)))
+	(symbol "CM4_Modul_0_1" (rectangle (start -15.24 7.62) (end 15.24 -7.62) (stroke (width 0.254) (type default)) (fill (type background))))
+	(symbol "CM4_Modul_1_1"
+		
+	)
+	(embedded_fonts no)
+)
 )

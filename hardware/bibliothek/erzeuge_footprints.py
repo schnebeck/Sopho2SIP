@@ -55,6 +55,24 @@ def npth(x, y, d) -> str:
             f'(layers "*.Cu" "*.Mask"))\n')
 
 
+MODELL = "${KIPRJMOD}/../bibliothek/3d/ausgerichtet"
+
+
+def modell_lage(name: str) -> tuple[list, list]:
+    """Drehung/Versatz aus 3d/ausgerichtet/lage.json (Stecker-Baugruppen), sonst schon ausgerichtet (0)."""
+    import json
+    datei = HIER.parent / "3d" / "ausgerichtet" / "lage.json"
+    lage = json.loads(datei.read_text()).get(name) if datei.exists() else None
+    return (lage["rotate"], lage["offset"]) if lage else ([0, 0, 0], [0, 0, 0])
+
+
+def modell(name: str) -> str:
+    """3D-Modell, ausgerichtet durch richte_3d_aus.py."""
+    rot, off = modell_lage(name)
+    return (f'\t(model "{MODELL}/{name}.step" (offset (xyz {off[0]} {off[1]} {off[2]})) (scale (xyz 1 1 1)) '
+            f'(rotate (xyz {rot[0]} {rot[1]} {rot[2]})))\n')
+
+
 def sm_lp_5001() -> str:
     """Übertrager 600:600. Pads wie Symbol Device:Transformer_1P_1S: 1/2 = Wicklung A (Herstellerpins 1/3),
     4/3 = Wicklung B (Herstellerpins 6/4); Herstellerpins 2 und 5 sind innen nicht beschaltet (Pads ohne Nummer)."""
@@ -70,7 +88,7 @@ def sm_lp_5001() -> str:
     s += linie(-4.3, -4.6, 4.3, -4.6, "F.SilkS") + linie(-4.3, 4.6, 4.3, 4.6, "F.SilkS")
     s += linie(-7.8, -3.6, -4.6, -3.6, "F.SilkS")                 # Markierung Pin 1
     s += rechteck(-7.75, -4.75, 7.75, 4.75, "F.CrtYd", 0.05)
-    return s + ")\n"
+    return s + modell(name) + ")\n"
 
 
 def rj12_wuerth_615006138421() -> str:
@@ -90,7 +108,40 @@ def rj12_wuerth_615006138421() -> str:
     s += linie(3.57, -2.32, 3.57, 3.2, "F.SilkS")
     s += rechteck(-9.95, -2.7, 4.85, 11.3, "F.CrtYd", 0.05)
     s += linie(-8.55, 10.8, 3.45, 10.8, "Dwgs.User", 0.1)        # Steckseite / Platinenkante
-    return s + ")\n"
+    return s + modell(name) + ")\n"
+
+
+def rj10_wuerth_615004143821() -> str:
+    """4P4C liegend, Lasche oben (Würth 615004143821). Ursprung = Pin 1 (untere Reihe, rechts); obere Reihe
+    2,54 mm dahinter; Rastzapfen Ø 2,36 mm 2,3 mm vor Pin 1, Abstand 10 mm; Steckseite bei y = +8,9."""
+    name = "RJ10_Wuerth_615004143821_Horizontal"
+    s = kopf(name, "Würth WR-MJ 615004143821, 4P4C liegend, THT, Steckseite zur Platinenkante (y = +8,9 mm)",
+             "through_hole")
+    s += text("Reference", "REF**", -1.51, -5.4, "F.SilkS") + text("Value", name, -1.51, 10.3, "F.Fab")
+    s += text("Footprint", "", 0, 0, "F.Fab", True) + text("Datasheet", "", 0, 0, "F.Fab", True)
+    for nr, x, y in (("1", 0.0, 0.0), ("2", -1.02, -2.54), ("3", -2.04, 0.0), ("4", -3.06, -2.54)):
+        s += tht(nr, x, y, 1.5, 0.9, "rect" if nr == "1" else "circle")
+    s += npth(-6.51, 2.3, 2.36) + npth(3.49, 2.3, 2.36)
+    s += rechteck(-6.51, -4.1, 3.49, 8.9, "F.Fab", 0.1)
+    s += linie(-6.63, -4.22, 3.61, -4.22, "F.SilkS") + linie(-6.63, -4.22, -6.63, 0.8, "F.SilkS")
+    s += linie(3.61, -4.22, 3.61, 0.8, "F.SilkS")
+    s += rechteck(-7.9, -4.6, 4.9, 9.4, "F.CrtYd", 0.05)
+    s += linie(-6.51, 8.9, 3.49, 8.9, "Dwgs.User", 0.1)
+    return s + modell(name) + ")\n"
+
+
+def cm4_platzhalter() -> str:
+    """Das CM4 selbst: keine Pads, Ursprung = linke obere Modulecke (Draufsicht wie Datenblatt), 55 × 40 mm.
+    Steht in der Stückliste, aber nicht in den Bestückungsdaten (wird gesteckt)."""
+    name = "CM4_Modul_Platzhalter"
+    s = (f'(footprint "{name}" (version 20241229) (generator "sopho2sip") (generator_version "1.0") '
+         f'(layer "F.Cu")\n\t(descr "Raspberry Pi Compute Module 4, 55 × 40 mm, gesteckt auf DF40C-100DS (1,5 mm)")\n'
+         f'\t(attr exclude_from_pos_files allow_missing_courtyard)\n')
+    s += text("Reference", "REF**", 27.5, 18.5, "F.Fab") + text("Value", "CM4", 27.5, 21.5, "F.Fab")
+    s += text("Footprint", "", 0, 0, "F.Fab", True) + text("Datasheet", "", 0, 0, "F.Fab", True)
+    s += rechteck(0, 0, 55, 40, "F.Fab", 0.1)
+    s += linie(0, 9, 6.5, 9, "F.Fab", 0.1) + linie(6.5, 9, 6.5, 20, "F.Fab", 0.1) + linie(0, 20, 6.5, 20, "F.Fab", 0.1)
+    return s + modell("CM4") + ")\n"
 
 
 def df40_stecker2() -> None:
@@ -103,6 +154,11 @@ def df40_stecker2() -> None:
             pad.SetNumber(str(int(pad.GetNumber()) + 100))
     name = "Hirose_DF40C-100DS-0.4V_2x50_P0.4mm_Pins101-200"
     fp.SetFPID(pcbnew.LIB_ID("Sopho2SIP", name))
+    m = pcbnew.FP_3DMODEL()
+    m.m_Filename = f"{MODELL}/Hirose_DF40C-100DS-0.4V_2x50_P0.4mm.step"
+    rot, off = modell_lage("Hirose_DF40C-100DS-0.4V_2x50_P0.4mm")
+    m.m_Rotation = pcbnew.VECTOR3D(*rot); m.m_Offset = pcbnew.VECTOR3D(*off)
+    fp.Models().clear(); fp.Models().push_back(m)
     fp.SetLibDescription("Hirose DF40C-100DS-0.4V(51), Padnummern 101–200 für den zweiten CM4-Stecker "
                          "(sonst wie Connector_Hirose_DF40:Hirose_DF40C-100DS-0.4V_2x50_P0.4mm)")
     pcbnew.FootprintSave(str(HIER), fp)
@@ -112,7 +168,7 @@ def df40_stecker2() -> None:
 def main() -> int:
     HIER.mkdir(parents=True, exist_ok=True)
     df40_stecker2()
-    for f in (sm_lp_5001, rj12_wuerth_615006138421):
+    for f in (sm_lp_5001, rj12_wuerth_615006138421, rj10_wuerth_615004143821, cm4_platzhalter):
         s = f()
         name = s.split('"')[1]
         (HIER / f"{name}.kicad_mod").write_text(s, encoding="utf-8")

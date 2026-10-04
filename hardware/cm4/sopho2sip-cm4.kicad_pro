@@ -271,7 +271,7 @@
     "classes": [
       {
         "bus_width": 12,
-        "clearance": 0.15,
+        "clearance": 0.127,
         "diff_pair_gap": 0.25,
         "diff_pair_via_gap": 0.25,
         "diff_pair_width": 0.2,
@@ -282,7 +282,7 @@
         "pcb_color": "rgba(0, 0, 0, 0.000)",
         "priority": 2147483647,
         "schematic_color": "rgba(0, 0, 0, 0.000)",
-        "track_width": 0.15,
+        "track_width": 0.127,
         "tuning_profile": "",
         "via_diameter": 0.55,
         "via_drill": 0.3,
@@ -416,48 +416,7 @@
       }
     ]
   },
-  "sheets": [
-    [
-      "c325dfb5-e80f-5288-9c1c-dd309ced8908",
-      "Root"
-    ],
-    [
-      "70b0c884-489a-5006-8e13-f107ffe6b21b",
-      "CM4"
-    ],
-    [
-      "f43193ea-a65d-5b2d-9a13-25ee6eb2cb77",
-      "Ethernet"
-    ],
-    [
-      "ec8520df-0ca4-5d29-a4b5-baed22352513",
-      "µSD"
-    ],
-    [
-      "9195ece7-72bd-5a38-9bc7-1091ca0e9ccb",
-      "Audio-Codec"
-    ],
-    [
-      "cd7730cf-7890-526b-88c5-3af022408036",
-      "RS-232"
-    ],
-    [
-      "085ac27e-fccb-53b9-9a23-a91882c9cf3e",
-      "Sprechweg"
-    ],
-    [
-      "2be21edf-9811-51d3-ad51-36d24e1d70d6",
-      "Versorgung"
-    ],
-    [
-      "eff97c5f-746e-524b-8751-560e493d2998",
-      "Bedienung"
-    ],
-    [
-      "3185ca8f-afe0-594f-b4a7-2feb632a94d5",
-      "Lüfter"
-    ]
-  ],
+  "sheets": [],
   "text_variables": {},
   "tuning_profiles": {
     "meta": {

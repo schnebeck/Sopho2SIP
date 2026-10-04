@@ -19,4 +19,5 @@
 	(fp_line (start 3.57 -2.32) (end 3.57 3.2) (stroke (width 0.12) (type solid)) (layer "F.SilkS"))
 	(fp_rect (start -9.95 -2.7) (end 4.85 11.3) (stroke (width 0.05) (type solid)) (fill no) (layer "F.CrtYd"))
 	(fp_line (start -8.55 10.8) (end 3.45 10.8) (stroke (width 0.1) (type solid)) (layer "Dwgs.User"))
+	(model "${KIPRJMOD}/../bibliothek/3d/ausgerichtet/RJ12_Wuerth_615006138421_Horizontal.step" (offset (xyz -2.55 -4.34 7.45)) (scale (xyz 1 1 1)) (rotate (xyz 0 0 0)))
 )

@@ -381,6 +381,17 @@ def blatt_luefter(p: Blatt) -> None:
     p.text(X - 30, Y + 34, "GPIO12 kann auch PWM (PWM0) für Drehzahlregelung · J15 JST PH 2,0 mm: 1 = +5 V, 2 = Lüfter −")
 
 
+# Serielle Buchse: 4P4C statt DE9 (kleiner, verriegelnd; Adapterkabel auf DE9 zur D340)
+SOLL_J3_4P4C = ("Connector:4P4C", "D340 PC (4P4C)", "Sopho2SIP:RJ10_Wuerth_615004143821_Horizontal",
+                {"1": "GND_ISO", "2": "RS232_RXD", "3": "RS232_TXD", "4": "NC"})
+
+# CM4 als Platzhalter: steht in der Stückliste, wird gesteckt (nicht bestückt), 3D-Modell auf den Steckern
+kg.EIGENE_SYMBOLE["Sopho2SIP:CM4_Modul"] = kg.stecker_symbol(
+    "Sopho2SIP:CM4_Modul", [None] * 5, [], [], [], 30.48, "Sopho2SIP:CM4_Modul_Platzhalter",
+    "Raspberry Pi Compute Module 4 (gesteckt auf J11/J12)", DATENBLATT)
+SOLL_CM4["M1"] = ("Sopho2SIP:CM4_Modul", "Raspberry Pi CM4 (z. B. CM4104032)", "Sopho2SIP:CM4_Modul_Platzhalter", {})
+
+
 # ------------------------------------------------------------------------------------------------------------------
 # Zeichnungen der neuen Blätter
 # ------------------------------------------------------------------------------------------------------------------
@@ -446,6 +457,8 @@ def blatt_cm4(p: Blatt) -> None:
     for i, h in enumerate(("H5", "H6", "H7", "H8")):
         p.setze(h, 299.72 + i * 12.7, 228.6)
     p.text(292, 236, "H5–H8: Bohrungen des CM4 (Abstandsbolzen M2,5, Raster 48 × 33 mm)")
+    p.setze("M1", 320.04, 254.0, ref_at=(-15.24, -5.6, "left"), wert_at=(-15.24, 5.6, "left"))
+    p.text(292, 263, "M1: das CM4 selbst (Platzhalter für Stückliste und 3D-Ansicht, gesteckt, nicht bestückt)")
     p.text(35.56, 45.72, "Pinbelegung nach CM4-Datenblatt (Pins 1–200) · GPIO_VREF = 3,3 V · Ethernet 10/100 über Paar 0/1")
     p.text(35.56, 49.53, "WLAN/Bluetooth auf dem Modul (CM4 mit Funk): WL_nDisable/BT_nDisable offen = an; "
            "Antenne intern oder U.FL am Modul (dtparam=ant2)")
@@ -575,7 +588,7 @@ def main() -> int:
         "codec": Blatt("Audio-Codec", SOLL_CODEC, "codec.kicad_sch", papier="A3", export=CODEC_EXPORT),
         "sprechweg": Blatt("Sprechweg", hat.teil_soll("sprechweg"), "sprechweg.kicad_sch", papier="A3",
                            export={"HP_L", "LINE_IN"}),
-        "rs232": Blatt("RS-232", hat.teil_soll("rs232"), "rs232.kicad_sch", papier="A3",
+        "rs232": Blatt("RS-232", {**hat.teil_soll("rs232"), "J3": SOLL_J3_4P4C}, "rs232.kicad_sch", papier="A3",
                        export={"UART3_TXD", "UART3_RXD"}),
         "bedienung": Blatt("Bedienung", {**hat.teil_soll("bedienung"), **SOLL_BEDIENUNG_ZUSATZ}, "bedienung.kicad_sch",
                            papier="A3", export={"LED_TELEFON", "LED_GESPRAECH", "TASTE", "LED_STATUS", "TASTE_KONFIG",
@@ -584,7 +597,7 @@ def main() -> int:
     }
     blatt_cm4(blaetter["cm4"]); blatt_versorgung(blaetter["versorgung"]); blatt_sd(blaetter["sd"])
     blatt_ethernet(blaetter["eth"]); blatt_codec(blaetter["codec"]); hat.sprechweg(blaetter["sprechweg"])
-    hat.rs232(blaetter["rs232"]); hat.bedienung(blaetter["bedienung"])
+    hat.rs232(blaetter["rs232"], stecker="4p4c"); hat.bedienung(blaetter["bedienung"])
     bedienung_zusatz(blaetter["bedienung"])
     blatt_luefter(blaetter["luefter"])
     # Bohrungen: das Raster des HAT gilt hier nicht

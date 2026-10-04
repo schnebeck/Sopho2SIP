@@ -13,7 +13,7 @@ Menge,Referenzen,Wert,Hersteller,Herstellernummer,Digikey-Nummer,Bestand 2026-10
 1,D13,MBR140SFT1G,onsemi,MBR140SFT1G,MBR140SFT1GOSCT-ND,31972,D_SOD-123F,Freilaufdiode
 1,F1,2A,Bourns,MF-MSMF200/8X-2,,1735,Fuse_1812_4532Metric,"Polyfuse 2 A, 8 V"
 1,J2,D340 Audio,Würth,615006138421,732-2113-ND,16652,RJ12_Wuerth_615006138421_Horizontal,6P6C
-1,J3,D340 PC-Schnittstelle,NorComp,182-009-113R531,182-09ME-ND,12178,DSUB-9_Pins_Horizontal_P2.77x2.84mm_EdgePinOffset7.70mm_Housed_MountingHolesOffset9.12mm,DE9-Stecker liegend
+1,J3,D340 PC (4P4C),Würth,615004143821,732-3169-ND,3039,RJ10_Wuerth_615004143821_Horizontal,4P4C; Adapterkabel auf DE9 zur D340
 1,J10,USB-C 5V/USB,GCT,USB4105-GF-A,,lieferbar,USB_C_Receptacle_GCT_USB4105-xx-A_16P_TopMnt_Horizontal,
 1,J11,CM4 Stecker 1,Hirose,DF40C-100DS-0.4V(51),H11615CT-ND,177010,Hirose_DF40C-100DS-0.4V_2x50_P0.4mm,
 1,J12,CM4 Stecker 2,Hirose,DF40C-100DS-0.4V(51),H11615CT-ND,177010,Hirose_DF40C-100DS-0.4V_2x50_P0.4mm_Pins101-200,
@@ -21,6 +21,7 @@ Menge,Referenzen,Wert,Hersteller,Herstellernummer,Digikey-Nummer,Bestand 2026-10
 1,J14,7499010211A,Würth,7499010211A,732-4506-5-ND,1736,RJ45_Wuerth_7499010211A_Horizontal,RJ45 10/100 mit Übertrager
 1,J15,Lüfter 5 V,JST,B2B-PH-K-S(LF)(SN),455-1704-ND,lieferbar,JST_PH_B2B-PH-K_1x02_P2.00mm_Vertical,Gegenstück PHR-2 + Crimpkontakte SPH-002T-P0.5S
 1,JP10,nRPIBOOT,Würth,61300211121,,,PinHeader_1x02_P2.54mm_Vertical,plus Kurzschlussbrücke
+1,M1,Raspberry Pi CM4 (z. B. CM4104032),Raspberry Pi,CM4104032,,,CM4_Modul_Platzhalter,"Variante wählen: Funk, RAM, eMMC/Lite"
 1,Q10,BSS84,Diodes,BSS84-7-F,,lieferbar,SOT-23,
 1,Q11,AO3400A,Alpha & Omega,AO3400A,,lieferbar,SOT-23,Lüfterschalter
 1,R4,0R,Yageo,RC0603JR-070RL,,,R_0603_1608Metric,
