@@ -119,9 +119,11 @@ GENUTZT = {"Ethernet_Pair0_P": "ETH_P0_P", "Ethernet_Pair0_N": "ETH_P0_N", "Ethe
            "Ethernet_Pair1_N": "ETH_P1_N", "Ethernet_nLED2": "ETH_nLED2", "Ethernet_nLED3": "ETH_nLED3",
            "SD_CLK": "SD_CLK", "SD_CMD": "SD_CMD", "SD_DAT0": "SD_DAT0", "SD_DAT1": "SD_DAT1", "SD_DAT2": "SD_DAT2",
            "SD_DAT3": "SD_DAT3", "SD_PWR_ON": "SD_PWR_ON",
-           "GPIO4": "UART3_TXD", "GPIO5": "UART3_RXD", "GPIO2": "I2C_SDA", "GPIO3": "I2C_SCL",
+           "GPIO4": "UART3_TXD", "GPIO5": "UART3_RXD", "ID_SD": "I2C_SDA", "ID_SC": "I2C_SCL",
+           "GPIO3": "TASTE_EIN_AUS", "GPIO12": "LUEFTER",
            "GPIO18": "I2S_BCLK", "GPIO19": "I2S_LRCLK", "GPIO20": "I2S_DIN", "GPIO21": "I2S_DOUT",
            "GPIO23": "LED_TELEFON", "GPIO24": "LED_GESPRAECH", "GPIO25": "TASTE",
+           "GPIO22": "LED_STATUS", "GPIO27": "TASTE_KONFIG", "GPIO26": "CODEC_nRESET",
            "USB_P": "USB_P", "USB_N": "USB_N",
            "+5V": "+5V", "CM4_3.3V": "+3V3", "GPIO_VREF": "+3V3", "GND": "GND",
            "nRPIBOOT": "nRPIBOOT", "Pi_nLED_Activity": "LED_ACT_K", "PI_LED_nPWR": "LED_PWR_G"}
@@ -137,7 +139,8 @@ def cm4_belegung(bereich) -> dict:
 # ------------------------------------------------------------------------------------------------------------------
 SOLL_CM4 = {
     "J11": ("Sopho2SIP:CM4_Stecker1", "CM4 Stecker 1", FP_DF40, cm4_belegung(range(1, 101))),
-    "J12": ("Sopho2SIP:CM4_Stecker2", "CM4 Stecker 2", FP_DF40, cm4_belegung(range(101, 201))),
+    "J12": ("Sopho2SIP:CM4_Stecker2", "CM4 Stecker 2", "Sopho2SIP:Hirose_DF40C-100DS-0.4V_2x50_P0.4mm_Pins101-200",
+            cm4_belegung(range(101, 201))),
     "C40": ("Device:C", "47u", FP_C47, {"1": "+5V", "2": "GND"}),
     "C41": ("Device:C", "100n", FP_C, {"1": "+5V", "2": "GND"}),
     "JP10": ("Jumper:Jumper_2_Open", "nRPIBOOT", "Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical",
@@ -147,6 +150,7 @@ SOLL_CM4 = {
     "Q10": ("Transistor_FET:BSS84", "BSS84", "Package_TO_SOT_SMD:SOT-23", {"1": "LED_PWR_G", "2": "+3V3", "3": "LED_PWR_D"}),
     "R13": ("Device:R", "330", FP_R, {"1": "LED_PWR_D", "2": "LED_PWR_A"}),
     "D11": ("Device:LED", "rot PWR", FP_LED, {"2": "LED_PWR_A", "1": "GND"}),
+    **{h: ("Mechanical:MountingHole", "CM4 M2.5", hat.FP_LOCH, {}) for h in ("H5", "H6", "H7", "H8")},
 }
 SOLL_VERSORGUNG = {
     "J10": ("Connector:USB_C_Receptacle_USB2.0_16P", "USB-C 5V/USB",
@@ -173,16 +177,208 @@ SOLL_SD = {
     "C44": ("Device:C", "100n", FP_C, {"1": "+3V3", "2": "GND"}),
 }
 SOLL_ETH = {
-    "J14": ("Connector:RJ45_Hanrun_HR911105A_Horizontal", "HR911105A", "Connector_RJ:RJ45_Hanrun_HR911105A_Horizontal",
+    "J14": ("Connector:RJ45_Wuerth_7499010211A", "7499010211A", "Connector_RJ:RJ45_Wuerth_7499010211A_Horizontal",
             {"1": "ETH_P0_P", "2": "ETH_P0_N", "3": "ETH_P1_P", "6": "ETH_P1_N", "4": "ETH_CT", "5": "ETH_CT",
              "7": "NC", "8": "GND", "9": "+3V3", "10": "LED_Y_K", "12": "+3V3", "11": "LED_G_K", "SH": "GND"}),
-    "U12": ("Power_Protection:TPD4EUSB30", "TPD4EUSB30", "Package_SON:USON-10_2.5x1.0mm_P0.5mm",
+    "U12": ("Power_Protection:TPD4E05U06DQA", "TPD4E05U06DQAR", "Package_SON:USON-10_2.5x1.0mm_P0.5mm",
             {"1": "ETH_P0_P", "2": "ETH_P0_N", "4": "ETH_P1_P", "5": "ETH_P1_N", "3": "GND", "8": "GND",
              "6": "NC", "7": "NC", "9": "NC", "10": "NC"}),
     "C45": ("Device:C", "100n", FP_C, {"1": "ETH_CT", "2": "GND"}),
     "R15": ("Device:R", "470", FP_R, {"1": "LED_Y_K", "2": "ETH_nLED2"}),
     "R16": ("Device:R", "470", FP_R, {"1": "LED_G_K", "2": "ETH_nLED3"}),
 }
+
+
+# ------------------------------------------------------------------------------------------------------------------
+# Audio-Codec TLV320AIC3204 (WM8731 ist abgekündigt). Beschaltung nach TI-Datenblatt SLOS602E, Figure 21, und
+# so, dass das Pi-Overlay „audiosense-pi“ passt: I²C 0x18, MCLK 12 MHz aus Oszillator, Reset an GPIO26.
+# ------------------------------------------------------------------------------------------------------------------
+AIC_LINKS = [("1", "MCLK", "input"), ("2", "BCLK", "bidirectional"), ("3", "WCLK", "bidirectional"),
+             ("4", "DIN/MFP1", "input"), ("5", "DOUT/MFP2", "output"), None, ("9", "SCL", "input"),
+             ("10", "SDA", "bidirectional"), None, ("30", "LDO_SELECT", "input"), ("12", "SPI_SELECT", "input"),
+             None, ("8", "SCLK/MFP3", "input"), ("11", "MISO/MFP4", "output"), ("32", "GPIO/MFP5", "bidirectional"),
+             ("31", "~{RESET}", "input")]
+AIC_RECHTS = [("22", "LOL", "output"), ("23", "LOR", "output"), ("25", "HPL", "output"), ("27", "HPR", "output"),
+              None, ("13", "IN1_L", "input"), ("14", "IN1_R", "input"), ("15", "IN2_L", "input"),
+              ("16", "IN2_R", "input"), ("20", "IN3_L", "input"), ("21", "IN3_R", "input"), None,
+              ("18", "REF", "passive"), ("19", "MICBIAS", "output"), None, None]
+AIC_OBEN = [[("6", "IOVDD", "power_in")], [("29", "DVDD", "passive")], [("24", "AVDD", "passive")],
+            [("26", "LDOIN/HPVDD", "power_in")]]
+AIC_UNTEN = [[("7", "IOVSS", "power_in"), ("17", "AVSS", "passive"), ("28", "DVSS", "passive"),
+              ("33", "EP", "passive")]]
+FP_AIC = "Package_DFN_QFN:Texas_RHB0032E_VQFN-32-1EP_5x5mm_P0.5mm_EP3.45x3.45mm_ThermalVias"
+kg.EIGENE_SYMBOLE["Sopho2SIP:TLV320AIC3204"] = kg.stecker_symbol(
+    "Sopho2SIP:TLV320AIC3204", AIC_LINKS, AIC_RECHTS, AIC_UNTEN, AIC_OBEN, 30.48, FP_AIC,
+    "TI TLV320AIC3204, Stereo-Codec, VQFN-32 (RHB)", "https://www.ti.com/lit/ds/symlink/tlv320aic3204.pdf")
+
+_frei = {n: "AIC_IN_FREI" for n in ("14", "15", "16", "20", "21")}
+SOLL_CODEC = {
+    "U2": ("Sopho2SIP:TLV320AIC3204", "TLV320AIC3204IRHBR", FP_AIC,
+           {"1": "AIC_MCLK", "2": "I2S_BCLK", "3": "I2S_LRCLK", "4": "I2S_DOUT", "5": "I2S_DIN",
+            "9": "I2C_SCL", "10": "I2C_SDA", "31": "CODEC_nRESET", "12": "GND", "30": "+3V3",
+            "8": "NC", "11": "NC", "32": "NC", "22": "HP_L", "23": "NC", "25": "NC", "27": "NC", "19": "NC",
+            "13": "LINE_IN", **_frei, "18": "AIC_REF", "6": "+3V3", "26": "+3.3VA", "24": "AIC_AVDD",
+            "29": "AIC_DVDD", "7": "GND", "17": "GND", "28": "GND", "33": "GND"}),
+    "U6": ("Oscillator:ECS-2520MV-xxx-xx", "12MHz", "Oscillator:Oscillator_SMD_ECS_2520MV-xxx-xx-4Pin_2.5x2.0mm",
+           {"1": "+3V3", "2": "GND", "3": "AIC_MCLK", "4": "+3V3"}),
+    "C27": ("Device:C", "100n", FP_C, {"1": "+3V3", "2": "GND"}),
+    "R20": ("Device:R", "10k", FP_R, {"1": "+3V3", "2": "CODEC_nRESET"}),
+    "C12": ("Device:C", "100n", FP_C, {"1": "+3V3", "2": "GND"}),
+    "C14": ("Device:C", "100n", FP_C, {"1": "+3.3VA", "2": "GND"}),
+    "C15": ("Device:C", "1u", FP_C, {"1": "+3.3VA", "2": "GND"}),
+    "C16": ("Device:C", "10u", FP_C10, {"1": "+3.3VA", "2": "GND"}),
+    "C17": ("Device:C", "10u", FP_C10, {"1": "AIC_AVDD", "2": "GND"}),
+    "C18": ("Device:C", "10u", FP_C10, {"1": "AIC_DVDD", "2": "GND"}),
+    "C25": ("Device:C", "10u", FP_C10, {"1": "AIC_REF", "2": "GND"}),
+    "C26": ("Device:C", "100n", FP_C, {"1": "AIC_IN_FREI", "2": "GND"}),
+    "U4": hat.SOLL["U4"], "C19": hat.SOLL["C19"], "C20": hat.SOLL["C20"],
+}
+CODEC_EXPORT = {"I2S_BCLK", "I2S_LRCLK", "I2S_DIN", "I2S_DOUT", "I2C_SDA", "I2C_SCL", "CODEC_nRESET", "HP_L", "LINE_IN"}
+
+
+def blatt_codec(p: Blatt) -> None:
+    P, w = p.P, p.w
+    p.rahmen_(15, 15, 300, 200, "Audio-Codec TLV320AIC3204")
+    X, Y = 149.86, 100.33
+    p.setze("U2", X, Y, ref_at=(-15.24, -23.5, "left"), wert_at=(0, 35.56))
+    xl, xr = P("U2", "1")[0], P("U2", "22")[0]
+    # Versorgung oben: IOVDD aus +3V3 (links), LDOIN aus +3.3VA (rechts), AVDD/DVDD nur Filterkondensatoren
+    xi, yi = P("U2", "6"); y_s = yi - 12.7
+    w((xi, yi), (xi, y_s), (xi - 25.4, y_s)); p.pw("+3V3", (xi - 25.4, y_s))
+    p.setze("C12", xi - 12.7, y_s + 3.81); w(P("C12", "1"), (xi - 12.7, y_s)); p.ab("C12", "2", "GND")
+    xa, ya = P("U2", "26")
+    w((xa, ya), (xa, y_s), (xa + 43.18, y_s)); p.pw("+3.3VA", (xa + 43.18, y_s))
+    for ref, dx in (("C14", 12.7), ("C15", 22.86), ("C16", 33.02)):
+        p.setze(ref, xa + dx, y_s + 3.81); w(P(ref, "1"), (xa + dx, y_s)); p.ab(ref, "2", "GND")
+    for nr, netz in (("29", "AIC_DVDD"), ("24", "AIC_AVDD")):
+        x, y = P("U2", nr); w((x, y), (x, y - 5.08)); p.lbl(netz, (x, y - 5.08), "u")
+    p.ab("U2", "7", "GND", 5.08)
+    # Takt: 12-MHz-Oszillator über MCLK
+    xm, ym = P("U2", "1")
+    p.setze("U6", xl - 30.48, ym - 15.24, ref_at=(5.08, 5.6, "left"), wert_at=(5.08, 8.1, "left"))
+    xo, yo = P("U6", "3"); w((xo, yo), (xl - 7.62, yo), (xl - 7.62, ym), (xm, ym))
+    xe, ye = P("U6", "1"); xv, yv = P("U6", "4")
+    yt = yv - 7.62
+    w((xe, ye), (xe - 2.54, ye), (xe - 2.54, yt))
+    w((xv, yv), (xv, yt), (xv - 25.4, yt)); p.pw("+3V3", (xv - 25.4, yt))
+    p.setze("C27", xv - 20.32, yt + 3.81, links=True)
+    p.ab("C27", "2", "GND"); p.ab("U6", "2", "GND")
+    # Digitale Schnittstellen
+    for nr in ("2", "3", "4", "5", "9", "10"):
+        x, y = P("U2", nr); w((x, y), (xl - 45.72, y)); p.lbl(p.soll["U2"][3][nr], (xl - 45.72, y), "l")
+    x, y = P("U2", "30"); w((x, y), (x - 2.54, y)); p.pw("+3V3", (x - 2.54, y))
+    x, y = P("U2", "12"); w((x, y), (x - 2.54, y)); p.pw("GND", (x - 2.54, y))
+    xr_, yr_ = P("U2", "31")
+    w((xr_, yr_), (xl - 45.72, yr_)); p.lbl("CODEC_nRESET", (xl - 45.72, yr_), "l")
+    p.setze("R20", xl - 15.24, yr_ - 3.81); p.auf("R20", "1", "+3V3")
+    # Analog: LINE_IN an IN1_L, LOL treibt den Übertrager (Last ≥ 600 Ω laut Datenblatt)
+    x, y = P("U2", "22"); w((x, y), (xr + 30.48, y)); p.lbl("HP_L", (xr + 30.48, y), "r")
+    x, y = P("U2", "13"); w((x, y), (xr + 30.48, y)); p.lbl("LINE_IN", (xr + 30.48, y), "r")
+    # unbenutzte Eingänge zusammen über 100 nF an GND (Datenblatt 10.2.2.1)
+    ys = [P("U2", n)[1] for n in ("14", "15", "16", "20", "21")]
+    for n in ("14", "15", "16", "20", "21"):
+        x, y = P("U2", n); w((x, y), (xr + 2.54, y))
+    w((xr + 2.54, ys[0]), (xr + 2.54, ys[-1]))
+    ym_ = ys[2]
+    p.setze("C26", xr + 10.16, ym_, rot=90)
+    w((xr + 2.54, ym_), P("C26", "1"))
+    xc, yc = P("C26", "2"); w((xc, yc), (xc + 2.54, yc)); p.pw("GND", (xc + 2.54, yc), rot=90)
+    # REF, AVDD, DVDD: je 10 µF
+    x, y = P("U2", "18"); w((x, y), (xr + 7.62, y))
+    p.setze("C25", xr + 7.62, y + 3.81); p.ab("C25", "2", "GND")
+    for ref, netz, dx in (("C17", "AIC_AVDD", 38.1), ("C18", "AIC_DVDD", 50.8)):
+        p.setze(ref, xr + dx, y + 3.81)
+        w(P(ref, "1"), (xr + dx, y - 2.54)); p.lbl(netz, (xr + dx, y - 2.54), "u")
+        p.ab(ref, "2", "GND")
+    p.nc_alle("U2")
+    # Analogversorgung 3,3 V
+    p.setze("U4", X, Y + 45.72, ref_at=(-6.35, -6.35), wert_at=(5.08, -6.35))
+    p.setze("C19", X - 17.78, Y + 46.99, links=True)
+    p.setze("C20", X + 15.24, Y + 46.99)
+    xv, yv = P("U4", "1")
+    w((X - 25.4, yv), (xv, yv)); p.pw("+5V", (X - 25.4, yv))
+    xe, ye = P("U4", "3"); w((xe, ye), (X - 12.7, ye), (X - 12.7, yv))
+    w(P("C19", "1"), (X - 17.78, yv))
+    xo, yo = P("U4", "5"); w((xo, yo), (X + 22.86, yo)); p.pw("+3.3VA", (X + 22.86, yo))
+    w(P("C20", "1"), (X + 15.24, yo))
+    p.ab("C19", "2", "GND"); p.ab("C20", "2", "GND"); p.ab("U4", "2", "GND")
+    p.nc_alle("U4")
+    p.text(X - 62, Y + 62, "I²C 0x18 an I2C0 (GPIO0/1) · MCLK 12 MHz · Reset GPIO26 · Treiber tlv320aic32x4 (Overlay nach audiosense-pi)")
+    p.text(X - 62, Y + 66, "LDO_SELECT = 1: DVDD aus internem LDO; AVDD-LDO schaltet der Treiber (ldoin-supply)")
+    p.text(X - 62, Y + 41, "Analogversorgung 3,3 V", 1.524)
+
+
+# ------------------------------------------------------------------------------------------------------------------
+# Bedienung: zusätzlich Konfigurationstaste und Status-LED (Ergänzung zum HAT-Block)
+# ------------------------------------------------------------------------------------------------------------------
+SOLL_BEDIENUNG_ZUSATZ = {
+    "R8": ("Device:R", "330", FP_R, {"1": "LED_STATUS", "2": "LED3_A"}),
+    "D3": ("Device:LED", "blau", FP_LED, {"2": "LED3_A", "1": "GND"}),
+    "SW2": ("Switch:SW_Push", "Konfig", "Button_Switch_SMD:SW_SPST_TL3342", {"1": "TASTE_KONFIG", "2": "GND"}),
+    "SW3": ("Switch:SW_Push", "Ein/Aus", "Button_Switch_SMD:SW_SPST_TL3342", {"1": "TASTE_EIN_AUS", "2": "GND"}),
+    "R9": ("Device:R", "DNP", FP_R, {"1": "+3V3", "2": "TASTE_EIN_AUS"}),
+}
+
+
+def bedienung_zusatz(p: Blatt) -> None:
+    P, w = p.P, p.w
+    y = 220.98
+    p.setze("R8", 175.26, y, rot=90)
+    p.setze("D3", 193.04, y, rot=180)
+    p.lbl("LED_STATUS", (160.02, y), "l"); w((160.02, y), P("R8", "1"))
+    w(P("R8", "2"), P("D3", "2"))
+    x, yy = P("D3", "1"); w((x, yy), (203.2, yy), (203.2, yy + 2.54)); p.pw("GND", (203.2, yy + 2.54))
+    p.setze("SW2", 180.34, 236.22)
+    p.lbl("TASTE_KONFIG", (160.02, 236.22), "l"); w((160.02, 236.22), P("SW2", "1"))
+    x, y2 = P("SW2", "2"); w((x, y2), (203.2, y2), (203.2, y2 + 2.54)); p.pw("GND", (203.2, y2 + 2.54))
+    p.text(211, 222, "D3: Status/Konfiguration")
+    p.text(211, 237, "Konfiguration (Pull-up im Pi)")
+    # Ein/Aus: GPIO3 – im Betrieb gpio-shutdown, im Halt weckt der Bootloader (WAKE_ON_GPIO=1)
+    y3 = 259.08
+    p.setze("SW3", 180.34, y3)
+    p.lbl("TASTE_EIN_AUS", (160.02, y3), "l"); w((160.02, y3), P("SW3", "1"))
+    x, y = P("SW3", "2"); w((x, y), (203.2, y), (203.2, y + 2.54)); p.pw("GND", (203.2, y + 2.54))
+    p.setze("R9", 170.18, y3 - 3.81); p.auf("R9", "1", "+3V3")
+    p.text(211, 252, "Ein/Aus (GPIO3): Druck im Betrieb = sauber herunterfahren")
+    p.text(211, 256, "(dtoverlay=gpio-shutdown), Druck im Halt = starten")
+    p.text(211, 260, "(Bootloader WAKE_ON_GPIO=1). R9 nur bestücken, falls nötig")
+
+
+# ------------------------------------------------------------------------------------------------------------------
+# Lüfter: 5-V-Lüfter, Low-Side-MOSFET an GPIO12 (PWM-fähig); Regelung über die SoC-Temperatur (gpio-fan)
+# ------------------------------------------------------------------------------------------------------------------
+SOLL_LUEFTER = {
+    "Q11": ("Transistor_FET:AO3400A", "AO3400A", "Package_TO_SOT_SMD:SOT-23",
+            {"1": "LUEFTER_G", "2": "GND", "3": "LUEFTER_N"}),
+    "R17": ("Device:R", "100", FP_R, {"1": "LUEFTER", "2": "LUEFTER_G"}),
+    "R18": ("Device:R", "100k", FP_R, {"1": "LUEFTER_G", "2": "GND"}),
+    "D13": ("Device:D_Schottky", "MBR140SFT1G", "Diode_SMD:D_SOD-123F", {"1": "+5V", "2": "LUEFTER_N"}),
+    "C46": ("Device:C", "10u", FP_C10, {"1": "+5V", "2": "GND"}),
+    "J15": ("Connector_Generic:Conn_01x02", "Lüfter 5 V", "Connector_JST:JST_PH_B2B-PH-K_1x02_P2.00mm_Vertical",
+            {"1": "+5V", "2": "LUEFTER_N"}),
+}
+
+
+def blatt_luefter(p: Blatt) -> None:
+    P, w = p.P, p.w
+    p.rahmen_(15, 15, 200, 150, "Lüfter")
+    X, Y = 101.6, 101.6
+    p.setze("J15", X + 20.32, Y)
+    xa, ya = P("J15", "2"); w((xa, ya), (X, ya))
+    p.setze("D13", X, Y - 2.54, rot=270, ref_at=(-3.0, -1.27, "right"), wert_at=(-3.0, 1.27, "right"))
+    w(P("D13", "2"), (X, ya))
+    yr = Y - 8.89
+    w(P("D13", "1"), (X, yr), (X + 33.02, yr)); p.pw("+5V", (X, yr))
+    x1, y1 = P("J15", "1"); w((x1, y1), (X + 10.16, y1), (X + 10.16, yr))
+    p.setze("C46", X + 33.02, yr + 3.81); p.ab("C46", "2", "GND")
+    p.setze("Q11", X - 2.54, Y + 10.16, ref_at=(5.08, -1.27, "left"), wert_at=(5.08, 1.27, "left"))
+    w(P("Q11", "3"), (X, ya)); p.ab("Q11", "2", "GND")
+    p.setze("R17", X - 13.97, Y + 10.16, rot=90)
+    w(P("R17", "2"), P("Q11", "1"))
+    xr, yr1 = P("R17", "1"); w((xr, yr1), (X - 27.94, yr1)); p.lbl("LUEFTER", (X - 27.94, yr1), "l")
+    p.setze("R18", X - 8.89, Y + 13.97, ref_at=(-3.0, 2.0, "right"), wert_at=(-3.0, 4.5, "right")); w(P("R18", "1"), (X - 8.89, Y + 10.16)); p.ab("R18", "2", "GND")
+    p.text(X - 30, Y + 30, "Steuerung über die SoC-Temperatur: dtoverlay=gpio-fan,gpiopin=12,temp=60000 (Hysterese im Treiber)")
+    p.text(X - 30, Y + 34, "GPIO12 kann auch PWM (PWM0) für Drehzahlregelung · J15 JST PH 2,0 mm: 1 = +5 V, 2 = Lüfter −")
 
 
 # ------------------------------------------------------------------------------------------------------------------
@@ -246,6 +442,10 @@ def blatt_cm4(p: Blatt) -> None:
     p.text(x0 - 15.24, yd + 33.02, "D10 = Aktivität (grün), D11 = Spannung (rot, über Q10 gepuffert)")
     # Unbenutztes
     p.nc_alle("J11"); p.nc_alle("J12")
+    # Befestigung des Moduls (4 × M2,5, Raster 48 × 33 mm, nicht durchkontaktiert)
+    for i, h in enumerate(("H5", "H6", "H7", "H8")):
+        p.setze(h, 299.72 + i * 12.7, 228.6)
+    p.text(292, 236, "H5–H8: Bohrungen des CM4 (Abstandsbolzen M2,5, Raster 48 × 33 mm)")
     p.text(35.56, 45.72, "Pinbelegung nach CM4-Datenblatt (Pins 1–200) · GPIO_VREF = 3,3 V · Ethernet 10/100 über Paar 0/1")
     p.text(35.56, 49.53, "WLAN/Bluetooth auf dem Modul (CM4 mit Funk): WL_nDisable/BT_nDisable offen = an; "
            "Antenne intern oder U.FL am Modul (dtparam=ant2)")
@@ -372,18 +572,21 @@ def main() -> int:
                     export={"SD_CLK", "SD_CMD", "SD_DAT0", "SD_DAT1", "SD_DAT2", "SD_DAT3", "SD_PWR_ON"}),
         "eth": Blatt("Ethernet", SOLL_ETH, "ethernet.kicad_sch", papier="A3",
                      export={"ETH_P0_P", "ETH_P0_N", "ETH_P1_P", "ETH_P1_N", "ETH_nLED2", "ETH_nLED3"}),
-        "codec": Blatt("Audio-Codec", hat.teil_soll("codec"), "codec.kicad_sch", papier="A3",
-                       export={"I2S_BCLK", "I2S_LRCLK", "I2S_DIN", "I2S_DOUT", "I2C_SDA", "I2C_SCL", "HP_L", "LINE_IN"}),
+        "codec": Blatt("Audio-Codec", SOLL_CODEC, "codec.kicad_sch", papier="A3", export=CODEC_EXPORT),
         "sprechweg": Blatt("Sprechweg", hat.teil_soll("sprechweg"), "sprechweg.kicad_sch", papier="A3",
                            export={"HP_L", "LINE_IN"}),
         "rs232": Blatt("RS-232", hat.teil_soll("rs232"), "rs232.kicad_sch", papier="A3",
                        export={"UART3_TXD", "UART3_RXD"}),
-        "bedienung": Blatt("Bedienung", hat.teil_soll("bedienung"), "bedienung.kicad_sch", papier="A3",
-                           export={"LED_TELEFON", "LED_GESPRAECH", "TASTE"}),
+        "bedienung": Blatt("Bedienung", {**hat.teil_soll("bedienung"), **SOLL_BEDIENUNG_ZUSATZ}, "bedienung.kicad_sch",
+                           papier="A3", export={"LED_TELEFON", "LED_GESPRAECH", "TASTE", "LED_STATUS", "TASTE_KONFIG",
+                                                "TASTE_EIN_AUS"}),
+        "luefter": Blatt("Lüfter", SOLL_LUEFTER, "luefter.kicad_sch", papier="A3", export={"LUEFTER"}),
     }
     blatt_cm4(blaetter["cm4"]); blatt_versorgung(blaetter["versorgung"]); blatt_sd(blaetter["sd"])
-    blatt_ethernet(blaetter["eth"]); hat.codec(blaetter["codec"]); hat.sprechweg(blaetter["sprechweg"])
+    blatt_ethernet(blaetter["eth"]); blatt_codec(blaetter["codec"]); hat.sprechweg(blaetter["sprechweg"])
     hat.rs232(blaetter["rs232"]); hat.bedienung(blaetter["bedienung"])
+    bedienung_zusatz(blaetter["bedienung"])
+    blatt_luefter(blaetter["luefter"])
     # Bohrungen: das Raster des HAT gilt hier nicht
     bed = blaetter["bedienung"]
     bed.texte = [(x, y, "H1–H4: Gehäusebefestigung M2,5 (Lage nach Gehäuse); CM4 auf 4 Abstandsbolzen M2,5"
@@ -402,9 +605,12 @@ def main() -> int:
     rechts = ([("ETH_P0_P", 0), ("ETH_P0_N", 1), ("ETH_P1_P", 2), ("ETH_P1_N", 3), ("ETH_nLED2", 4), ("ETH_nLED3", 5)],
               [("SD_CLK", 15), ("SD_CMD", 16), ("SD_DAT0", 17), ("SD_DAT1", 18), ("SD_DAT2", 19), ("SD_DAT3", 20),
                ("SD_PWR_ON", 21)],
-              [("I2S_BCLK", 31), ("I2S_LRCLK", 32), ("I2S_DIN", 33), ("I2S_DOUT", 34), ("I2C_SDA", 35), ("I2C_SCL", 36)],
+              [("I2S_BCLK", 31), ("I2S_LRCLK", 32), ("I2S_DIN", 33), ("I2S_DOUT", 34), ("I2C_SDA", 35), ("I2C_SCL", 36),
+               ("CODEC_nRESET", 37)],
               [("UART3_TXD", 46), ("UART3_RXD", 47)])
-    links = ([("USB_P", 0), ("USB_N", 1)], [("LED_TELEFON", 31), ("LED_GESPRAECH", 32), ("TASTE", 33)])
+    links = ([("USB_P", 0), ("USB_N", 1)], [("LED_TELEFON", 31), ("LED_GESPRAECH", 32), ("TASTE", 33),
+                                             ("LED_STATUS", 34), ("TASTE_KONFIG", 35), ("TASTE_EIN_AUS", 36)],
+             [("LUEFTER", 46)])
     x_cm4, b_cm4 = 157.48, 50.8
     pins_cm4 = [(n, "r", 7.62 + 2.54 * i) for gruppe in rechts for n, i in gruppe] + \
                [(n, "l", 7.62 + 2.54 * i) for gruppe in links for n, i in gruppe]
@@ -427,7 +633,7 @@ def main() -> int:
     for n in ("HP_L", "LINE_IN"):
         root.w(abstand["codec"][n], pos_s[n])
     x_links, b_links = 63.5, 45.72
-    for kind, gruppe in (("versorgung", links[0]), ("bedienung", links[1])):
+    for kind, gruppe in (("versorgung", links[0]), ("bedienung", links[1]), ("luefter", links[2])):
         top = pos_cm4[gruppe[0][0]][1] - 7.62
         pins = [(n, "r", pos_cm4[n][1] - top) for n, _ in gruppe]
         pos = root.blatt(blaetter[kind], x_links, top, b_links, pins, hoehe=max(dy for _, _, dy in pins) + 7.62)
