@@ -8,7 +8,8 @@ Gehäuse aus dem 3D-Drucker.
   eMMC-Modul sind die SD-Pins im Modul offen, der Sockel bleibt dann ungenutzt.
 - **Netz:** **WLAN** über das CM4 mit Funk (Antenne auf dem Modul, zur linken Platinenkante; oder U.FL)
   *oder/und* **Ethernet 10/100** (RJ45 mit Übertrager). Der Betrieb wird per Software gewählt.
-- **D340:** isolierte RS-232 (ADuM5211 + MAX3232, DE9) und Sprechweg über zwei Übertrager (RJ12), wie beim HAT.
+- **D340:** isolierte RS-232 (ADuM5211 + MAX3232, **4P4C-Buchse**) und Sprechweg über zwei Übertrager (RJ12).
+  Zur D340 führt ein Adapterkabel 4P4C → DE9-Stecker (4P4C 1 → 5 GND, 2 → 2 RxD, 3 → 3 TxD).
 
 | Datei | Inhalt |
 |---|---|
@@ -44,7 +45,8 @@ aktualisieren“ in KiCad funktioniert weiter).
 | Ethernet | J14 **Würth 7499010211A** (RJ45 mit Übertrager, LEDs), U12 **TPD4E05U06**, C45, R15/R16 | Mittelanzapfungen über 100 nF an GND, ESD an den Paaren, LEDs low-aktiv |
 | Audio-Codec | U2 **TI TLV320AIC3204** (VQFN-32), U6 Oszillator 12 MHz, U4 AP2112K-3.3 | **WM8731 ist abgekündigt**, SGTL5000/WM8960 ebenso bzw. nicht lieferbar. Der AIC3204 hat einen Linux-Treiber (`tlv320aic32x4`); Vorlage für das Overlay ist `audiosense-pi` (I²C 0x18, MCLK 12 MHz, Reset an GPIO26). **I²C an GPIO0/1 (I2C0)**, weil GPIO3 der Ein/Aus-Taster ist. LOL treibt den 600-Ω-Übertrager (Last ≥ 600 Ω laut Datenblatt) |
 | Sprechweg | T1/T2 **Bourns SM-LP-5001** (600:600, 2 kV), J2 **Würth 615006138421** (RJ12/6P6C) | Amphenol 54601 ist abgekündigt |
-| RS-232 | U3 **ADuM5211**, U5 **MAX3232E**, J3 **NorComp 182-009-113R531** (DE9-Stecker liegend) | wie HAT |
+| RS-232 | U3 **ADuM5211**, U5 **MAX3232E**, J3 **Würth 615004143821** (4P4C liegend) | statt DE9 (31 mm Kante, 13 mm hoch): verriegelnd, klein, nicht mit RJ12/RJ45 verwechselbar |
+| CM4 selbst | M1 Platzhalter | steht in der Stückliste, wird gesteckt (nicht in den Bestückungsdaten); 3D-Modell 1,5 mm über J11/J12 |
 | Bedienung | SW1 Annehmen/Auflegen (GPIO25), **SW2 Konfiguration (GPIO27)**, **SW3 Ein/Aus (GPIO3)**, D1–D3 (GPIO23/24/22) | D3 + SW2 für Einstellungen am Gerät; alle LEDs vorne für Lichtleiter |
 | | SW3, R9 (unbestückt) | **Ein/Aus mit einem Taster:** im Betrieb fährt `gpio-shutdown` sauber herunter; im Halt weckt der Bootloader das CM4 über GPIO3 (`WAKE_ON_GPIO=1`, Werkseinstellung). GLOBAL_EN bleibt unbenutzt (Datenblatt: nur nach dem Herunterfahren auf Low ziehen) |
 | Lüfter | Q11 **AO3400A**, D13 **MBR140SFT1G**, R17/R18, C46, J15 **JST PH 2-polig** | 5-V-Lüfter, Low-Side-Schalter an GPIO12 (PWM-fähig); die SoC-Temperatur des CM4 steuert über `gpio-fan` |
@@ -74,6 +76,10 @@ Digikey-BOM-Manager schlägt gleichwertige Teile vor.
 - **Stand:** vollständig geroutet, **DRC ohne Verstöße**, keine offenen Verbindungen, Schaltplan und Platine stimmen
   überein. Ethernet und USB sind vom Router als Einzelleitungen mit der Paarbreite verlegt, nicht als gekoppelte
   Differenzpaare (für 10/100 und USB 2.0 auf diesen Längen unkritisch; vor der Bestellung ansehen).
+- **3D-Modelle:** CM4 offiziell von Raspberry Pi, die übrigen Herstellermodelle (Würth, Hirose, Bourns, ECS) liegen
+  nur lokal in `hardware/bibliothek/3d/` (nicht weitergebbar, Quellen und Prüfsummen in `QUELLEN.md`).
+  `hardware/bibliothek/richte_3d_aus.py` richtet sie auf die Footprints aus; die Steckerlagen sind im Rendering von
+  unten geprüft (alle Pins, Zapfen und Schirmlaschen mittig in ihren Bohrungen).
 - `--nur-nacharbeit` erneuert Beschriftung, Bestückungsattribute und Flächen ohne neues Routing. Konstruiert wird
   bei (100, 100); zum Schluss rückt die Platine auf dem A4-Blatt nach (93, 45), frei vom Schriftfeld. Alle
   Bauteiltexte stehen waagerecht.

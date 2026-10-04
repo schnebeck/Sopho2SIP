@@ -45,10 +45,20 @@ TRENNSTREIFEN = [  # (x1, y1, x2, y2) Mittellinien der kupferfreien Trennstreife
 TRENNBREITE = 1.0
 ANTENNE = (100.0, 133.0, 109.5, 148.0)                  # Sperrzone unter der CM4-Antenne (Modul x 0–6,5 / y 9–20)
 
+# 3D-Modelle für Bibliotheks-Footprints ohne Modell (ausgerichtet durch hardware/bibliothek/richte_3d_aus.py)
+_M = "${KIPRJMOD}/../bibliothek/3d/ausgerichtet"
+MODELL_ERSATZ = {
+    "J14": f"{_M}/RJ45_Wuerth_7499010211A_Horizontal.step",
+    "J11": f"{_M}/Hirose_DF40C-100DS-0.4V_2x50_P0.4mm.step",
+    "U6": f"{_M}/Oscillator_SMD_ECS_2520MV-xxx-xx-4Pin_2.5x2.0mm.step",
+    "F1": "${KICAD10_3DMODEL_DIR}/Resistor_SMD.3dshapes/R_1812_4532Metric.step",   # Bauform wie die Polyfuse
+}
+
 # Platzierung: Referenz → (x, y, Drehung); alle Bauteile oben
 PLATZ = {
     # CM4: Stecker und Bohrungen nach Datenblatt (Mitte Stecker 25,0 / 3,04 bzw. 36,96 mm, Bohrungen 3,5 mm)
     "J11": (MX + 25.0, MY + 3.04, 180), "J12": (MX + 25.0, MY + 36.96, 180),
+    "M1": (MX, MY, 0),                                  # CM4 selbst (Platzhalter, 3D-Modell 1,5 mm über J11/J12)
     "H5": (MX + 3.5, MY + 3.5, 0), "H6": (MX + 51.5, MY + 3.5, 0),
     "H7": (MX + 3.5, MY + 36.5, 0), "H8": (MX + 51.5, MY + 36.5, 0),
     "C40": (118.0, 122.5, 0), "C41": (122.5, 123.5, 0),
@@ -60,7 +70,7 @@ PLATZ = {
     "J14": (137.4, 117.29, 180), "U12": (134.5, 124.2, 0), "C45": (129.0, 123.6, 0),
     "R15": (144.5, 110.0, 90), "R16": (144.5, 114.0, 90),
     # RS-232 isoliert (hinter dem DE9)
-    "J3": (171.02, 110.54, 180), "U5": (165.0, 125.5, 0),
+    "J3": (161.01, 108.9, 180), "U5": (165.0, 125.5, 0),
     "C35": (159.8, 121.5, 90), "C36": (170.5, 121.0, 90), "C37": (171.0, 125.5, 0), "C38": (171.0, 129.0, 0),
     "C39": (165.0, 118.6, 0), "U3": (171.0, 138.5, 90), "C33": (178.5, 133.5, 90), "C34": (181.5, 133.5, 90),
     "C30": (165.0, 143.5, 90), "C31": (176.5, 143.5, 90), "C32": (179.5, 143.5, 90),
@@ -265,6 +275,15 @@ def bestuecken(board, teile, netze):
                 pad.SetNet(board.FindNet(netz))
                 if ref == "J10" and netz == "GND":
                     pad.SetLocalZoneConnection(pcbnew.ZONE_CONNECTION_FULL)   # Stifte neben den Rastnasen
+        if ref in MODELL_ERSATZ:              # 3D-Modelle, die der KiCad-Bibliothek fehlen
+            fp.Models().clear()
+            m = pcbnew.FP_3DMODEL(); m.m_Filename = MODELL_ERSATZ[ref]
+            lage = HIER.parent / "bibliothek" / "3d" / "ausgerichtet" / "lage.json"
+            stamm = pathlib.Path(MODELL_ERSATZ[ref]).stem
+            if lage.exists() and stamm in json.loads(lage.read_text()):
+                d = json.loads(lage.read_text())[stamm]
+                m.m_Rotation = pcbnew.VECTOR3D(*d["rotate"]); m.m_Offset = pcbnew.VECTOR3D(*d["offset"])
+            fp.Models().push_back(m)
         # Bestückungsdruck nur mit eigenen Beschriftungen; Referenzen bleiben auf F.Fab (Bestückungsplan)
         fp.Reference().SetLayer(pcbnew.F_Fab)
         board.Add(fp)
@@ -332,7 +351,7 @@ def beschriftung(board):
 # Regeln (JLCPCB, 4 Lagen, Standard) und Netzklassen in der Projektdatei
 # ------------------------------------------------------------------------------------------------------------------
 NETZKLASSEN = [
-    {"name": "Default", "track_width": 0.15, "clearance": 0.15, "via_diameter": 0.55, "via_drill": 0.3},
+    {"name": "Default", "track_width": 0.127, "clearance": 0.127, "via_diameter": 0.55, "via_drill": 0.3},
     # 0,3 mm passt an die 0,4-mm-Pads der CM4-Stecker; nach dem Routing verbreitert eine +5V-Fläche die Zuleitung
     {"name": "Versorgung", "track_width": 0.3, "clearance": 0.15, "via_diameter": 0.7, "via_drill": 0.4},
     {"name": "ETH", "track_width": 0.2, "clearance": 0.15, "via_diameter": 0.55, "via_drill": 0.3,
@@ -531,7 +550,7 @@ def dsn_ohne_ebenennetze(dsn: pathlib.Path) -> None:
     dsn.write_text(s, encoding="utf-8")
 
 
-def routen(ziel: pathlib.Path, durchgaenge: int = 30) -> None:
+def routen(ziel: pathlib.Path, durchgaenge: int = 40) -> None:
     board = pcbnew.LoadBoard(str(ziel))
     netzklassen_setzen(board)
     dsn, ses = ziel.with_suffix(".dsn"), ziel.with_suffix(".ses")
@@ -543,7 +562,7 @@ def routen(ziel: pathlib.Path, durchgaenge: int = 30) -> None:
     jar = freerouting_holen()
     # FreeRouting 1.9 braucht eine Oberfläche: unsichtbar über Xvfb (Paket xvfb)
     subprocess.run(["xvfb-run", "-a", "java", "-Xmx6g", "-jar", str(jar), "-de", str(dsn), "-do", str(ses),
-                    "-mp", str(durchgaenge), "-mt", "1"], check=True, timeout=5400)
+                    "-mp", str(durchgaenge), "-mt", "1"], check=True, timeout=3600)
     if not pcbnew.ImportSpecctraSES(board, str(ses)):
         raise SystemExit("SES-Import fehlgeschlagen")
     aussenflaechen(board)
@@ -594,6 +613,29 @@ def texte_waagerecht(board) -> None:
             tx.SetKeepUpright(True)
 
 
+def modelle_erneuern(board) -> None:
+    """3D-Modelle aus der Bibliothek bzw. MODELL_ERSATZ übernehmen (ohne Platzierung oder Routing zu ändern)."""
+    lage_d = HIER.parent / "bibliothek" / "3d" / "ausgerichtet" / "lage.json"
+    lage = json.loads(lage_d.read_text()) if lage_d.exists() else {}
+    for fp in board.GetFootprints():
+        ref, fpid = fp.GetReference(), fp.GetFPID()
+        quelle = None
+        if str(fpid.GetLibNickname()) == "Sopho2SIP":
+            quelle = footprint_laden(f"Sopho2SIP:{fpid.GetLibItemName()}")
+        if quelle is None and ref not in MODELL_ERSATZ:
+            continue
+        fp.Models().clear()
+        if ref in MODELL_ERSATZ:
+            m = pcbnew.FP_3DMODEL(); m.m_Filename = MODELL_ERSATZ[ref]
+            d = lage.get(pathlib.Path(MODELL_ERSATZ[ref]).stem)
+            if d:
+                m.m_Rotation = pcbnew.VECTOR3D(*d["rotate"]); m.m_Offset = pcbnew.VECTOR3D(*d["offset"])
+            fp.Models().push_back(m)
+        else:
+            for m in quelle.Models():
+                fp.Models().push_back(m)
+
+
 def nacharbeit(ziel: pathlib.Path) -> None:
     """Ohne neues Routing: GND-Pins des QFN-Codecs voll an die Fläche (Thermals fänden zwischen den
     Nachbarpads keinen Platz), Bestückungsattribute aus dem Schaltplan, Flächen neu füllen."""
@@ -613,6 +655,7 @@ def nacharbeit(ziel: pathlib.Path) -> None:
                     pad.SetLocalZoneConnection(pcbnew.ZONE_CONNECTION_FULL)
     beschriftung(board)
     texte_waagerecht(board)
+    modelle_erneuern(board)
     _verschieben_nach(board, BLATT_X, BLATT_Y)
     board.BuildConnectivity()                     # nach dem Verschieben, sonst bleiben Inseln stehen
     pcbnew.ZONE_FILLER(board).Fill(board.Zones())

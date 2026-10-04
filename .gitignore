@@ -29,3 +29,7 @@ hardware/**/*.ses
 hardware/cm4/fertigung/
 hardware/cm4/zwischenstand/
 hardware/**/logs/freerouting.log
+
+# Herstellermodelle (nicht weitergebbar) und daraus ausgerichtete Modelle; Bezugsquellen in hardware/bibliothek/3d/QUELLEN.md
+hardware/bibliothek/3d/*
+!hardware/bibliothek/3d/QUELLEN.md

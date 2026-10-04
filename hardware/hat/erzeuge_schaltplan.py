@@ -321,13 +321,16 @@ def sprechweg(p: Blatt) -> None:
     p.text(352, 70, "RJ12 1:1 zur Audio-Buchse")
 
 
-def rs232(p: Blatt) -> None:
-    """Block RS-232."""
+def rs232(p: Blatt, stecker: str = "de9") -> None:
+    """Block RS-232; stecker = "de9" (HAT) oder "4p4c" (CM4-Träger: kleine Modularbuchse, Adapterkabel auf DE9)."""
     P, w = p.P, p.w
     p.rahmen_(137, 158, 405, 248, "RS-232 zur D340 (galvanisch getrennt)")
     p.setze("U3", 203.2, 203.2, ref_at=(-12.7, -14.6), wert_at=(-14.5, 15.0))
     p.setze("U5", 271.78, 203.2, ref_at=(-12.7, -27.3), wert_at=(12.7, -27.3))
-    p.setze("J3", 345.44, 210.82, ref_at=(0, -16.5), wert_at=(0, -14.2))
+    if stecker == "de9":
+        p.setze("J3", 345.44, 210.82, ref_at=(0, -16.5), wert_at=(0, -14.2))
+    else:
+        p.setze("J3", 345.44, P("U5", "13")[1], rot=180, ref_at=(0, -7.6), wert_at=(0, 10.2))
     # Pi-Seite des ADuM5211
     x, y = P("U3", "3"); w((x, y), (177.8, y)); p.lbl("UART3_RXD", (177.8, y), "l")
     x, y = P("U3", "4"); w((x, y), (177.8, y)); p.lbl("UART3_TXD", (177.8, y), "l")
@@ -378,18 +381,27 @@ def rs232(p: Blatt) -> None:
     # MAX3232 ⇄ DE9
     x, y = P("U5", "14"); xj, yj = P("J3", "3"); w((x, y), (314.96, y), (314.96, yj), (xj, yj))
     w(P("U5", "13"), P("J3", "2"))
-    x, y = P("J3", "5"); w((x, y), (x - 2.54, y)); p.pw("GND_ISO", (x - 2.54, y), rot=270)
-    p.ab("J3", "SH", "GND_ISO")
-    p.offen(*[("J3", n) for n in ("1", "4", "6", "7", "8", "9")])
+    if stecker == "de9":
+        x, y = P("J3", "5"); w((x, y), (x - 2.54, y)); p.pw("GND_ISO", (x - 2.54, y), rot=270)
+        p.ab("J3", "SH", "GND_ISO")
+        p.offen(*[("J3", n) for n in ("1", "4", "6", "7", "8", "9")])
+    else:
+        x, y = P("J3", "1"); w((x, y), (x - 2.54, y)); p.pw("GND_ISO", (x - 2.54, y), rot=270)
+        p.offen(("J3", "4"))
     for y0, y1 in ((164, 186), (226, 246)):
         p.trenn(203.2, y0, y1)
     p.text(150, 246, "Pi-Seite (GND)")
     p.text(208, 246, "isolierte Seite (GND_ISO)")
     p.text(140, 239, "ADuM5211: Trenner mit isolierter 3,3-V-Versorgung (VSEL = GND_ISO) · dtoverlay=uart3")
-    p.text(356, 223, "DE9-Stecker wie am PC:")
-    p.text(356, 226, "2 RxD · 3 TxD · 5 GND")
-    p.text(356, 229, "1:1-Kabel zur D340,")
-    p.text(356, 232, "1200 Bd 8O1")
+    if stecker == "de9":
+        p.text(356, 223, "DE9-Stecker wie am PC:")
+        p.text(356, 226, "2 RxD · 3 TxD · 5 GND")
+        p.text(356, 229, "1:1-Kabel zur D340,")
+        p.text(356, 232, "1200 Bd 8O1")
+    else:
+        p.text(352, 223, "4P4C (RJ10): 1 GND · 2 RxD · 3 TxD · 4 frei")
+        p.text(352, 226, "Adapterkabel auf DE9-Stecker zur D340:")
+        p.text(352, 229, "4P4C 1→5, 2→2, 3→3 · 1200 Bd 8O1")
 
 
 def main() -> int:

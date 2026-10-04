@@ -16,4 +16,5 @@
 	(fp_line (start -4.3 4.6) (end 4.3 4.6) (stroke (width 0.12) (type solid)) (layer "F.SilkS"))
 	(fp_line (start -7.8 -3.6) (end -4.6 -3.6) (stroke (width 0.12) (type solid)) (layer "F.SilkS"))
 	(fp_rect (start -7.75 -4.75) (end 7.75 4.75) (stroke (width 0.05) (type solid)) (fill no) (layer "F.CrtYd"))
+	(model "${KIPRJMOD}/../bibliothek/3d/ausgerichtet/Bourns_SM-LP-5001.step" (offset (xyz 0 0 0)) (scale (xyz 1 1 1)) (rotate (xyz 270 0 0)))
 )
