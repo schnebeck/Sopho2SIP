@@ -33,6 +33,7 @@ hardware/**/logs/freerouting.log
 hardware/gehaeuse/platine_bestueckt.step
 hardware/gehaeuse/schnitte.json
 hardware/gehaeuse/*.FCStd1
+hardware/gehaeuse/*.FCBak
 __pycache__/
 
 # Herstellermodelle (nicht weitergebbar) und daraus ausgerichtete Modelle; Bezugsquellen in hardware/bibliothek/3d/QUELLEN.md
