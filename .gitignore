@@ -21,3 +21,11 @@ hardware/**/*.lck
 hardware/**/*.kicad_prl
 hardware/**/*-backups/
 hardware/**/fp-info-cache
+
+# Werkzeuge für den Layout-Generator (werden bei Bedarf geladen)
+hardware/.werkzeug/
+hardware/**/*.dsn
+hardware/**/*.ses
+hardware/cm4/fertigung/
+hardware/cm4/zwischenstand/
+hardware/**/logs/freerouting.log

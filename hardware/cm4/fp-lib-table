@@ -1,0 +1,4 @@
+(fp_lib_table
+	(version 7)
+	(lib (name "Sopho2SIP") (type "KiCad") (uri "${KIPRJMOD}/../bibliothek/sopho2sip.pretty") (options "") (descr "Sopho2SIP, eigene Footprints"))
+)

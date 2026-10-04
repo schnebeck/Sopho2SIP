@@ -1,0 +1,10 @@
+(version 1)
+# JLCPCB, 4 Lagen, Standardfertigung (https://jlcpcb.com/capabilities/pcb-capabilities), Stand 2026-10
+(rule "JLC Bahnbreite" (constraint track_width (min 0.09mm)))
+(rule "JLC Abstand" (constraint clearance (min 0.09mm)))
+(rule "JLC Restring" (constraint annular_width (min 0.075mm)))
+(rule "JLC Bohrung" (constraint hole_size (min 0.15mm)))
+(rule "JLC Bohrung zu Bohrung" (constraint hole_to_hole (min 0.25mm)))
+(rule "JLC Kupfer zur Kante" (constraint edge_clearance (min 0.3mm)))
+# USB-C GCT USB4105: Herstellerlayout, Pads dicht an den Rastnasen (bei JLC so gefertigt)
+(rule "USB-C Herstellerlayout" (condition "A.Parent == 'J10' && B.Parent == 'J10'") (constraint hole_clearance (min 0.1mm)))

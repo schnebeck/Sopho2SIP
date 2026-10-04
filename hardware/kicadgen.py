@@ -31,8 +31,23 @@ EIGENE_SYMBOLE: dict[str, str] = {}          # lib_id → fertiger Symbolblock (
 # ------------------------------------------------------------------------------------------------------------------
 # Bibliothek
 # ------------------------------------------------------------------------------------------------------------------
+_NS = uuid.UUID("5f0c2f6e-3b7a-4d1e-9a51-50f2a9c3e7d1")    # Namensraum Sopho2SIP
+_ZAEHLER = {"kontext": "", "n": 0}
+
+
 def u() -> str:
-    return str(uuid.uuid4())
+    """Reproduzierbare UUID (Kontext + laufende Nummer): gleiche Zeichnung → gleiche Datei, keine Git-Unruhe."""
+    _ZAEHLER["n"] += 1
+    return str(uuid.uuid5(_NS, f'{_ZAEHLER["kontext"]}#{_ZAEHLER["n"]}'))
+
+
+def u_fest(schluessel: str) -> str:
+    """Feste UUID für Dinge, auf die von außen verwiesen wird (Blätter, Bauteile ↔ Platine)."""
+    return str(uuid.uuid5(_NS, schluessel))
+
+
+def uuid_kontext(name: str) -> None:
+    _ZAEHLER["kontext"], _ZAEHLER["n"] = name, 0
 
 
 def rd(v: float) -> float:
@@ -72,8 +87,12 @@ def lib_symbol(lib_id: str) -> str:
     basis_name = m.group(1)
     basis = lib_symbol(f"{bib}:{basis_name}")
     for p in re.finditer(r'\(property "([^"]+)".*?\n\t\t\)', sym, re.S):
-        basis = re.sub(r'\(property "%s".*?\n\t\t\)' % re.escape(p.group(1)), lambda _m, s=p.group(0): s, basis,
-                       count=1, flags=re.S)
+        if f'(property "{p.group(1)}"' in basis:
+            basis = re.sub(r'\(property "%s".*?\n\t\t\)' % re.escape(p.group(1)), lambda _m, s=p.group(0): s,
+                           basis, count=1, flags=re.S)
+        else:   # Eigenschaft nur im abgeleiteten Symbol (z. B. ki_keywords): vor den Einheiten einfügen
+            k = basis.find('\n\t\t(symbol "')
+            basis = basis[:k] + "\n\t\t" + p.group(0) + basis[k:]
     basis = basis.replace(f'(symbol "{bib}:{basis_name}"', f'(symbol "{bib}:{name}"', 1)
     return basis.replace(f'(symbol "{basis_name}_', f'(symbol "{name}_')
 
@@ -148,7 +167,7 @@ class Blatt:
         self.name, self.soll, self.datei = name, soll, datei
         self.export = set(export or ())
         self.papier, self.versatz, self.titel, self.kommentare = papier, versatz, titel, kommentare
-        self.uuid = u()
+        self.uuid = u_fest(f"blatt:{datei}")
         self.teile: list[tuple] = []          # (ref, lib_id, wert, fp, x, y, rot, spiegel, texte)
         self.pinpos: dict[tuple[str, str], tuple[float, float]] = {}
         self.segmente: list[tuple[tuple[float, float], tuple[float, float]]] = []
@@ -263,8 +282,8 @@ def _symbol_text(b: Blatt, projekt, pfad, ref, lib_id, wert, fp, x, y, rot, spie
     sym = b.libs[lib_id]
     m = f"\t\t(mirror {spiegel})\n" if spiegel else ""
     s = (f'\t(symbol\n\t\t(lib_id "{lib_id}")\n\t\t(at {rd(x)} {rd(y)} {rot})\n{m}\t\t(unit 1)\n\t\t(exclude_from_sim no)\n'
-         f'\t\t(in_bom {"no" if ref.startswith("#") else "yes"})\n\t\t(on_board yes)\n'
-         f'\t\t(dnp {"yes" if wert == "DNP" else "no"})\n\t\t(uuid "{u()}")\n')
+         f'\t\t(in_bom {"no" if ref.startswith("#") or lib_id.startswith("Mechanical:") else "yes"})\n\t\t(on_board yes)\n'
+         f'\t\t(dnp {"yes" if wert == "DNP" else "no"})\n\t\t(uuid "{u_fest(f"symbol:{b.datei}:{ref}")}")\n')
     # Textwinkel ist in KiCad relativ zur Bauteildrehung: bei 90°/270° ergibt 90° waagerechte Schrift
     waagerecht = 90 if rot in (90, 270) else 0
     for name, wertx, versteckt in (("Reference", ref, versteckt_ref), ("Value", wert, versteckt_wert)):
@@ -356,6 +375,7 @@ def _einzelblock(b: Blatt) -> None:
 
 def schreibe_blatt(b: Blatt, projekt: str, pfad: str, wurzel: Blatt | None = None) -> str:
     """Text der .kicad_sch-Datei. pfad = Instanzpfad der Bauteile ("/<wurzel>" oder "/<wurzel>/<blatt>")."""
+    uuid_kontext(b.datei)
     _einzelblock(b)
     ox, oy = b.versatz
     v = lambda pt: (rd(pt[0] + ox), rd(pt[1] + oy))
@@ -490,10 +510,21 @@ def schreibe_projekt(verzeichnis: pathlib.Path, projekt: str, wurzel: Blatt) -> 
                                            encoding="utf-8")
         blaetter.append([k.uuid, k.name])
     schreibe_bibliothek(verzeichnis)
-    (verzeichnis / f"{projekt}.kicad_pro").write_text(
-        json.dumps({"meta": {"filename": f"{projekt}.kicad_pro", "version": 1}, "sheets": blaetter}, indent=2) + "\n",
-        encoding="utf-8")
+    schreibe_fp_tabelle(verzeichnis)
+    # vorhandene Einstellungen (z. B. Netzklassen und Regeln aus dem Layout-Generator) behalten
+    pro = verzeichnis / f"{projekt}.kicad_pro"
+    daten = json.loads(pro.read_text(encoding="utf-8")) if pro.exists() else {}
+    daten.update({"meta": {"filename": f"{projekt}.kicad_pro", "version": 1}, "sheets": blaetter})
+    pro.write_text(json.dumps(daten, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
     return root
+
+
+def schreibe_fp_tabelle(verzeichnis: pathlib.Path) -> None:
+    """Projektverweis auf die gemeinsamen eigenen Footprints (hardware/bibliothek/sopho2sip.pretty)."""
+    (verzeichnis / "fp-lib-table").write_text(
+        '(fp_lib_table\n\t(version 7)\n\t(lib (name "Sopho2SIP") (type "KiCad") '
+        '(uri "${KIPRJMOD}/../bibliothek/sopho2sip.pretty") (options "") (descr "Sopho2SIP, eigene Footprints"))\n)\n',
+        encoding="utf-8")
 
 
 def schreibe_bibliothek(verzeichnis: pathlib.Path) -> None:

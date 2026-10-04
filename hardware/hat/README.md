@@ -34,7 +34,7 @@ Versorgungsnetze: `GND`, `+3V3`, `+5V` (Pi), `+3.3VA` (Codec analog), `GNDA` (Te
 | Trennung | U3 **ADuM5211** | Digitaltrenner (je ein Kanal hin/zurück) **mit eingebauter isolierter Versorgung** (VSEL = GND_ISO → 3,3 V) – ein Chip statt Trenner + DC-DC |
 | RS-232 | U5 **MAX3232** (isolierte Seite), J3 **DE9-Stecker** | Pegel ±5 V wie gemessen; Stecker wie am PC (DTE): Pin 2 RxD, Pin 3 TxD, Pin 5 GND → vorhandenes 1:1-Kabel |
 | Audio | U2 **WM8731SEDS** (SSOP-28, handlötbar), Y1 12,288 MHz | Linux-Treiber, Overlay `rpi-proto` (genau dieser Codec); 8 kHz direkt; ADC-Hochpass macht `dcsperre` überflüssig |
-| Sprechweg | T1/T2 600:600, C21/C24 1 µF, J2 **RJ12** | wie die erprobte Verkabelung (`docs/audio_verkabelung.html`): beide Richtungen galvanisch getrennt; **LHPOUT** (Kopfhörerverstärker) treibt T2 – LOUT ist nur für ≥ 10 kΩ |
+| Sprechweg | T1/T2 **Bourns SM-LP-5001** (600:600), C21/C24 1 µF, J2 **RJ12** Würth 615006138421 | wie die erprobte Verkabelung (`docs/audio_verkabelung.html`): beide Richtungen galvanisch getrennt; **LHPOUT** (Kopfhörerverstärker) treibt T2 – LOUT ist nur für ≥ 10 kΩ |
 | Teiler-Option | R4 = 0 Ω, R5 unbestückt | im Test war kein Teiler nötig (Pegel per Software); Option bleibt |
 | Analogversorgung | U4 **AP2112K-3.3** aus 5 V | eigene, ruhige 3,3 V für AVDD/HPVDD |
 | HAT-ID | U1 **24LC32**, R1/R2 3,9 kΩ, R3 + JP1 | HAT-Spezifikation: EEPROM an ID_SD/ID_SC, Adresse 0x50, WP hoch (JP1 schließen zum Schreiben) |
@@ -57,8 +57,8 @@ HAT-EEPROM kann der Pi die Overlays auch selbst laden (EEPROM mit `eepromutils` 
   MAX3232 + ADuM-Seite 2 (einige mA). Datenblatt.
 - **WM8731:** Quarzbeschaltung (Lastkapazität des gewählten Quarzes → C10/C11), unbenutzte Eingänge (RLINEIN, MICIN)
   laut Datenblatt beschalten oder offen lassen.
-- **Übertrager:** Bauteil auswählen (600:600, Platinenbauform, z. B. kleine SMD-Telefonübertrager) und Footprint
-  zuordnen – im Schaltplan noch leer.
+- **WM8731 ist abgekündigt** (Digikey, 2026-10). Der CM4-Träger (`hardware/cm4/`) nutzt deshalb den TI
+  TLV320AIC3204; vor einem Bau des HAT den Codec-Block ebenso umstellen.
 - **RJ12-Kabel:** Viele flache Telefonkabel sind gedreht (1↔6). Die Pinbelegung von J2 setzt ein 1:1 belegtes 6P6C
   voraus – mit dem Durchgangsprüfer gegen die D340-Buchse prüfen, sonst Belegung auf der Platine spiegeln.
 - **Mechanik:** HAT-Maß 65 × 56,5 mm, Befestigungslöcher 58 × 49 mm; ein liegender DE9 ist hoch – evtl. auf die
