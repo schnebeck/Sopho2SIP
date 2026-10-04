@@ -74,7 +74,9 @@ Digikey-BOM-Manager schlägt gleichwertige Teile vor.
 - **Stand:** vollständig geroutet, **DRC ohne Verstöße**, keine offenen Verbindungen, Schaltplan und Platine stimmen
   überein. Ethernet und USB sind vom Router als Einzelleitungen mit der Paarbreite verlegt, nicht als gekoppelte
   Differenzpaare (für 10/100 und USB 2.0 auf diesen Längen unkritisch; vor der Bestellung ansehen).
-- `--nur-nacharbeit` erneuert Beschriftung, Bestückungsattribute und Flächen ohne neues Routing.
+- `--nur-nacharbeit` erneuert Beschriftung, Bestückungsattribute und Flächen ohne neues Routing. Konstruiert wird
+  bei (100, 100); zum Schluss rückt die Platine auf dem A4-Blatt nach (93, 45), frei vom Schriftfeld. Alle
+  Bauteiltexte stehen waagerecht.
 
 ## Konfiguration (`/boot/firmware/config.txt`)
 ```

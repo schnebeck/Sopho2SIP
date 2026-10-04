@@ -32,7 +32,9 @@ MM = pcbnew.FromMM
 # LEDs und Tastern. CM4 links, Antenne zur linken Kante.
 # ------------------------------------------------------------------------------------------------------------------
 X0, Y0, BREITE, TIEFE = 100.0, 100.0, 110.0, 85.0
-MX, MY = 101.0, 126.0                                   # linke obere Ecke des CM4 (Draufsicht wie Datenblatt)
+MX, MY = 101.0, 126.0
+# Lage auf dem A4-Blatt (297 × 210 mm): mittig über dem Schriftfeld; konstruiert wird in den Koordinaten oben
+BLATT_X, BLATT_Y = 93.0, 45.0                                   # linke obere Ecke des CM4 (Draufsicht wie Datenblatt)
 
 # Bereiche (Polygone im Uhrzeigersinn)
 BEREICH_ISO = [(148, 100), (186.5, 100), (186.5, 138.5), (157, 138.5), (157, 123.5), (148, 123.5)]
@@ -576,9 +578,28 @@ def _beschriftung_entfernen(ziel: pathlib.Path) -> None:
     ziel.write_text("".join(aus), encoding="utf-8")
 
 
+def _verschieben_nach(board, x, y) -> None:
+    bb = board.GetBoardEdgesBoundingBox()
+    lx, ly = round(pcbnew.ToMM(bb.GetLeft()) + 0.05, 2), round(pcbnew.ToMM(bb.GetTop()) + 0.05, 2)
+    if (lx, ly) != (x, y):
+        board.Move(punkt(x - lx, y - ly))
+
+
+def texte_waagerecht(board) -> None:
+    """Alle Bauteiltexte in dieselbe Leserichtung (waagerecht, von unten lesbar)."""
+    for fp in board.GetFootprints():
+        texte = [fp.Reference(), fp.Value()] + [g for g in fp.GraphicalItems() if g.GetClass() == "PCB_TEXT"]
+        for tx in texte:
+            tx.SetTextAngleDegrees(0)
+            tx.SetKeepUpright(True)
+
+
 def nacharbeit(ziel: pathlib.Path) -> None:
     """Ohne neues Routing: GND-Pins des QFN-Codecs voll an die Fläche (Thermals fänden zwischen den
     Nachbarpads keinen Platz), Bestückungsattribute aus dem Schaltplan, Flächen neu füllen."""
+    board = pcbnew.LoadBoard(str(ziel))
+    _verschieben_nach(board, X0, Y0)               # zurück in die Konstruktionskoordinaten
+    pcbnew.SaveBoard(str(ziel), board)
     _beschriftung_entfernen(ziel)
     board = pcbnew.LoadBoard(str(ziel))
     teile, _ = netzliste()
@@ -591,6 +612,9 @@ def nacharbeit(ziel: pathlib.Path) -> None:
                 if pad.GetNetname() == "GND":
                     pad.SetLocalZoneConnection(pcbnew.ZONE_CONNECTION_FULL)
     beschriftung(board)
+    texte_waagerecht(board)
+    _verschieben_nach(board, BLATT_X, BLATT_Y)
+    board.BuildConnectivity()                     # nach dem Verschieben, sonst bleiben Inseln stehen
     pcbnew.ZONE_FILLER(board).Fill(board.Zones())
     pcbnew.SaveBoard(str(ziel), board)
 
