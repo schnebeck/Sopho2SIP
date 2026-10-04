@@ -1,0 +1,7 @@
+Gehäuse außen 115.6 × 90.6 × 25.1 mm (B × T × H), Volumen Unterschale 26.9 cm³, Deckel 35.8 cm³
+5 von 2427 Bauteilkörpern geprüft
+keine Kollision mit der bestückten Platine
+Stößel SW1: kleinster Abstand 0.35 mm (SW_SPST_TL3342)
+Stößel SW2: kleinster Abstand 0.35 mm (SW_SPST_TL3346)
+Stößel SW3: kleinster Abstand 0.35 mm (SW_SPST_TL3344)
+Lüfter: kleinster Abstand 3.87 mm (COMPOUND1761)
