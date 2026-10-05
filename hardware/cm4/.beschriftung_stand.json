@@ -1,0 +1,6099 @@
+{
+ "texte": {
+  "874bb5fa-ba8f-5cd6-a80c-6e5cfc17d818": {
+   "text": "ISO Audio",
+   "x": 198.0,
+   "y": 114.2,
+   "winkel": 0.0,
+   "groesse": [
+    0.8,
+    0.8
+   ],
+   "dicke": 0.12,
+   "lage": "F.Silkscreen",
+   "sichtbar": true,
+   "ausrichtung": [
+    "mitte",
+    "mitte"
+   ],
+   "gespiegelt": false,
+   "fett": false,
+   "kursiv": false,
+   "aufrecht": false,
+   "ausgespart": false
+  },
+  "5bb73dce-798e-5d78-afbc-a6bdb47144da": {
+   "text": "ISO RS-232",
+   "x": 177.0,
+   "y": 103.5,
+   "winkel": 0.0,
+   "groesse": [
+    0.8,
+    0.8
+   ],
+   "dicke": 0.12,
+   "lage": "F.Silkscreen",
+   "sichtbar": true,
+   "ausrichtung": [
+    "mitte",
+    "mitte"
+   ],
+   "gespiegelt": false,
+   "fett": false,
+   "kursiv": false,
+   "aufrecht": false,
+   "ausgespart": false
+  },
+  "a59695a8-5e20-5a99-9716-18dde9baebdc": {
+   "text": "nRPIBOOT",
+   "x": 121.0,
+   "y": 178.3,
+   "winkel": 0.0,
+   "groesse": [
+    0.8,
+    0.8
+   ],
+   "dicke": 0.12,
+   "lage": "F.Silkscreen",
+   "sichtbar": true,
+   "ausrichtung": [
+    "mitte",
+    "mitte"
+   ],
+   "gespiegelt": false,
+   "fett": false,
+   "kursiv": false,
+   "aufrecht": false,
+   "ausgespart": false
+  },
+  "494d9e0a-e735-539f-bde2-a40ab8d016ff": {
+   "text": "Lüfter",
+   "x": 160.5,
+   "y": 147.0,
+   "winkel": 0.0,
+   "groesse": [
+    0.8,
+    0.8
+   ],
+   "dicke": 0.12,
+   "lage": "F.Silkscreen",
+   "sichtbar": true,
+   "ausrichtung": [
+    "mitte",
+    "mitte"
+   ],
+   "gespiegelt": false,
+   "fett": false,
+   "kursiv": false,
+   "aufrecht": false,
+   "ausgespart": false
+  },
+  "c673f9c5-29f4-5b1e-882a-1f29dc3a0c02": {
+   "text": "Ein/Aus",
+   "x": 196.0,
+   "y": 173.6,
+   "winkel": 0.0,
+   "groesse": [
+    0.8,
+    0.8
+   ],
+   "dicke": 0.12,
+   "lage": "F.Silkscreen",
+   "sichtbar": true,
+   "ausrichtung": [
+    "mitte",
+    "mitte"
+   ],
+   "gespiegelt": false,
+   "fett": false,
+   "kursiv": false,
+   "aufrecht": false,
+   "ausgespart": false
+  },
+  "6b772f67-d07e-50ec-b0e0-074eb026bcaf": {
+   "text": "Konfig",
+   "x": 184.0,
+   "y": 176.0,
+   "winkel": 0.0,
+   "groesse": [
+    0.8,
+    0.8
+   ],
+   "dicke": 0.12,
+   "lage": "F.Silkscreen",
+   "sichtbar": true,
+   "ausrichtung": [
+    "mitte",
+    "mitte"
+   ],
+   "gespiegelt": false,
+   "fett": false,
+   "kursiv": false,
+   "aufrecht": false,
+   "ausgespart": false
+  },
+  "d365bdf5-5d34-521b-a935-4c82b491982f": {
+   "text": "Annehmen",
+   "x": 172.0,
+   "y": 176.0,
+   "winkel": 0.0,
+   "groesse": [
+    0.8,
+    0.8
+   ],
+   "dicke": 0.12,
+   "lage": "F.Silkscreen",
+   "sichtbar": true,
+   "ausrichtung": [
+    "mitte",
+    "mitte"
+   ],
+   "gespiegelt": false,
+   "fett": false,
+   "kursiv": false,
+   "aufrecht": false,
+   "ausgespart": false
+  },
+  "17a1091a-b036-5fdb-a24a-cf8a257bd9b3": {
+   "text": "STAT",
+   "x": 160.0,
+   "y": 181.3,
+   "winkel": 0.0,
+   "groesse": [
+    0.8,
+    0.8
+   ],
+   "dicke": 0.12,
+   "lage": "F.Silkscreen",
+   "sichtbar": true,
+   "ausrichtung": [
+    "mitte",
+    "mitte"
+   ],
+   "gespiegelt": false,
+   "fett": false,
+   "kursiv": false,
+   "aufrecht": false,
+   "ausgespart": false
+  },
+  "9bf3ab54-fea0-5a26-9a9a-42c88177e5c3": {
+   "text": "GESPR",
+   "x": 155.0,
+   "y": 181.3,
+   "winkel": 0.0,
+   "groesse": [
+    0.8,
+    0.8
+   ],
+   "dicke": 0.12,
+   "lage": "F.Silkscreen",
+   "sichtbar": true,
+   "ausrichtung": [
+    "mitte",
+    "mitte"
+   ],
+   "gespiegelt": false,
+   "fett": false,
+   "kursiv": false,
+   "aufrecht": false,
+   "ausgespart": false
+  },
+  "55844e20-3d22-599b-9d47-d96bfd9597f7": {
+   "text": "TEL",
+   "x": 150.0,
+   "y": 181.3,
+   "winkel": 0.0,
+   "groesse": [
+    0.8,
+    0.8
+   ],
+   "dicke": 0.12,
+   "lage": "F.Silkscreen",
+   "sichtbar": true,
+   "ausrichtung": [
+    "mitte",
+    "mitte"
+   ],
+   "gespiegelt": false,
+   "fett": false,
+   "kursiv": false,
+   "aufrecht": false,
+   "ausgespart": false
+  },
+  "172e4407-0975-5c75-a612-92d52dd31463": {
+   "text": "ACT",
+   "x": 140.0,
+   "y": 181.3,
+   "winkel": 0.0,
+   "groesse": [
+    0.8,
+    0.8
+   ],
+   "dicke": 0.12,
+   "lage": "F.Silkscreen",
+   "sichtbar": true,
+   "ausrichtung": [
+    "mitte",
+    "mitte"
+   ],
+   "gespiegelt": false,
+   "fett": false,
+   "kursiv": false,
+   "aufrecht": false,
+   "ausgespart": false
+  },
+  "d7c4dcbc-613a-54f7-b148-757796fbc243": {
+   "text": "PWR",
+   "x": 135.0,
+   "y": 181.3,
+   "winkel": 0.0,
+   "groesse": [
+    0.8,
+    0.8
+   ],
+   "dicke": 0.12,
+   "lage": "F.Silkscreen",
+   "sichtbar": true,
+   "ausrichtung": [
+    "mitte",
+    "mitte"
+   ],
+   "gespiegelt": false,
+   "fett": false,
+   "kursiv": false,
+   "aufrecht": false,
+   "ausgespart": false
+  },
+  "df96ee01-bda5-59b2-801a-e5a32cf052bc": {
+   "text": "github.com/schnebeck/Sopho2SIP",
+   "x": 180.0,
+   "y": 173.5,
+   "winkel": 0.0,
+   "groesse": [
+    0.8,
+    0.8
+   ],
+   "dicke": 0.12,
+   "lage": "F.Silkscreen",
+   "sichtbar": true,
+   "ausrichtung": [
+    "mitte",
+    "mitte"
+   ],
+   "gespiegelt": false,
+   "fett": false,
+   "kursiv": false,
+   "aufrecht": false,
+   "ausgespart": false
+  },
+  "3b09ade3-36e0-5a9e-859a-4465435c146c": {
+   "text": "Sopho2SIP · CM4-Träger 0.3",
+   "x": 180.0,
+   "y": 171.0,
+   "winkel": 0.0,
+   "groesse": [
+    1.2,
+    1.2
+   ],
+   "dicke": 0.18,
+   "lage": "F.Silkscreen",
+   "sichtbar": true,
+   "ausrichtung": [
+    "mitte",
+    "mitte"
+   ],
+   "gespiegelt": false,
+   "fett": false,
+   "kursiv": false,
+   "aufrecht": false,
+   "ausgespart": false
+  }
+ },
+ "bauteile": {
+  "R18": {
+   "Reference": {
+    "x": 0.0,
+    "y": -1.43,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Value": {
+    "x": 0.0,
+    "y": 1.43,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Text:${REFERENCE}": {
+    "x": 0.0,
+    "y": 0.0,
+    "winkel": 0.0,
+    "groesse": [
+     0.4,
+     0.4
+    ],
+    "dicke": 0.06,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   }
+  },
+  "C35": {
+   "Reference": {
+    "x": 0.0,
+    "y": -1.43,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Value": {
+    "x": 0.0,
+    "y": 1.43,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Text:${REFERENCE}": {
+    "x": 0.0,
+    "y": 0.0,
+    "winkel": 0.0,
+    "groesse": [
+     0.4,
+     0.4
+    ],
+    "dicke": 0.06,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   }
+  },
+  "C34": {
+   "Reference": {
+    "x": 0.0,
+    "y": -1.43,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Value": {
+    "x": 0.0,
+    "y": 1.43,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Text:${REFERENCE}": {
+    "x": 0.0,
+    "y": 0.0,
+    "winkel": 0.0,
+    "groesse": [
+     0.4,
+     0.4
+    ],
+    "dicke": 0.06,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   }
+  },
+  "R13": {
+   "Reference": {
+    "x": 0.0,
+    "y": -1.43,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Value": {
+    "x": 0.0,
+    "y": 1.43,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Text:${REFERENCE}": {
+    "x": 0.0,
+    "y": 0.0,
+    "winkel": 0.0,
+    "groesse": [
+     0.4,
+     0.4
+    ],
+    "dicke": 0.06,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   }
+  },
+  "R5": {
+   "Reference": {
+    "x": 0.0,
+    "y": -1.43,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Value": {
+    "x": 0.0,
+    "y": 1.43,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Text:${REFERENCE}": {
+    "x": 0.0,
+    "y": 0.0,
+    "winkel": 0.0,
+    "groesse": [
+     0.4,
+     0.4
+    ],
+    "dicke": 0.06,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   }
+  },
+  "D10": {
+   "Reference": {
+    "x": 0.0,
+    "y": -1.43,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Value": {
+    "x": 0.0,
+    "y": 1.43,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Text:${REFERENCE}": {
+    "x": 0.0,
+    "y": 0.0,
+    "winkel": 0.0,
+    "groesse": [
+     0.4,
+     0.4
+    ],
+    "dicke": 0.06,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   }
+  },
+  "U11": {
+   "Reference": {
+    "x": 0.0,
+    "y": -2.4,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Value": {
+    "x": 0.0,
+    "y": 2.4,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Text:${REFERENCE}": {
+    "x": 0.0,
+    "y": 0.0,
+    "winkel": 0.0,
+    "groesse": [
+     0.72,
+     0.72
+    ],
+    "dicke": 0.11,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   }
+  },
+  "C45": {
+   "Reference": {
+    "x": 0.0,
+    "y": -1.43,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Value": {
+    "x": 0.0,
+    "y": 1.43,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Text:${REFERENCE}": {
+    "x": 0.0,
+    "y": 0.0,
+    "winkel": 0.0,
+    "groesse": [
+     0.4,
+     0.4
+    ],
+    "dicke": 0.06,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   }
+  },
+  "D3": {
+   "Reference": {
+    "x": 0.0,
+    "y": -1.43,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Value": {
+    "x": 0.0,
+    "y": 1.43,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Text:${REFERENCE}": {
+    "x": 0.0,
+    "y": 0.0,
+    "winkel": 0.0,
+    "groesse": [
+     0.4,
+     0.4
+    ],
+    "dicke": 0.06,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   }
+  },
+  "R8": {
+   "Reference": {
+    "x": 0.0,
+    "y": -1.43,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Value": {
+    "x": 0.0,
+    "y": 1.43,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Text:${REFERENCE}": {
+    "x": 0.0,
+    "y": 0.0,
+    "winkel": 0.0,
+    "groesse": [
+     0.4,
+     0.4
+    ],
+    "dicke": 0.06,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   }
+  },
+  "T1": {
+   "Reference": {
+    "x": 0.0,
+    "y": -6.0,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Value": {
+    "x": 0.0,
+    "y": 6.0,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   }
+  },
+  "C38": {
+   "Reference": {
+    "x": 0.0,
+    "y": -1.43,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Value": {
+    "x": 0.0,
+    "y": 1.43,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Text:${REFERENCE}": {
+    "x": 0.0,
+    "y": 0.0,
+    "winkel": 0.0,
+    "groesse": [
+     0.4,
+     0.4
+    ],
+    "dicke": 0.06,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   }
+  },
+  "SW1": {
+   "Reference": {
+    "x": 0.0,
+    "y": -3.75,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Value": {
+    "x": 0.0,
+    "y": 3.75,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Text:${REFERENCE}": {
+    "x": 0.0,
+    "y": -3.75,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   }
+  },
+  "C21": {
+   "Reference": {
+    "x": 0.0,
+    "y": -1.68,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Value": {
+    "x": 0.0,
+    "y": 1.68,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Text:${REFERENCE}": {
+    "x": 0.0,
+    "y": 0.0,
+    "winkel": 0.0,
+    "groesse": [
+     0.5,
+     0.5
+    ],
+    "dicke": 0.08,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   }
+  },
+  "C37": {
+   "Reference": {
+    "x": 0.0,
+    "y": -1.43,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Value": {
+    "x": 0.0,
+    "y": 1.43,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Text:${REFERENCE}": {
+    "x": 0.0,
+    "y": 0.0,
+    "winkel": 0.0,
+    "groesse": [
+     0.4,
+     0.4
+    ],
+    "dicke": 0.06,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   }
+  },
+  "J15": {
+   "Reference": {
+    "x": 1.0,
+    "y": -2.9,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Value": {
+    "x": 1.0,
+    "y": 4.0,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Text:${REFERENCE}": {
+    "x": 1.0,
+    "y": 1.5,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   }
+  },
+  "JP10": {
+   "Reference": {
+    "x": 0.0,
+    "y": -2.38,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Value": {
+    "x": 0.0,
+    "y": 4.92,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Text:${REFERENCE}": {
+    "x": 0.0,
+    "y": 1.27,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   }
+  },
+  "C20": {
+   "Reference": {
+    "x": 0.0,
+    "y": -1.43,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Value": {
+    "x": 0.0,
+    "y": 1.43,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Text:${REFERENCE}": {
+    "x": 0.0,
+    "y": 0.0,
+    "winkel": 0.0,
+    "groesse": [
+     0.4,
+     0.4
+    ],
+    "dicke": 0.06,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   }
+  },
+  "SW3": {
+   "Reference": {
+    "x": 0.0,
+    "y": -3.75,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Value": {
+    "x": 0.0,
+    "y": 3.75,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Text:${REFERENCE}": {
+    "x": 0.0,
+    "y": -3.75,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   }
+  },
+  "U6": {
+   "Reference": {
+    "x": 0.0,
+    "y": -2.5,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Value": {
+    "x": 0.0,
+    "y": 2.5,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Text:${REFERENCE}": {
+    "x": 0.0,
+    "y": 0.0,
+    "winkel": 0.0,
+    "groesse": [
+     0.5,
+     0.5
+    ],
+    "dicke": 0.075,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   }
+  },
+  "R17": {
+   "Reference": {
+    "x": 0.0,
+    "y": -1.43,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Value": {
+    "x": 0.0,
+    "y": 1.43,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Text:${REFERENCE}": {
+    "x": 0.0,
+    "y": 0.0,
+    "winkel": 0.0,
+    "groesse": [
+     0.4,
+     0.4
+    ],
+    "dicke": 0.06,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   }
+  },
+  "J12": {
+   "Reference": {
+    "x": 0.0,
+    "y": -3.09,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Value": {
+    "x": 0.0,
+    "y": 3.09,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Text:${REFERENCE}": {
+    "x": 0.0,
+    "y": 0.0,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   }
+  },
+  "C12": {
+   "Reference": {
+    "x": 0.0,
+    "y": -1.43,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Value": {
+    "x": 0.0,
+    "y": 1.43,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Text:${REFERENCE}": {
+    "x": 0.0,
+    "y": 0.0,
+    "winkel": 0.0,
+    "groesse": [
+     0.4,
+     0.4
+    ],
+    "dicke": 0.06,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   }
+  },
+  "U5": {
+   "Reference": {
+    "x": 0.0,
+    "y": -5.9,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Value": {
+    "x": 0.0,
+    "y": 5.9,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Text:${REFERENCE}": {
+    "x": 0.0,
+    "y": 0.0,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   }
+  },
+  "F1": {
+   "Reference": {
+    "x": 0.0,
+    "y": -2.65,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Value": {
+    "x": 0.0,
+    "y": 2.65,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Text:${REFERENCE}": {
+    "x": 0.0,
+    "y": 0.0,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   }
+  },
+  "R14": {
+   "Reference": {
+    "x": 0.0,
+    "y": -1.43,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Value": {
+    "x": 0.0,
+    "y": 1.43,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Text:${REFERENCE}": {
+    "x": 0.0,
+    "y": 0.0,
+    "winkel": 0.0,
+    "groesse": [
+     0.4,
+     0.4
+    ],
+    "dicke": 0.06,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   }
+  },
+  "J11": {
+   "Reference": {
+    "x": 0.0,
+    "y": -3.09,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Value": {
+    "x": 0.0,
+    "y": 3.09,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Text:${REFERENCE}": {
+    "x": 0.0,
+    "y": 0.0,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   }
+  },
+  "C41": {
+   "Reference": {
+    "x": 0.0,
+    "y": -1.43,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Value": {
+    "x": 0.0,
+    "y": 1.43,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Text:${REFERENCE}": {
+    "x": 0.0,
+    "y": 0.0,
+    "winkel": 0.0,
+    "groesse": [
+     0.4,
+     0.4
+    ],
+    "dicke": 0.06,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   }
+  },
+  "R16": {
+   "Reference": {
+    "x": 0.0,
+    "y": -1.43,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Value": {
+    "x": 0.0,
+    "y": 1.43,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Text:${REFERENCE}": {
+    "x": 0.0,
+    "y": 0.0,
+    "winkel": 0.0,
+    "groesse": [
+     0.4,
+     0.4
+    ],
+    "dicke": 0.06,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   }
+  },
+  "R9": {
+   "Reference": {
+    "x": 0.0,
+    "y": -1.43,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Value": {
+    "x": 0.0,
+    "y": 1.43,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Text:${REFERENCE}": {
+    "x": 0.0,
+    "y": 0.0,
+    "winkel": 0.0,
+    "groesse": [
+     0.4,
+     0.4
+    ],
+    "dicke": 0.06,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   }
+  },
+  "H1": {
+   "Reference": {
+    "x": 0.0,
+    "y": -3.65,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Value": {
+    "x": 0.0,
+    "y": 3.65,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Text:${REFERENCE}": {
+    "x": 0.0,
+    "y": 0.0,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   }
+  },
+  "C46": {
+   "Reference": {
+    "x": 0.0,
+    "y": -1.68,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Value": {
+    "x": 0.0,
+    "y": 1.68,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Text:${REFERENCE}": {
+    "x": 0.0,
+    "y": 0.0,
+    "winkel": 0.0,
+    "groesse": [
+     0.5,
+     0.5
+    ],
+    "dicke": 0.08,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   }
+  },
+  "C36": {
+   "Reference": {
+    "x": 0.0,
+    "y": -1.43,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Value": {
+    "x": 0.0,
+    "y": 1.43,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Text:${REFERENCE}": {
+    "x": 0.0,
+    "y": 0.0,
+    "winkel": 0.0,
+    "groesse": [
+     0.4,
+     0.4
+    ],
+    "dicke": 0.06,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   }
+  },
+  "H3": {
+   "Reference": {
+    "x": 0.0,
+    "y": -3.65,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Value": {
+    "x": 0.0,
+    "y": 3.65,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Text:${REFERENCE}": {
+    "x": 0.0,
+    "y": 0.0,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   }
+  },
+  "C33": {
+   "Reference": {
+    "x": 0.0,
+    "y": -1.68,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Value": {
+    "x": 0.0,
+    "y": 1.68,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Text:${REFERENCE}": {
+    "x": 0.0,
+    "y": 0.0,
+    "winkel": 0.0,
+    "groesse": [
+     0.5,
+     0.5
+    ],
+    "dicke": 0.08,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   }
+  },
+  "C18": {
+   "Reference": {
+    "x": 0.0,
+    "y": -1.68,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Value": {
+    "x": 0.0,
+    "y": 1.68,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Text:${REFERENCE}": {
+    "x": 0.0,
+    "y": 0.0,
+    "winkel": 0.0,
+    "groesse": [
+     0.5,
+     0.5
+    ],
+    "dicke": 0.08,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   }
+  },
+  "H2": {
+   "Reference": {
+    "x": 0.0,
+    "y": -3.65,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Value": {
+    "x": 0.0,
+    "y": 3.65,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Text:${REFERENCE}": {
+    "x": 0.0,
+    "y": 0.0,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   }
+  },
+  "Q10": {
+   "Reference": {
+    "x": 0.0,
+    "y": -2.4,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Value": {
+    "x": 0.0,
+    "y": 2.4,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Text:${REFERENCE}": {
+    "x": 0.0,
+    "y": 0.0,
+    "winkel": 0.0,
+    "groesse": [
+     0.72,
+     0.72
+    ],
+    "dicke": 0.11,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   }
+  },
+  "D12": {
+   "Reference": {
+    "x": 0.0,
+    "y": -2.5,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Value": {
+    "x": 0.0,
+    "y": 2.6,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Text:${REFERENCE}": {
+    "x": 0.0,
+    "y": -2.5,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   }
+  },
+  "U10": {
+   "Reference": {
+    "x": 0.0,
+    "y": -2.4,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Value": {
+    "x": 0.0,
+    "y": 2.4,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Text:${REFERENCE}": {
+    "x": 0.0,
+    "y": 0.0,
+    "winkel": 0.0,
+    "groesse": [
+     0.72,
+     0.72
+    ],
+    "dicke": 0.11,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   }
+  },
+  "C32": {
+   "Reference": {
+    "x": 0.0,
+    "y": -1.43,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Value": {
+    "x": 0.0,
+    "y": 1.43,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Text:${REFERENCE}": {
+    "x": 0.0,
+    "y": 0.0,
+    "winkel": 0.0,
+    "groesse": [
+     0.4,
+     0.4
+    ],
+    "dicke": 0.06,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   }
+  },
+  "M1": {
+   "Reference": {
+    "x": 27.5,
+    "y": 18.5,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Value": {
+    "x": 27.5,
+    "y": 21.5,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   }
+  },
+  "C44": {
+   "Reference": {
+    "x": 0.0,
+    "y": -1.43,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Value": {
+    "x": 0.0,
+    "y": 1.43,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Text:${REFERENCE}": {
+    "x": 0.0,
+    "y": 0.0,
+    "winkel": 0.0,
+    "groesse": [
+     0.4,
+     0.4
+    ],
+    "dicke": 0.06,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   }
+  },
+  "C24": {
+   "Reference": {
+    "x": 0.0,
+    "y": -1.68,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Value": {
+    "x": 0.0,
+    "y": 1.68,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Text:${REFERENCE}": {
+    "x": 0.0,
+    "y": 0.0,
+    "winkel": 0.0,
+    "groesse": [
+     0.5,
+     0.5
+    ],
+    "dicke": 0.08,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   }
+  },
+  "C22": {
+   "Reference": {
+    "x": 0.0,
+    "y": -1.43,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Value": {
+    "x": 0.0,
+    "y": 1.43,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Text:${REFERENCE}": {
+    "x": 0.0,
+    "y": 0.0,
+    "winkel": 0.0,
+    "groesse": [
+     0.4,
+     0.4
+    ],
+    "dicke": 0.06,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   }
+  },
+  "J14": {
+   "Reference": {
+    "x": 4.445,
+    "y": -4.9,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Value": {
+    "x": 4.445,
+    "y": 18.5,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Text:${REFERENCE}": {
+    "x": 4.445,
+    "y": 6.615,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   }
+  },
+  "R20": {
+   "Reference": {
+    "x": 0.0,
+    "y": -1.43,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Value": {
+    "x": 0.0,
+    "y": 1.43,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Text:${REFERENCE}": {
+    "x": 0.0,
+    "y": 0.0,
+    "winkel": 0.0,
+    "groesse": [
+     0.4,
+     0.4
+    ],
+    "dicke": 0.06,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   }
+  },
+  "C26": {
+   "Reference": {
+    "x": 0.0,
+    "y": -1.43,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Value": {
+    "x": 0.0,
+    "y": 1.43,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Text:${REFERENCE}": {
+    "x": 0.0,
+    "y": 0.0,
+    "winkel": 0.0,
+    "groesse": [
+     0.4,
+     0.4
+    ],
+    "dicke": 0.06,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   }
+  },
+  "U2": {
+   "Reference": {
+    "x": 0.0,
+    "y": -3.83,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Value": {
+    "x": 0.0,
+    "y": 3.83,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Text:${REFERENCE}": {
+    "x": 0.0,
+    "y": 0.0,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   }
+  },
+  "C23": {
+   "Reference": {
+    "x": 0.0,
+    "y": -1.68,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Value": {
+    "x": 0.0,
+    "y": 1.68,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Text:${REFERENCE}": {
+    "x": 0.0,
+    "y": 0.0,
+    "winkel": 0.0,
+    "groesse": [
+     0.5,
+     0.5
+    ],
+    "dicke": 0.08,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   }
+  },
+  "C19": {
+   "Reference": {
+    "x": 0.0,
+    "y": -1.43,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Value": {
+    "x": 0.0,
+    "y": 1.43,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Text:${REFERENCE}": {
+    "x": 0.0,
+    "y": 0.0,
+    "winkel": 0.0,
+    "groesse": [
+     0.4,
+     0.4
+    ],
+    "dicke": 0.06,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   }
+  },
+  "C43": {
+   "Reference": {
+    "x": 0.0,
+    "y": -1.68,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Value": {
+    "x": 0.0,
+    "y": 1.68,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Text:${REFERENCE}": {
+    "x": 0.0,
+    "y": 0.0,
+    "winkel": 0.0,
+    "groesse": [
+     0.5,
+     0.5
+    ],
+    "dicke": 0.08,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   }
+  },
+  "U12": {
+   "Reference": {
+    "x": 0.018,
+    "y": -2.5,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Value": {
+    "x": 0.018,
+    "y": 2.5,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Text:${REFERENCE}": {
+    "x": 0.0,
+    "y": 0.0,
+    "winkel": 0.0,
+    "groesse": [
+     0.55,
+     0.55
+    ],
+    "dicke": 0.1,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   }
+  },
+  "H4": {
+   "Reference": {
+    "x": 0.0,
+    "y": -3.65,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Value": {
+    "x": 0.0,
+    "y": 3.65,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Text:${REFERENCE}": {
+    "x": 0.0,
+    "y": 0.0,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   }
+  },
+  "C27": {
+   "Reference": {
+    "x": 0.0,
+    "y": -1.43,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Value": {
+    "x": 0.0,
+    "y": 1.43,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Text:${REFERENCE}": {
+    "x": 0.0,
+    "y": 0.0,
+    "winkel": 0.0,
+    "groesse": [
+     0.4,
+     0.4
+    ],
+    "dicke": 0.06,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   }
+  },
+  "H7": {
+   "Reference": {
+    "x": 0.0,
+    "y": -3.65,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Value": {
+    "x": 0.0,
+    "y": 3.65,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Text:${REFERENCE}": {
+    "x": 0.0,
+    "y": 0.0,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   }
+  },
+  "C25": {
+   "Reference": {
+    "x": 0.0,
+    "y": -1.68,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Value": {
+    "x": 0.0,
+    "y": 1.68,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Text:${REFERENCE}": {
+    "x": 0.0,
+    "y": 0.0,
+    "winkel": 0.0,
+    "groesse": [
+     0.5,
+     0.5
+    ],
+    "dicke": 0.08,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   }
+  },
+  "H8": {
+   "Reference": {
+    "x": 0.0,
+    "y": -3.65,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Value": {
+    "x": 0.0,
+    "y": 3.65,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Text:${REFERENCE}": {
+    "x": 0.0,
+    "y": 0.0,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   }
+  },
+  "R15": {
+   "Reference": {
+    "x": 0.0,
+    "y": -1.43,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Value": {
+    "x": 0.0,
+    "y": 1.43,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Text:${REFERENCE}": {
+    "x": 0.0,
+    "y": 0.0,
+    "winkel": 0.0,
+    "groesse": [
+     0.4,
+     0.4
+    ],
+    "dicke": 0.06,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   }
+  },
+  "C17": {
+   "Reference": {
+    "x": 0.0,
+    "y": -1.68,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Value": {
+    "x": 0.0,
+    "y": 1.68,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Text:${REFERENCE}": {
+    "x": 0.0,
+    "y": 0.0,
+    "winkel": 0.0,
+    "groesse": [
+     0.5,
+     0.5
+    ],
+    "dicke": 0.08,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   }
+  },
+  "C40": {
+   "Reference": {
+    "x": 0.0,
+    "y": -1.85,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Value": {
+    "x": 0.0,
+    "y": 1.85,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Text:${REFERENCE}": {
+    "x": 0.0,
+    "y": 0.0,
+    "winkel": 0.0,
+    "groesse": [
+     0.8,
+     0.8
+    ],
+    "dicke": 0.12,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   }
+  },
+  "C31": {
+   "Reference": {
+    "x": 0.0,
+    "y": -1.68,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Value": {
+    "x": 0.0,
+    "y": 1.68,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Text:${REFERENCE}": {
+    "x": 0.0,
+    "y": 0.0,
+    "winkel": 0.0,
+    "groesse": [
+     0.5,
+     0.5
+    ],
+    "dicke": 0.08,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   }
+  },
+  "D1": {
+   "Reference": {
+    "x": 0.0,
+    "y": -1.43,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Value": {
+    "x": 0.0,
+    "y": 1.43,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Text:${REFERENCE}": {
+    "x": 0.0,
+    "y": 0.0,
+    "winkel": 0.0,
+    "groesse": [
+     0.4,
+     0.4
+    ],
+    "dicke": 0.06,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   }
+  },
+  "T2": {
+   "Reference": {
+    "x": 0.0,
+    "y": -6.0,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Value": {
+    "x": 0.0,
+    "y": 6.0,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   }
+  },
+  "C30": {
+   "Reference": {
+    "x": 0.0,
+    "y": -1.43,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Value": {
+    "x": 0.0,
+    "y": 1.43,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Text:${REFERENCE}": {
+    "x": 0.0,
+    "y": 0.0,
+    "winkel": 0.0,
+    "groesse": [
+     0.4,
+     0.4
+    ],
+    "dicke": 0.06,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   }
+  },
+  "R7": {
+   "Reference": {
+    "x": 0.0,
+    "y": -1.43,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Value": {
+    "x": 0.0,
+    "y": 1.43,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Text:${REFERENCE}": {
+    "x": 0.0,
+    "y": 0.0,
+    "winkel": 0.0,
+    "groesse": [
+     0.4,
+     0.4
+    ],
+    "dicke": 0.06,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   }
+  },
+  "D11": {
+   "Reference": {
+    "x": 0.0,
+    "y": -1.43,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Value": {
+    "x": 0.0,
+    "y": 1.43,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Text:${REFERENCE}": {
+    "x": 0.0,
+    "y": 0.0,
+    "winkel": 0.0,
+    "groesse": [
+     0.4,
+     0.4
+    ],
+    "dicke": 0.06,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   }
+  },
+  "U3": {
+   "Reference": {
+    "x": 0.0,
+    "y": -4.55,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Value": {
+    "x": 0.0,
+    "y": 4.55,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Text:${REFERENCE}": {
+    "x": 0.0,
+    "y": 0.0,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   }
+  },
+  "J2": {
+   "Reference": {
+    "x": -2.55,
+    "y": -3.4,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Value": {
+    "x": -2.55,
+    "y": 12.2,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   }
+  },
+  "J3": {
+   "Reference": {
+    "x": -1.51,
+    "y": -5.4,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Value": {
+    "x": -1.51,
+    "y": 10.3,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   }
+  },
+  "C15": {
+   "Reference": {
+    "x": 0.0,
+    "y": -1.43,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Value": {
+    "x": 0.0,
+    "y": 1.43,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Text:${REFERENCE}": {
+    "x": 0.0,
+    "y": 0.0,
+    "winkel": 0.0,
+    "groesse": [
+     0.4,
+     0.4
+    ],
+    "dicke": 0.06,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   }
+  },
+  "H5": {
+   "Reference": {
+    "x": 0.0,
+    "y": -3.65,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Value": {
+    "x": 0.0,
+    "y": 3.65,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Text:${REFERENCE}": {
+    "x": 0.0,
+    "y": 0.0,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   }
+  },
+  "R12": {
+   "Reference": {
+    "x": 0.0,
+    "y": -1.43,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Value": {
+    "x": 0.0,
+    "y": 1.43,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Text:${REFERENCE}": {
+    "x": 0.0,
+    "y": 0.0,
+    "winkel": 0.0,
+    "groesse": [
+     0.4,
+     0.4
+    ],
+    "dicke": 0.06,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   }
+  },
+  "Q11": {
+   "Reference": {
+    "x": 0.0,
+    "y": -2.4,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Value": {
+    "x": 0.0,
+    "y": 2.4,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Text:${REFERENCE}": {
+    "x": 0.0,
+    "y": 0.0,
+    "winkel": 0.0,
+    "groesse": [
+     0.72,
+     0.72
+    ],
+    "dicke": 0.11,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   }
+  },
+  "D2": {
+   "Reference": {
+    "x": 0.0,
+    "y": -1.43,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Value": {
+    "x": 0.0,
+    "y": 1.43,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Text:${REFERENCE}": {
+    "x": 0.0,
+    "y": 0.0,
+    "winkel": 0.0,
+    "groesse": [
+     0.4,
+     0.4
+    ],
+    "dicke": 0.06,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   }
+  },
+  "U4": {
+   "Reference": {
+    "x": 0.0,
+    "y": -2.4,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Value": {
+    "x": 0.0,
+    "y": 2.4,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Text:${REFERENCE}": {
+    "x": 0.0,
+    "y": 0.0,
+    "winkel": 0.0,
+    "groesse": [
+     0.72,
+     0.72
+    ],
+    "dicke": 0.11,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   }
+  },
+  "R6": {
+   "Reference": {
+    "x": 0.0,
+    "y": -1.43,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Value": {
+    "x": 0.0,
+    "y": 1.43,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Text:${REFERENCE}": {
+    "x": 0.0,
+    "y": 0.0,
+    "winkel": 0.0,
+    "groesse": [
+     0.4,
+     0.4
+    ],
+    "dicke": 0.06,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   }
+  },
+  "SW2": {
+   "Reference": {
+    "x": 0.0,
+    "y": -3.75,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Value": {
+    "x": 0.0,
+    "y": 3.75,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Text:${REFERENCE}": {
+    "x": 0.0,
+    "y": -3.75,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   }
+  },
+  "C14": {
+   "Reference": {
+    "x": 0.0,
+    "y": -1.43,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Value": {
+    "x": 0.0,
+    "y": 1.43,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Text:${REFERENCE}": {
+    "x": 0.0,
+    "y": 0.0,
+    "winkel": 0.0,
+    "groesse": [
+     0.4,
+     0.4
+    ],
+    "dicke": 0.06,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   }
+  },
+  "R11": {
+   "Reference": {
+    "x": 0.0,
+    "y": -1.43,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Value": {
+    "x": 0.0,
+    "y": 1.43,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Text:${REFERENCE}": {
+    "x": 0.0,
+    "y": 0.0,
+    "winkel": 0.0,
+    "groesse": [
+     0.4,
+     0.4
+    ],
+    "dicke": 0.06,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   }
+  },
+  "C16": {
+   "Reference": {
+    "x": 0.0,
+    "y": -1.68,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Value": {
+    "x": 0.0,
+    "y": 1.68,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Text:${REFERENCE}": {
+    "x": 0.0,
+    "y": 0.0,
+    "winkel": 0.0,
+    "groesse": [
+     0.5,
+     0.5
+    ],
+    "dicke": 0.08,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   }
+  },
+  "D13": {
+   "Reference": {
+    "x": -0.127,
+    "y": -1.905,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Value": {
+    "x": 0.0,
+    "y": 2.1,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Text:${REFERENCE}": {
+    "x": -0.127,
+    "y": -1.905,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   }
+  },
+  "J13": {
+   "Reference": {
+    "x": -0.075,
+    "y": -9.525,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Value": {
+    "x": -0.075,
+    "y": 9.575,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Text:KEEPOUT": {
+    "x": -6.85,
+    "y": -3.25,
+    "winkel": 0.0,
+    "groesse": [
+     0.6,
+     0.6
+    ],
+    "dicke": 0.09,
+    "lage": "User.Comments",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Text:KEEPOUT#2": {
+    "x": -5.775,
+    "y": 2.375,
+    "winkel": 0.0,
+    "groesse": [
+     0.6,
+     0.6
+    ],
+    "dicke": 0.09,
+    "lage": "User.Comments",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Text:KEEPOUT#3": {
+    "x": -1.075,
+    "y": -1.925,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.1,
+    "lage": "User.Comments",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Text:KEEPOUT#4": {
+    "x": 4.2,
+    "y": 7.65,
+    "winkel": 0.0,
+    "groesse": [
+     0.4,
+     0.4
+    ],
+    "dicke": 0.06,
+    "lage": "User.Comments",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Text:${REFERENCE}": {
+    "x": -0.075,
+    "y": 0.375,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.1,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   }
+  },
+  "C39": {
+   "Reference": {
+    "x": 0.0,
+    "y": -1.43,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Value": {
+    "x": 0.0,
+    "y": 1.43,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Text:${REFERENCE}": {
+    "x": 0.0,
+    "y": 0.0,
+    "winkel": 0.0,
+    "groesse": [
+     0.4,
+     0.4
+    ],
+    "dicke": 0.06,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   }
+  },
+  "R10": {
+   "Reference": {
+    "x": 0.0,
+    "y": -1.43,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Value": {
+    "x": 0.0,
+    "y": 1.43,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Text:${REFERENCE}": {
+    "x": 0.0,
+    "y": 0.0,
+    "winkel": 0.0,
+    "groesse": [
+     0.4,
+     0.4
+    ],
+    "dicke": 0.06,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   }
+  },
+  "R4": {
+   "Reference": {
+    "x": 0.0,
+    "y": -1.43,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Value": {
+    "x": 0.0,
+    "y": 1.43,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Text:${REFERENCE}": {
+    "x": 0.0,
+    "y": 0.0,
+    "winkel": 0.0,
+    "groesse": [
+     0.4,
+     0.4
+    ],
+    "dicke": 0.06,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   }
+  },
+  "C42": {
+   "Reference": {
+    "x": 0.0,
+    "y": -1.85,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Value": {
+    "x": 0.0,
+    "y": 1.85,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Text:${REFERENCE}": {
+    "x": 0.0,
+    "y": 0.0,
+    "winkel": 0.0,
+    "groesse": [
+     0.8,
+     0.8
+    ],
+    "dicke": 0.12,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   }
+  },
+  "J10": {
+   "Reference": {
+    "x": 0.0,
+    "y": -5.5,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Value": {
+    "x": 0.0,
+    "y": 5.0,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Text:PCB Edge": {
+    "x": 0.0,
+    "y": 3.1,
+    "winkel": 0.0,
+    "groesse": [
+     0.5,
+     0.5
+    ],
+    "dicke": 0.1,
+    "lage": "User.Drawings",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Text:${REFERENCE}": {
+    "x": 0.0,
+    "y": 0.0,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   }
+  },
+  "H6": {
+   "Reference": {
+    "x": 0.0,
+    "y": -3.65,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Value": {
+    "x": 0.0,
+    "y": 3.65,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   },
+   "Text:${REFERENCE}": {
+    "x": 0.0,
+    "y": 0.0,
+    "winkel": 0.0,
+    "groesse": [
+     1.0,
+     1.0
+    ],
+    "dicke": 0.15,
+    "lage": "F.Fab",
+    "sichtbar": true,
+    "ausrichtung": [
+     "mitte",
+     "mitte"
+    ],
+    "gespiegelt": false,
+    "fett": false,
+    "kursiv": false,
+    "aufrecht": true,
+    "ausgespart": false
+   }
+  }
+ }
+}
