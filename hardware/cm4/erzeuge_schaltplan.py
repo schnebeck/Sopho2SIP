@@ -303,8 +303,9 @@ def blatt_codec(p: Blatt) -> None:
     w(P("C20", "1"), (X + 15.24, yo))
     p.ab("C19", "2", "GND"); p.ab("C20", "2", "GND"); p.ab("U4", "2", "GND")
     p.nc_alle("U4")
-    p.text(X - 62, Y + 62, "I²C 0x18 an I2C0 (GPIO0/1) · MCLK 12 MHz · Reset GPIO26 · Treiber tlv320aic32x4 (Overlay nach audiosense-pi)")
-    p.text(X - 62, Y + 66, "LDO_SELECT = 1: DVDD aus internem LDO; AVDD-LDO schaltet der Treiber (ldoin-supply)")
+    p.notiz(X - 62, Y + 62, 118,
+            "I²C 0x18 an I2C0 (GPIO0/1) · MCLK 12 MHz · Reset GPIO26 · Treiber tlv320aic32x4 (Overlay nach audiosense-pi)",
+            "LDO_SELECT = 1: DVDD aus internem LDO; AVDD-LDO schaltet der Treiber (ldoin-supply)")
     p.text(X - 62, Y + 41, "Analogversorgung 3,3 V", 1.524)
 
 
@@ -339,9 +340,8 @@ def bedienung_zusatz(p: Blatt) -> None:
     p.lbl("TASTE_EIN_AUS", (160.02, y3), "l"); w((160.02, y3), P("SW3", "1"))
     x, y = P("SW3", "2"); w((x, y), (203.2, y), (203.2, y + 2.54)); p.pw("GND", (203.2, y + 2.54))
     p.setze("R9", 170.18, y3 - 3.81); p.auf("R9", "1", "+3V3")
-    p.text(211, 252, "Ein/Aus (GPIO3): Druck im Betrieb = sauber herunterfahren")
-    p.text(211, 256, "(dtoverlay=gpio-shutdown), Druck im Halt = starten")
-    p.text(211, 260, "(Bootloader WAKE_ON_GPIO=1). R9 nur bestücken, falls nötig")
+    p.notiz(211, 252, 62, "Ein/Aus (GPIO3): Druck im Betrieb = sauber herunterfahren (dtoverlay=gpio-shutdown), "
+            "Druck im Halt = starten (Bootloader WAKE_ON_GPIO=1).", "R9 nur bestücken, falls nötig.")
 
 
 # ------------------------------------------------------------------------------------------------------------------
@@ -377,8 +377,9 @@ def blatt_luefter(p: Blatt) -> None:
     w(P("R17", "2"), P("Q11", "1"))
     xr, yr1 = P("R17", "1"); w((xr, yr1), (X - 27.94, yr1)); p.lbl("LUEFTER", (X - 27.94, yr1), "l")
     p.setze("R18", X - 8.89, Y + 13.97, ref_at=(-3.0, 2.0, "right"), wert_at=(-3.0, 4.5, "right")); w(P("R18", "1"), (X - 8.89, Y + 10.16)); p.ab("R18", "2", "GND")
-    p.text(X - 30, Y + 30, "Steuerung über die SoC-Temperatur: dtoverlay=gpio-fan,gpiopin=12,temp=60000 (Hysterese im Treiber)")
-    p.text(X - 30, Y + 34, "GPIO12 kann auch PWM (PWM0) für Drehzahlregelung · J15 JST PH 2,0 mm: 1 = +5 V, 2 = Lüfter −")
+    p.notiz(X - 30, Y + 30, 104,
+            "Steuerung über die SoC-Temperatur: dtoverlay=gpio-fan,gpiopin=12,temp=60000 (Hysterese im Treiber). "
+            "GPIO12 kann auch PWM (PWM0) für Drehzahlregelung.", "J15 JST PH 2,0 mm: 1 = +5 V, 2 = Lüfter −")
 
 
 # Serielle Buchse: 4P4C statt DE9 (kleiner, verriegelnd; Adapterkabel auf DE9 zur D340)
@@ -459,11 +460,12 @@ def blatt_cm4(p: Blatt) -> None:
     p.text(292, 236, "H5–H8: Bohrungen des CM4 (Abstandsbolzen M2,5, Raster 48 × 33 mm)")
     p.setze("M1", 320.04, 254.0, ref_at=(-15.24, -5.6, "left"), wert_at=(-15.24, 5.6, "left"))
     p.text(292, 263, "M1: das CM4 selbst (Platzhalter für Stückliste und 3D-Ansicht, gesteckt, nicht bestückt)")
-    p.text(35.56, 45.72, "Pinbelegung nach CM4-Datenblatt (Pins 1–200) · GPIO_VREF = 3,3 V · Ethernet 10/100 über Paar 0/1")
-    p.text(35.56, 49.53, "WLAN/Bluetooth auf dem Modul (CM4 mit Funk): WL_nDisable/BT_nDisable offen = an; "
-           "Antenne intern oder U.FL am Modul (dtparam=ant2)")
-    p.text(35.56, 53.34, "eMMC: CM4 mit eMMC bootet davon; Flashen mit JP10 gesteckt über USB-C (rpiboot). "
-           "CM4 Lite: Start von der µSD-Karte (Blatt µSD)")
+    p.notiz(35.56, 45.72, 128,
+            "Pinbelegung nach CM4-Datenblatt (Pins 1–200) · GPIO_VREF = 3,3 V · Ethernet 10/100 über Paar 0/1",
+            "WLAN/Bluetooth auf dem Modul (CM4 mit Funk): WL_nDisable/BT_nDisable offen = an; "
+            "Antenne intern oder U.FL am Modul (dtparam=ant2)",
+            "eMMC: CM4 mit eMMC bootet davon; Flashen mit JP10 gesteckt über USB-C (rpiboot). "
+            "CM4 Lite: Start von der µSD-Karte (Blatt µSD)")
 
 
 def blatt_versorgung(p: Blatt) -> None:
@@ -504,8 +506,9 @@ def blatt_versorgung(p: Blatt) -> None:
     w((xg, yg + 1.27), (xg + 5.08, yg + 1.27)); p.flag((xg + 5.08, yg + 1.27))
     p.ab("J10", "SH", "GND")
     p.offen(("J10", "A8"), ("J10", "B8"))
-    p.text(45.72, 142.24, "5 V über USB-C (Rd 5,1 kΩ: Senke); dieselbe Buchse dient mit gestecktem nRPIBOOT zum Flashen des eMMC")
-    p.text(45.72, 146.05, "Strombedarf CM4 bis ~1,4 A + Peripherie: Netzteil mit 5 V/3 A verwenden")
+    p.notiz(45.72, 142.24, 112,
+            "5 V über USB-C (Rd 5,1 kΩ: Senke); dieselbe Buchse dient mit gestecktem nRPIBOOT zum Flashen des eMMC.",
+            "Strombedarf CM4 bis ~1,4 A + Peripherie: Netzteil mit 5 V/3 A verwenden.")
 
 
 def blatt_sd(p: Blatt) -> None:
@@ -534,8 +537,9 @@ def blatt_sd(p: Blatt) -> None:
     w(P("R14", "2"), (50.8, ye))
     p.ab("U11", "2", "GND")
     p.offen(("U11", "3"))
-    p.text(25.4, 137.16, "Nur beim CM4 Lite belegt; beim CM4 mit eMMC sind die SD-Pins offen, der Sockel stört nicht")
-    p.text(25.4, 140.97, "R14 hält den Lastschalter ohne Ansteuerung an (Start von der Karte möglich), wie im CM4-Datenblatt")
+    p.notiz(25.4, 137.16, 104,
+            "Nur beim CM4 Lite belegt; beim CM4 mit eMMC sind die SD-Pins offen, der Sockel stört nicht. "
+            "R14 hält den Lastschalter ohne Ansteuerung an (Start von der Karte möglich), wie im CM4-Datenblatt.")
 
 
 def blatt_ethernet(p: Blatt) -> None:
@@ -567,8 +571,9 @@ def blatt_ethernet(p: Blatt) -> None:
         p.setze(r, xk + 15.24, yk, rot=90)
         w((xk, yk), P(r, "1"))
         xr, yr = P(r, "2"); w((xr, yr), (xr + 7.62, yr)); p.lbl(netz, (xr + 7.62, yr), "r")
-    p.text(38.1, 135.89, "MagJack 1:1 wie CM4-Datenblatt (Figure 2): Mittelanzapfungen über C45 an GND, ESD-Schutz U12, LED 470 Ω")
-    p.text(38.1, 139.7, "10/100 genügt für VoIP; für Gigabit 4-Paar-MagJack verwenden und Paare 2/3 des CM4 anschließen")
+    p.notiz(38.1, 135.89, 112,
+            "MagJack 1:1 wie CM4-Datenblatt (Figure 2): Mittelanzapfungen über C45 an GND, ESD-Schutz U12, LED 470 Ω.",
+            "10/100 genügt für VoIP; für Gigabit 4-Paar-MagJack verwenden und Paare 2/3 des CM4 anschließen.")
     p.text(190, 92, "LED 12/11: Aktivität (nLED3)")
     p.text(190, 96, "LED 9/10: Link (nLED2)")
 
@@ -652,11 +657,12 @@ def main() -> int:
         pos = root.blatt(blaetter[kind], x_links, top, b_links, pins, hoehe=max(dy for _, _, dy in pins) + 7.62)
         for n, _ in gruppe:
             root.w(pos[n], pos_cm4[n])
-    root.text(20, 195.58, "Speicher: CM4 mit eMMC (Flashen per USB-C, nRPIBOOT-Jumper im Blatt CM4) oder CM4 Lite mit µSD-Karte")
-    root.text(20, 200.66, "Netz: WLAN/Bluetooth des CM4 (Antenne am Modul) oder Ethernet 10/100 (MagJack); beides gleichzeitig möglich")
-    root.text(20, 205.74, "D340: Audio-Codec + Sprechweg (Übertrager, RJ12) und RS-232 (isoliert, UART3) wie beim HAT; "
-              "Versorgungsnetze +5V/+3V3/GND global")
-    root.text(20, 210.82, "Erzeugt von hardware/cm4/erzeuge_schaltplan.py; Prüfung --pruefen (ERC + Netzliste gegen SOLL)")
+    root.notiz(20, 195.58, 124,
+               "Speicher: CM4 mit eMMC (Flashen per USB-C, nRPIBOOT-Jumper im Blatt CM4) oder CM4 Lite mit µSD-Karte.",
+               "Netz: WLAN/Bluetooth des CM4 (Antenne am Modul) oder Ethernet 10/100 (MagJack); beides gleichzeitig möglich.",
+               "D340: Audio-Codec + Sprechweg (Übertrager, RJ12) und RS-232 (isoliert, UART3) wie beim HAT; "
+               "Versorgungsnetze +5V/+3V3/GND global.",
+               "Erzeugt von hardware/cm4/erzeuge_schaltplan.py; Prüfung --pruefen (ERC + Netzliste gegen SOLL).")
 
     rootpfad = kg.schreibe_projekt(HIER, NAME, root)
     alle = list(blaetter.values())

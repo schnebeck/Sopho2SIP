@@ -1,3 +1,32 @@
 {
- "sopho2sip-hat.kicad_sch": "ab37a14f9b95ef02b6877c03515856a356847c94842f5c7641990316d1258666"
+ "sopho2sip-hat.kicad_sch": {
+  "fingerabdruck": "09e9de99b279ee4cea56bfca93162237ac88f9b54a516ba5d9dbd93ff045f4f5",
+  "texte": {
+   "04d2a23d-f3e5-5894-9784-82284041546e": "Adresse 0x50 (A0–A2 = GND); WP hoch = schreibgeschützt, JP1 schließen zum Programmieren",
+   "05dfde60-3838-5e39-accf-9e87f07d1d51": "UART3 = GPIO4/5 (PL011, kann 8O1) · I²S = GPIO18–21 · I²C1 = GPIO2/3",
+   "072d449c-036a-58b7-a8f7-a3fee305dcd6": "Analogversorgung 3,3 V",
+   "3f9cbb01-880f-595a-abfd-afd2b0787bc6": "Annehmen/Auflegen",
+   "49630890-555e-5ad1-bde8-6579176cda13": "Audio-Codec WM8731",
+   "4a075d91-a803-5df4-a115-3ea8fb28aa7f": "RS-232 zur D340 (galvanisch getrennt)",
+   "4d35d660-da59-505b-85f3-dad9ca6102ce": "Pi-Seite (GND)",
+   "4f46c474-3c10-51bb-8090-8817bcf7a26e": "ADuM5211: Trenner mit isolierter 3,3-V-Versorgung (VSEL = GND_ISO) · dtoverlay=uart3",
+   "54c852fc-fbc9-50e0-a55f-bd2a9a46540d": "LHPOUT treibt 600 Ω",
+   "59353289-11b2-5f37-a2ec-8c8f46c11032": "(Pull-up im Pi)",
+   "646831ef-3355-58eb-ac70-22015f31f59a": "oben Aufnahme (X_OUT → Codec), unten Wiedergabe (Codec → X_IN); R4 = 0R, R5 unbestückt",
+   "78d76691-3f80-5340-bd22-75cd1aefef85": "isolierte Seite (GND_ISO)",
+   "79f85c99-375c-53a2-afa8-7278cceaaa79": "Pi-Seite (GND)",
+   "88104078-588b-53ba-8b47-18e544c4b58d": "Raspberry Pi 4 (40-polige Leiste)",
+   "8f804205-dd71-5339-93ba-ad2430a574e9": "DE9-Stecker wie am PC: 2 RxD · 3 TxD · 5 GND\n1:1-Kabel zur D340, 1200 Bd 8O1",
+   "91065e7f-7f23-5fa8-9e9a-db4f93e3866a": "Sprechweg zur D340 (galvanisch getrennt)",
+   "968ff266-3a8c-56a0-8bdb-2e0001720126": "HAT-ID-EEPROM",
+   "aa61a62d-2a74-59ff-a51d-203c41e4e8ec": "D1: Telefon verbunden",
+   "b9a438ad-0628-5f33-9793-a87868509733": "M2,5, Raster 58 × 49 mm",
+   "ba429841-38ce-5a67-b4d2-d899b570443e": "I²C 0x1A (CSB = MODE = GND) · dtoverlay=rpi-proto · Codec erzeugt die Takte (12,288 MHz)",
+   "be1247d0-d543-591c-b792-a5dbb175f0fa": "Telefonseite (GNDA)",
+   "c0c4c841-a793-5287-bc41-2167def79f9d": "D2: Gespräch",
+   "c0c8e433-03dc-5d95-b8be-5b67bdb07e34": "Bedienung",
+   "c97aa7e8-1ec6-5819-9e8c-e70b0c0fb48e": "RJ12 1:1 zur Audio-Buchse"
+  },
+  "von_hand": {}
+ }
 }
