@@ -155,7 +155,8 @@ gateway/tests/          # Tests (python3 -m unittest discover -s gateway/tests)
 docs/testplan.md        # nächste Tests am Gerät
 docs/betrieb.md         # Dienste, Ports, Einrichtung und Sicherheit auf dem Pi
 logs/                   # Mitschnitte, Übersicht in logs/INDEX.md
-hardware/kicadgen.py    # gemeinsamer KiCad-Generator (Symbole, Leitungen, hierarchische Blätter, ERC/Netzlisten-Prüfung)
+hardware/kicadgen.py    # gemeinsamer KiCad-Generator (Symbole, Leitungen, hierarchische Blätter, ERC/Netzlisten-Prüfung);
+                        # von Hand nachgebesserte Blätter → handlage/ (nur bei gleicher Netzliste, siehe cm4/README)
 hardware/hat/           # HAT-Entwurf (KiCad, aus erzeuge_schaltplan.py), README mit offenen Prüfpunkten
 hardware/cm4/           # CM4-Träger: Schaltplan, Layout (erzeuge_layout.py, FreeRouting 1.9 über xvfb), Bestellliste
 hardware/gehaeuse/      # Gehäuse (FreeCAD-Skript, FDM-Druck), Druckteile in druck/, Kollisionsprüfung gegen die Platine

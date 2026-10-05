@@ -21,6 +21,7 @@ Gehäuse aus dem 3D-Drucker.
 | `sopho2sip.kicad_sym`, `sym-lib-table`, `fp-lib-table` | Projektbibliotheken; eigene Footprints in `hardware/bibliothek/` |
 | `sopho2sip-cm4.pdf` | alle 9 Schaltplanblätter |
 | `netzliste.txt`, `stueckliste.csv` | Soll-Netzliste, KiCad-Stückliste |
+| `handlage/`, `.generiert.json` | von Hand nachgebesserte Blätter; Fingerabdrücke der zuletzt erzeugten Zeichnung |
 
 Neu erzeugen und prüfen:
 ```
@@ -32,6 +33,19 @@ hardware/cm4/erzeuge_bestellliste.py
 ```
 Die UUIDs sind reproduzierbar: Schaltplan und Platine bleiben beim Neuerzeugen verknüpft („Platine aus Schaltplan
 aktualisieren“ in KiCad funktioniert weiter).
+
+**Zeichnung von Hand nachbessern:** Blätter in KiCad schöner setzen (Bauteile, Beschriftungen, Leitungen, Labels
+verschieben) und speichern, dann den Generator laufen lassen. Er erkennt die geänderten Blätter am Fingerabdruck der
+Zeichnung, prüft die Netzliste gegen SOLL und übernimmt sie nach `handlage/`. Ab dann kommt die Zeichnung dieser
+Blätter von dort; Werte, Footprints und Symbole weiter aus SOLL (in KiCad geänderte Werte werden mit Hinweis
+zurückgesetzt). Ändert die Handarbeit eine Verbindung, schreibt der Generator nichts und nennt die Abweichung.
+```
+hardware/cm4/erzeuge_schaltplan.py --pruefen                          # Änderungen im Projektordner übernehmen
+hardware/cm4/erzeuge_schaltplan.py --handlage-aus ~/kopie --pruefen    # … aus einer Kopie des Projekts
+hardware/cm4/erzeuge_schaltplan.py --handlage-verwerfen Bedienung      # Blatt wieder vom Generator zeichnen lassen
+```
+Kommt in SOLL ein Bauteil auf einem Blatt mit Handlage hinzu (oder fällt weg), bricht der Generator ab: das Blatt in
+KiCad nachziehen oder die Handlage verwerfen.
 
 ## Blätter und Bauteile
 

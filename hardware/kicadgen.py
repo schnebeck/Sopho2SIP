@@ -7,6 +7,13 @@ Ein Schaltplan entsteht aus zwei getrennten Angaben:
 pruefe_projekt() exportiert mit kicad-cli die Netzliste und vergleicht ihre Pin-Gruppen mit SOLL – über
 hierarchische Blätter hinweg. Eine Zeichnung kann also umgestaltet werden, ohne unbemerkt Verbindungen zu ändern.
 
+Handlage: Wird ein Blatt in KiCad von Hand schöner gesetzt (Bauteile, Beschriftungen, Leitungen verschoben), erkennt
+schreibe_projekt() das am Fingerabdruck der Zeichnung. Ergibt das Projekt mit diesem Blatt dieselbe Netzliste wie
+SOLL, wird das Blatt nach handlage/ übernommen; ab dann stammt seine Zeichnung von dort, Werte, Footprints und
+Symbole weiter aus SOLL. Ändert die Handänderung die Schaltung, wird nichts geschrieben.
+Zurück zur erzeugten Zeichnung: --handlage-verwerfen <Blatt>[,<Blatt>] (Blattname oder Dateiname).
+Aus einer Kopie des Projekts übernehmen: --handlage-aus <Ordner> (dort geänderte Blätter gelten als Handänderung).
+
 Netzarten in SOLL:
   Versorgungsnetze (Schlüssel von POWER)  → global über alle Blätter (Power-Symbole, Wert = Netzname)
   Netze in Blatt.export                   → hierarchisches Label; im Wurzelblatt mit gleichnamigen Blattpins verbunden
@@ -14,11 +21,13 @@ Netzarten in SOLL:
 """
 from __future__ import annotations
 
+import hashlib
 import json
 import math
 import pathlib
 import re
 import subprocess
+import sys
 import tempfile
 import uuid
 
@@ -498,25 +507,29 @@ def schreibe_blatt(b: Blatt, projekt: str, pfad: str, wurzel: Blatt | None = Non
     return kopf + libteil + "\t)\n" + "".join(t) + fuss + '\t(embedded_fonts no)\n)\n'
 
 
-def schreibe_projekt(verzeichnis: pathlib.Path, projekt: str, wurzel: Blatt) -> pathlib.Path:
-    """Wurzelblatt und alle Kindblätter schreiben; liefert den Pfad des Wurzelblatts."""
+def schreibe_projekt(verzeichnis: pathlib.Path, projekt: str, wurzel: Blatt,
+                    verwerfen: set[str] | None = None) -> pathlib.Path:
+    """Wurzelblatt und alle Kindblätter schreiben (mit Handlagen, siehe Kopf); liefert den Pfad des Wurzelblatts."""
     verzeichnis.mkdir(parents=True, exist_ok=True)
-    root = verzeichnis / f"{projekt}.kicad_sch"
-    root.write_text(schreibe_blatt(wurzel, projekt, f"/{wurzel.uuid}"), encoding="utf-8")
-    blaetter = [[wurzel.uuid, "Root"]]
+    verwerfen = _verwerfen_aus_argv() if verwerfen is None else verwerfen
+    blaetter = [(wurzel, f"{projekt}.kicad_sch", schreibe_blatt(wurzel, projekt, f"/{wurzel.uuid}"))]
     for bl in wurzel.blaetter:
         k: Blatt = bl["kind"]
-        (verzeichnis / k.datei).write_text(schreibe_blatt(k, projekt, f"/{wurzel.uuid}/{k.uuid}", wurzel),
-                                           encoding="utf-8")
-        blaetter.append([k.uuid, k.name])
+        blaetter.append((k, k.datei, schreibe_blatt(k, projekt, f"/{wurzel.uuid}/{k.uuid}", wurzel)))
+    texte = _handlagen(verzeichnis, projekt, blaetter, verwerfen)
+    for datei, text in texte.items():
+        (verzeichnis / datei).write_text(text, encoding="utf-8")
+    (verzeichnis / STAND).write_text(json.dumps({d: _fingerabdruck(t) for d, t in texte.items()}, indent=1,
+                                                sort_keys=True) + "\n", encoding="utf-8")
     schreibe_bibliothek(verzeichnis)
     schreibe_fp_tabelle(verzeichnis)
     # vorhandene Einstellungen (z. B. Netzklassen und Regeln aus dem Layout-Generator) behalten
     pro = verzeichnis / f"{projekt}.kicad_pro"
     daten = json.loads(pro.read_text(encoding="utf-8")) if pro.exists() else {}
-    daten.update({"meta": {"filename": f"{projekt}.kicad_pro", "version": 1}, "sheets": blaetter})
+    daten.setdefault("meta", {"filename": f"{projekt}.kicad_pro", "version": 1})   # pflegt KiCad selbst
+    daten.setdefault("sheets", [[b.uuid, "Root" if b is wurzel else b.name] for b, _, _ in blaetter])
     pro.write_text(json.dumps(daten, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
-    return root
+    return verzeichnis / f"{projekt}.kicad_sch"
 
 
 def schreibe_fp_tabelle(verzeichnis: pathlib.Path) -> None:
@@ -546,6 +559,271 @@ def schreibe_bibliothek(verzeichnis: pathlib.Path) -> None:
 
 
 # ------------------------------------------------------------------------------------------------------------------
+# Handlage: von Hand nachgebesserte Zeichnungen übernehmen
+# ------------------------------------------------------------------------------------------------------------------
+HANDLAGE = "handlage"            # Unterordner im Projekt: übernommene Blätter (Quelle der Zeichnung)
+STAND = ".generiert.json"        # Fingerabdruck der zuletzt geschriebenen Zeichnung je Blatt
+_TOKEN = re.compile(r'\(|\)|"(?:[^"\\]|\\.)*"|[^\s()"]+')
+_QSTR = r'"((?:[^"\\]|\\.)*)"'
+
+
+def _argument(name: str) -> str | None:
+    if name not in sys.argv:
+        return None
+    i = sys.argv.index(name)
+    if i + 1 >= len(sys.argv):
+        raise SystemExit(f"{name}: Wert fehlt")
+    return sys.argv[i + 1]
+
+
+def _verwerfen_aus_argv() -> set[str]:
+    return {n.strip() for n in (_argument("--handlage-verwerfen") or "").split(",") if n.strip()}
+
+
+def _sx(text: str):
+    """S-Ausdruck → verschachtelte Listen (Zeichenketten ohne Anführungszeichen)."""
+    stapel: list[list] = [[]]
+    for m in _TOKEN.finditer(text):
+        t = m.group(0)
+        if t == "(":
+            stapel.append([])
+        elif t == ")":
+            k = stapel.pop()
+            stapel[-1].append(k)
+        else:
+            stapel[-1].append(re.sub(r"\\(.)", r"\1", t[1:-1]) if t[0] == '"' else t)
+    return stapel[0][0]
+
+
+def _kinder(text: str, start: int = 0) -> list[tuple[int, int, str]]:
+    """Direkte Unterblöcke des Blocks, der bei start beginnt: [(Anfang, Ende, Kopf)]."""
+    erg, tiefe, i, anfang, in_str = [], 0, start, 0, False
+    while i < len(text):
+        c = text[i]
+        if in_str:
+            if c == "\\":
+                i += 1
+            elif c == '"':
+                in_str = False
+        elif c == '"':
+            in_str = True
+        elif c == "(":
+            tiefe += 1
+            anfang = i if tiefe == 2 else anfang
+        elif c == ")":
+            if tiefe == 2:
+                erg.append((anfang, i + 1, re.match(r"\(([^\s()]+)", text[anfang:anfang + 64]).group(1)))
+            tiefe -= 1
+            if tiefe == 0:
+                break
+        i += 1
+    return erg
+
+
+def _unter(t: list, name: str):
+    return next((k for k in t[1:] if isinstance(k, list) and k and k[0] == name), None)
+
+
+def _alle(t: list, name: str) -> list:
+    return [k for k in t[1:] if isinstance(k, list) and k and k[0] == name]
+
+
+def _lage(t: list):
+    a = _unter(t, "at")
+    return tuple(round(float(v), 2) for v in a[1:]) if a else None
+
+
+def _xy(t: list, name: str):
+    k = _unter(t, name)
+    return tuple(round(float(v), 2) for v in k[1:3]) if k else None
+
+
+def _schrift(t: list) -> tuple:
+    """Ausrichtung und Sichtbarkeit (KiCad schreibt hide teils im Feld, teils in effects)."""
+    e = _unter(t, "effects") or ["effects"]
+    j = _unter(e, "justify")
+    h = _unter(t, "hide") or _unter(e, "hide")
+    versteckt = "hide" in e[1:] or (h is not None and (len(h) == 1 or h[1] == "yes"))
+    return tuple(j[1:]) if j else (), versteckt
+
+
+def _punkte(t: list) -> tuple:
+    pts = _unter(t, "pts") or ["pts"]
+    return tuple(tuple(round(float(v), 2) for v in xy[1:3]) for xy in _alle(pts, "xy"))
+
+
+def _zeichnung(text: str) -> list[str]:
+    """Alles, was die Zeichnung ausmacht (Lagen, Leitungen, Beschriftungen), ohne UUIDs und Formatierung."""
+    erg = []
+    for k in _sx(text)[1:]:
+        if not isinstance(k, list):
+            continue
+        kopf = k[0]
+        if kopf == "symbol":
+            felder = sorted((p[1], p[2], _lage(p), _schrift(p)) for p in _alle(k, "property")
+                            if p[1] in ("Reference", "Value"))
+            spiegel = _unter(k, "mirror")
+            erg.append((kopf, _unter(k, "lib_id")[1], _lage(k), spiegel[1] if spiegel else "", felder))
+        elif kopf in ("wire", "bus", "polyline"):
+            erg.append((kopf, tuple(sorted(_punkte(k)))))
+        elif kopf in ("junction", "no_connect", "bus_entry"):
+            erg.append((kopf, _lage(k)))
+        elif kopf in ("label", "hierarchical_label", "global_label", "text"):
+            erg.append((kopf, k[1], _lage(k), _schrift(k)))
+        elif kopf == "rectangle":
+            erg.append((kopf, _xy(k, "start"), _xy(k, "end")))
+        elif kopf == "sheet":
+            groesse = _unter(k, "size")
+            erg.append((kopf, _lage(k), tuple(groesse[1:]) if groesse else None,
+                        sorted((p[1], _lage(p)) for p in _alle(k, "pin")),
+                        sorted((p[1], _lage(p)) for p in _alle(k, "property"))))
+    return sorted(repr(e) for e in erg)
+
+
+def _fingerabdruck(text: str) -> str:
+    return hashlib.sha256("\n".join(_zeichnung(text)).encode()).hexdigest()
+
+
+def _eigenschaft_wert(block: str, name: str) -> str | None:
+    m = re.search(r'\(property "%s" %s' % (name, _QSTR), block)
+    return m.group(1) if m else None
+
+
+def _eigene_uuid(block: str) -> tuple[int, int] | None:
+    """Lage der UUID des Blocks selbst (nicht die seiner Pins)."""
+    return next(((a, e) for a, e, kopf in _kinder(block) if kopf == "uuid"), None)
+
+
+def _teil_angleichen(hand: str, gen: str, ref: str, fehler: list, hinweise: list) -> str:
+    """Bauteil der Handlage: Lage behalten, elektrische Angaben und UUID aus dem Generator."""
+    lib_h, lib_g = (re.search(r'\(lib_id "([^"]+)"\)', x).group(1) for x in (hand, gen))
+    if lib_h != lib_g:
+        fehler.append(f"{ref}: Symbol {lib_h} in der Handlage, {lib_g} in SOLL")
+        return hand
+    for name in ("Value", "Footprint"):
+        w_h, w_g = _eigenschaft_wert(hand, name), _eigenschaft_wert(gen, name)
+        if w_g is not None and w_h != w_g:
+            if name == "Value":
+                hinweise.append(f"{ref}: Wert aus SOLL „{w_g}“ (in KiCad „{w_h}“; Werte gehören in den Generator)")
+            hand = re.sub(r'(\(property "%s" )%s' % (name, _QSTR), lambda m: m.group(1) + f'"{w_g}"', hand, count=1)
+    for name in ("in_bom", "dnp", "exclude_from_sim", "on_board"):
+        m = re.search(r"\(%s (yes|no)\)" % name, gen)
+        if m:
+            hand = re.sub(r"\(%s (yes|no)\)" % name, m.group(0), hand, count=1)
+    a_h, a_g = _eigene_uuid(hand), _eigene_uuid(gen)
+    if a_h and a_g:
+        hand = hand[:a_h[0]] + gen[a_g[0]:a_g[1]] + hand[a_h[1]:]
+    return hand
+
+
+def _aus_handlage(hand: str, gen: str, name: str) -> tuple[str, list[str], list[str]]:
+    """Zeichnung aus der Handlage, Symbolbibliothek, Schriftfeld und Bauteilangaben aus dem Generator."""
+    fehler, hinweise = [], []
+    kg_ = _kinder(gen, gen.index("(kicad_sch"))
+    einzeln = {kopf: gen[a:e] for a, e, kopf in kg_ if kopf in ("lib_symbols", "title_block")}
+    teile, blaetter = {}, set()
+    for a, e, kopf in kg_:
+        if kopf == "symbol":
+            ref = _eigenschaft_wert(gen[a:e], "Reference")
+            if not ref.startswith("#"):
+                teile[ref] = gen[a:e]
+        elif kopf == "sheet":
+            blaetter.add(re.search(r'\(uuid "([^"]+)"\)', gen[a:e]).group(1))
+    stuecke, pos, gesehen = [], 0, set()
+    for a, e, kopf in _kinder(hand, hand.index("(kicad_sch")):
+        block = hand[a:e]
+        if kopf in einzeln:
+            block = einzeln[kopf]
+        elif kopf == "symbol":
+            ref = _eigenschaft_wert(block, "Reference")
+            if not ref.startswith("#"):
+                if ref in teile:
+                    block = _teil_angleichen(block, teile[ref], ref, fehler, hinweise)
+                    gesehen.add(ref)
+                else:
+                    fehler.append(f"{ref} steht in der Handlage, aber nicht mehr in SOLL")
+        elif kopf == "sheet":
+            k = _eigene_uuid(block)
+            uid = re.search(r'"([^"]+)"', block[k[0]:k[1]]).group(1) if k else ""
+            if uid not in blaetter:
+                fehler.append(f"Blattsymbol {uid} gibt es nicht mehr")
+            blaetter.discard(uid)
+        stuecke += [hand[pos:a], block]
+        pos = e
+    stuecke.append(hand[pos:])
+    fehler += [f"{r} fehlt in der Handlage (neu in SOLL)" for r in sorted(set(teile) - gesehen)]
+    fehler += [f"Blattsymbol {u_} fehlt in der Handlage" for u_ in sorted(blaetter)]
+    return "".join(stuecke), [f"{name}: {f}" for f in fehler], [f"{name}: {h}" for h in hinweise]
+
+
+def _handlagen(verzeichnis: pathlib.Path, projekt: str, blaetter: list[tuple[Blatt, str, str]],
+               verwerfen: set[str]) -> dict[str, str]:
+    """Endgültige Blatttexte: erzeugte Zeichnung oder Handlage (neu erkannte Handänderungen werden übernommen,
+    wenn die Netzliste stimmt). Bricht ab, ohne etwas zu schreiben, wenn eine Handlage nicht mehr passt."""
+    ordner = verzeichnis / HANDLAGE
+    kopie = _argument("--handlage-aus")
+    quelle_dir = pathlib.Path(kopie).expanduser().resolve() if kopie else verzeichnis
+    if kopie and not quelle_dir.is_dir():
+        raise SystemExit(f"--handlage-aus: {quelle_dir} ist kein Ordner")
+    stand_datei = verzeichnis / STAND
+    stand = json.loads(stand_datei.read_text(encoding="utf-8")) if stand_datei.exists() else {}
+    texte, neu, quelle, fehler, hinweise = {}, [], {}, [], []
+    for b, datei, gen in blaetter:
+        weg = {datei, b.name} & verwerfen
+        hand_datei, ziel = ordner / datei, quelle_dir / datei
+        if weg and hand_datei.exists():
+            hand_datei.unlink()
+            print(f"{b.name}: Handlage verworfen, Zeichnung wieder vom Generator")
+        hand = hand_datei.read_text(encoding="utf-8") if hand_datei.exists() else None
+        if ziel.exists() and not weg:
+            alt = ziel.read_text(encoding="utf-8")
+            fa = _fingerabdruck(alt)
+            bisher = stand.get(datei)
+            if bisher is None:          # ohne Stand: unverändert, wenn gleich dem, was jetzt entstünde
+                bisher = _fingerabdruck(_aus_handlage(hand, gen, b.name)[0] if hand else gen)
+            if fa != bisher:
+                hand = alt
+                neu.append((b.name, datei))
+            elif kopie and hand is None and fa != _fingerabdruck(gen):
+                hand = alt              # Kopie aus älterem Stand: nur übernehmen, was sich wirklich unterscheidet
+                neu.append((b.name, datei))
+        if hand is None:
+            texte[datei] = gen
+            continue
+        texte[datei], f, h = _aus_handlage(hand, gen, b.name)
+        fehler += f
+        hinweise += h
+        quelle[datei] = hand
+    if fehler:
+        raise SystemExit("Handlage passt nicht zur Schaltung, nichts geschrieben:\n  " + "\n  ".join(fehler)
+                         + "\nZeichnung in KiCad nachziehen oder mit --handlage-verwerfen <Blatt> zurücksetzen.")
+    if quelle:
+        abw = _pruefe_texte(projekt, texte, [b for b, _, _ in blaetter])
+        if abw:
+            namen = ", ".join(n for n, _ in neu) or "–"
+            raise SystemExit(f"Mit Handlage ergibt sich eine andere Netzliste als SOLL (neu von Hand geändert: {namen}); "
+                             "nichts geschrieben:\n  " + "\n  ".join(abw)
+                             + "\nÄnderung in KiCad korrigieren oder mit --handlage-verwerfen <Blatt> verwerfen.")
+    for name, datei in neu:
+        ordner.mkdir(exist_ok=True)
+        (ordner / datei).write_text(quelle[datei], encoding="utf-8")
+        print(f"{name}: Handänderung erkannt, Netzliste wie SOLL → übernommen nach {HANDLAGE}/{datei}")
+    for datei in sorted(set(quelle) - {d for _, d in neu}):
+        print(f"{datei}: Zeichnung aus {HANDLAGE}/{datei}")
+    for h in hinweise:
+        print(f"  Hinweis {h}")
+    return texte
+
+
+def _pruefe_texte(projekt: str, texte: dict[str, str], blaetter: list[Blatt]) -> list[str]:
+    """Netzliste der Blatttexte (in einem Zwischenordner) gegen SOLL."""
+    with tempfile.TemporaryDirectory() as tmp:
+        for datei, text in texte.items():
+            (pathlib.Path(tmp) / datei).write_text(text, encoding="utf-8")
+        return _netz_abweichungen(pathlib.Path(tmp) / f"{projekt}.kicad_sch", blaetter)
+
+
+# ------------------------------------------------------------------------------------------------------------------
 # Prüfung
 # ------------------------------------------------------------------------------------------------------------------
 def soll_netze(blaetter: list[Blatt]) -> dict[str, list[str]]:
@@ -561,38 +839,46 @@ def soll_netze(blaetter: list[Blatt]) -> dict[str, list[str]]:
     return {n: sorted(v) for n, v in netze.items()}
 
 
+def _netz_abweichungen(root: pathlib.Path, blaetter: list[Blatt]) -> list[str]:
+    """Netzliste aus KiCad (kicad-cli) gegen SOLL; liefert die Abweichungen als Textzeilen."""
+    with tempfile.TemporaryDirectory() as tmp:
+        net = pathlib.Path(tmp) / "x.net"
+        subprocess.run(["kicad-cli", "sch", "export", "netlist", "--format", "kicadsexpr", "-o", str(net), str(root)],
+                       capture_output=True)
+        teil = net.read_text()
+    teil = teil[teil.index("(nets"):]
+    ist = {}
+    for blk in re.split(r'\n\t\t\(net\n', teil)[1:]:
+        name = re.search(r'\(name "([^"]+)"\)', blk).group(1)
+        k = sorted(f"{r}.{pn}" for r, pn in re.findall(r'\(ref "([^"]+)"\)\s*\(pin "([^"]+)"\)', blk)
+                   if not r.startswith("#"))
+        if k and not name.startswith("unconnected"):
+            ist[name] = k
+    soll = soll_netze(blaetter)
+    ist_gruppen = {frozenset(v): n for n, v in ist.items()}
+    abw, gemeldet = [], set()
+    for n, v in sorted(soll.items()):
+        if ist_gruppen.pop(frozenset(v), None) is None:
+            name, pins = max(ist.items(), key=lambda kv: len(set(kv[1]) & set(v)))
+            gemeldet.add(name)
+            fehlt, mehr = sorted(set(v) - set(pins)), sorted(set(pins) - set(v))
+            abw.append(f"ABWEICHUNG {n}: im ähnlichsten KiCad-Netz {name} fehlen {fehlt or '–'}, zusätzlich {mehr or '–'}")
+    abw += [f"ZUSÄTZLICHES NETZ in KiCad {n}: {sorted(g)}" for g, n in ist_gruppen.items() if n not in gemeldet]
+    return abw
+
+
 def pruefe_projekt(root: pathlib.Path, blaetter: list[Blatt]) -> int:
     with tempfile.TemporaryDirectory() as tmp:
         erc = pathlib.Path(tmp) / "erc.txt"
-        net = pathlib.Path(tmp) / "x.net"
         subprocess.run(["kicad-cli", "sch", "erc", "--severity-all", "-o", str(erc), str(root)], capture_output=True)
-        subprocess.run(["kicad-cli", "sch", "export", "netlist", "--format", "kicadsexpr", "-o", str(net), str(root)],
-                       capture_output=True)
         bericht = erc.read_text()
-        m = re.search(r"ERC messages: (\d+)\s+Errors (\d+)\s+Warnings (\d+)", bericht)
-        print(f"ERC: {m.group(0) if m else bericht[:300]}")
-        if m and m.group(1) != "0":
-            print("\n".join(z for z in bericht.splitlines() if z.startswith("[") or z.startswith("    @")
-                            or z.startswith("*****"))[:5000])
-        teil = net.read_text()
-        teil = teil[teil.index("(nets"):]
-        ist = {}
-        for blk in re.split(r'\n\t\t\(net\n', teil)[1:]:
-            name = re.search(r'\(name "([^"]+)"\)', blk).group(1)
-            k = sorted(f"{r}.{pn}" for r, pn in re.findall(r'\(ref "([^"]+)"\)\s*\(pin "([^"]+)"\)', blk)
-                       if not r.startswith("#"))
-            if k and not name.startswith("unconnected"):
-                ist[name] = k
-        soll = soll_netze(blaetter)
-        ist_gruppen = {frozenset(v): n for n, v in ist.items()}
-        abw = []
-        for n, v in sorted(soll.items()):
-            if ist_gruppen.pop(frozenset(v), None) is None:
-                abw.append(n)
-                naechstes = max(ist.items(), key=lambda kv: len(set(kv[1]) & set(v)))
-                print(f"  ABWEICHUNG {n}:\n    soll {v}\n    ähnlichstes ist-Netz {naechstes[0]}: {naechstes[1]}")
-        for g, n in ist_gruppen.items():
-            abw.append(n)
-            print(f"  ZUSÄTZLICHES NETZ in KiCad {n}: {sorted(g)}")
-        print(f"Netzliste: {len(soll)} Netze soll, {len(ist)} ist, Abweichungen: {len(abw)}")
-        return 1 if abw or (m and m.group(1) != "0") else 0
+    m = re.search(r"ERC messages: (\d+)\s+Errors (\d+)\s+Warnings (\d+)", bericht)
+    print(f"ERC: {m.group(0) if m else bericht[:300]}")
+    if m and m.group(1) != "0":
+        print("\n".join(z for z in bericht.splitlines() if z.startswith("[") or z.startswith("    @")
+                        or z.startswith("*****"))[:5000])
+    abw = _netz_abweichungen(root, blaetter)
+    for z in abw:
+        print(f"  {z}")
+    print(f"Netzliste: {len(soll_netze(blaetter))} Netze soll, Abweichungen: {len(abw)}")
+    return 1 if abw or (m and m.group(1) != "0") else 0
