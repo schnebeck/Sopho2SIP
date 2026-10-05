@@ -1,0 +1,20 @@
+# SPDX-License-Identifier: GPL-3.0-or-later
+# STATUS-LED (D3, GPIO22 auf dem CM4-Träger) leuchtet, während das Gateway herunterfährt.
+# Die LED kommt als Linux-LED "status" aus dtoverlay=gpio-led,gpio=22,label=status,trigger=none.
+# Der Dienst ist nach den Gateway-Diensten geordnet und wird deshalb beim Herunterfahren als erster gestoppt;
+# sein ExecStop schaltet die LED ein. Im Halt schaltet der Kernel sie wieder aus (danach zeigt nur D11 PWR).
+# Installation: tools/ein_aus_einrichten.sh
+
+[Unit]
+Description=Sopho2SIP: STATUS-LED beim Herunterfahren
+After=sopho2sipd.service baresip.service asterisk.service network.target
+ConditionPathExists=/sys/class/leds/status/brightness
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/bin/sh -c 'echo 0 > /sys/class/leds/status/brightness'
+ExecStop=/bin/sh -c 'echo 1 > /sys/class/leds/status/brightness'
+
+[Install]
+WantedBy=multi-user.target

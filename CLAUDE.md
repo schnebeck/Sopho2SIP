@@ -136,6 +136,7 @@ tools/serial_probe.py   # Rohmitschnitt ohne Rahmenlogik (Altwerkzeug)
 tools/bitbang_scope.py  # FT232R als Logikanalysator (Bitbang, braucht pyftdi)
 tools/pi_bootstrap.sh   # Grundeinrichtung des Pi (Pakete, Gruppen, NTP)
 tools/asterisk_build.sh # Asterisk 22 LTS aus dem Quelltext (Trixie hat kein Paket)
+tools/ein_aus_einrichten.sh # Ein/Aus-Taster (langer Druck), STATUS-LED beim Herunterfahren (CM4-Träger)
 tools/firewall.sh       # Firewall laden, mit automatischer Rücknahme gegen Aussperren
 tools/asterisk_config.sh # Asterisk/baresip-Konfiguration einspielen, SIP-Passwörter erzeugen
 tools/baresip_build.sh  # baresip 4.x + re aus dem Quelltext (Trixie hat nur 1.1.0)
