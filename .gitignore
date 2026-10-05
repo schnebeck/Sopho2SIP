@@ -19,6 +19,7 @@ logs/audio_*.wav
 # KiCad: lokale Sitzungsdaten, Sperren, Sicherungen
 hardware/**/*.lck
 hardware/**/_autosave-*
+hardware/**/.kicad-ai/
 hardware/**/*.kicad_prl
 hardware/**/*-backups/
 hardware/**/fp-info-cache
