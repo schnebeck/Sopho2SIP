@@ -104,6 +104,12 @@ Digikey-BOM-Manager schlägt gleichwertige Teile vor.
 - `--nur-nacharbeit` erneuert Beschriftung, Bestückungsattribute und Flächen ohne neues Routing. Konstruiert wird
   bei (100, 100); zum Schluss rückt die Platine auf dem A4-Blatt nach (93, 45), frei vom Schriftfeld. Alle
   Bauteiltexte stehen waagerecht.
+- **Beschriftung:** Platinentexte stehen in `beschriftung.json` (Inhalt, Lage, Drehung, Größe, Strichstärke, Lage
+  der Ebene, Sichtbarkeit, Ausrichtung, gespiegelt, fett, kursiv, aufrecht, ausgespart), dazu Abweichungen der
+  Bauteiltexte (Referenz, Wert, eigene Footprint-Texte; Lage relativ zum Bauteil). In KiCad geänderte, neue oder
+  gelöschte Beschriftungen übernimmt jeder Lauf von `erzeuge_layout.py` (außer `--nur-pruefen`/`--nur-fertigung`)
+  vorab nach `beschriftung.json`; Vergleichsgrundlage ist `.beschriftung_stand.json` (Stand des letzten Laufs).
+  Überlappungen meldet der DRC (`silk_overlap`). Bauteillagen und Leiterbahnen werden nicht zurückgeführt.
 
 ## Konfiguration (`/boot/firmware/config.txt`)
 ```
