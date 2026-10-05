@@ -59,6 +59,17 @@ LUEFTER_A, LUEFTER_H, LUEFTER_LOCH = 30.0, 7.0, 24.0
 LEDS = [("D11", "PWR"), ("D10", "ACT"), ("D1", "TEL"), ("D2", "GESPR"), ("D3", "STATUS")]
 TASTER = [("SW1", "TASTE"), ("SW2", "KONFIG"), ("SW3", "EIN/AUS")]
 BUCHSEN_HINTEN = [("J10", "5V"), ("J14", "LAN"), ("J3", "D340 PC"), ("J2", "D340 AUDIO")]
+# Gehäuse der RJ-Buchsen an der Stirnseite: x von–bis, Oberkante (aus dem Platinen-STEP). Der Footprint-Ursprung
+# liegt nicht in der Buchsenmitte; Ausschnitt und Beschriftung richten sich nach dem Buchsengehäuse.
+RJ_BUCHSEN = {"J14": (24.77, 41.07, 15.42), "J3": (56.29, 68.75, 16.55), "J2": (90.80, 105.20, 16.30)}
+
+
+def ausschnitt_mitte(ref):
+    """x der Mitte des Wandausschnitts einer hinteren Buchse (USB-C: Footprint-Mitte = Buchsenmitte)."""
+    if ref in RJ_BUCHSEN:
+        xa, xb, _ = RJ_BUCHSEN[ref]
+        return (xa + xb) / 2
+    return pos(ref)[0]
 
 
 def pos(ref):
@@ -156,8 +167,7 @@ def oeffnungen():
     hinten = (Y0 - 1, 0.5)
     x, _ = pos("J10")
     o["USB-C"] = langloch_y(x, 2.78, 12.4, 6.6, *hinten)      # Platz für Steckertüllen bis 12 × 6,5
-    for ref, (xa, xb, oben) in {"J14": (24.77, 41.07, 15.42), "J3": (56.29, 68.75, 16.55),
-                                "J2": (90.80, 105.20, 16.30)}.items():
+    for ref, (xa, xb, oben) in RJ_BUCHSEN.items():
         o[ref] = rr(xa - 0.3, xb + 0.3, hinten[0], hinten[1], Z_TEIL - 0.01, oben + 0.3)
     # Vorderwand: µSD-Schlitz und Griffmulde
     x, _ = pos("J13")
@@ -211,7 +221,7 @@ def unterschale(grund, oeff, rand):
         for y in (8.0, T - 8.0):
             ab.append(zyl(x, y, 10.5, Z_UNTEN - 1, Z_UNTEN + 0.6))
     for ref, text in BUCHSEN_HINTEN:
-        ab.append(gravur_wand(text, 2.4, pos(ref)[0], -2.4, hinten=True))
+        ab.append(gravur_wand(text, 2.4, ausschnitt_mitte(ref), -2.4, hinten=True))
     ab.append(gravur_wand("µSD", 2.4, pos("J13")[0], -2.4, hinten=False))
     return teil.cut(ab).removeSplitter()
 
