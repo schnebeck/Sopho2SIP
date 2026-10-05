@@ -20790,7 +20790,7 @@
 			(type default)
 		)
 		(layer "Dwgs.User")
-		(uuid "b6a3a374-1931-40b3-a4e5-f66670f305f7")
+		(uuid "70cf814d-57b9-578d-a73c-2f7c897e745f")
 	)
 	(gr_line
 		(start 141 68.5)
@@ -20800,7 +20800,7 @@
 			(type default)
 		)
 		(layer "Dwgs.User")
-		(uuid "e907227a-4e41-4dfd-9b14-7f517e4ee5bd")
+		(uuid "5d7d2efd-5c98-5272-aabe-692557b583d5")
 	)
 	(gr_line
 		(start 150 68.5)
@@ -20810,7 +20810,7 @@
 			(type default)
 		)
 		(layer "Dwgs.User")
-		(uuid "d4f2d157-7249-42b3-9289-ca7d3ce999bf")
+		(uuid "d75022b8-7dd8-581d-9cac-8fd7fdc44d2c")
 	)
 	(gr_line
 		(start 150 83.5)
@@ -20820,7 +20820,7 @@
 			(type default)
 		)
 		(layer "Dwgs.User")
-		(uuid "43ee1673-f12a-4c90-be5a-73c1f7809c89")
+		(uuid "49c7e8f8-ee50-593e-9162-5d51f0ebff41")
 	)
 	(gr_line
 		(start 180 45)
@@ -20830,7 +20830,7 @@
 			(type default)
 		)
 		(layer "Dwgs.User")
-		(uuid "6cace299-446b-4367-8362-baaa6c78a32f")
+		(uuid "0d38e3c5-affc-5ca2-b76d-984e27940e1f")
 	)
 	(gr_line
 		(start 180 71)
@@ -20840,7 +20840,7 @@
 			(type default)
 		)
 		(layer "Dwgs.User")
-		(uuid "01594bfa-14fa-4865-84cc-d6d03e8d2bea")
+		(uuid "158251f4-1da6-5b6a-91b1-41cf1e8c3a25")
 	)
 	(gr_arc
 		(start 93 47)
@@ -20929,7 +20929,7 @@
 	(gr_text "nRPIBOOT"
 		(at 114 123.3 0)
 		(layer "F.SilkS")
-		(uuid "db93de40-799c-4aec-92b1-e1b52c00d6fa")
+		(uuid "a59695a8-5e20-5a99-9716-18dde9baebdc")
 		(effects
 			(font
 				(size 0.8 0.8)
@@ -20940,7 +20940,7 @@
 	(gr_text "PWR"
 		(at 128 126.3 0)
 		(layer "F.SilkS")
-		(uuid "79ad9a9c-b985-446e-8c29-5ab81134d113")
+		(uuid "d7c4dcbc-613a-54f7-b148-757796fbc243")
 		(effects
 			(font
 				(size 0.8 0.8)
@@ -20951,7 +20951,7 @@
 	(gr_text "ACT"
 		(at 133 126.3 0)
 		(layer "F.SilkS")
-		(uuid "97c1db47-0445-4893-b821-f625753f183e")
+		(uuid "172e4407-0975-5c75-a612-92d52dd31463")
 		(effects
 			(font
 				(size 0.8 0.8)
@@ -20962,7 +20962,7 @@
 	(gr_text "TEL"
 		(at 143 126.3 0)
 		(layer "F.SilkS")
-		(uuid "3245923a-06c8-40a2-a5b2-a2892a4f1254")
+		(uuid "55844e20-3d22-599b-9d47-d96bfd9597f7")
 		(effects
 			(font
 				(size 0.8 0.8)
@@ -20973,7 +20973,7 @@
 	(gr_text "GESPR"
 		(at 148 126.3 0)
 		(layer "F.SilkS")
-		(uuid "8bfdb9c8-ef36-439f-b55f-bb93e9af116d")
+		(uuid "9bf3ab54-fea0-5a26-9a9a-42c88177e5c3")
 		(effects
 			(font
 				(size 0.8 0.8)
@@ -20984,7 +20984,7 @@
 	(gr_text "STAT"
 		(at 153 126.3 0)
 		(layer "F.SilkS")
-		(uuid "b263f26e-6cdb-4463-9bef-4ae169f7e4e2")
+		(uuid "17a1091a-b036-5fdb-a24a-cf8a257bd9b3")
 		(effects
 			(font
 				(size 0.8 0.8)
@@ -20995,7 +20995,7 @@
 	(gr_text "Lüfter"
 		(at 153.5 92 0)
 		(layer "F.SilkS")
-		(uuid "4def5bb7-c37b-441e-85f7-e7e4c0917700")
+		(uuid "494d9e0a-e735-539f-bde2-a40ab8d016ff")
 		(effects
 			(font
 				(size 0.8 0.8)
@@ -21006,7 +21006,7 @@
 	(gr_text "Annehmen"
 		(at 165 121 0)
 		(layer "F.SilkS")
-		(uuid "c7940a9e-30d2-48e2-9d0f-b3eaacb9d97a")
+		(uuid "d365bdf5-5d34-521b-a935-4c82b491982f")
 		(effects
 			(font
 				(size 0.8 0.8)
@@ -21017,7 +21017,7 @@
 	(gr_text "ISO RS-232"
 		(at 170 48.5 0)
 		(layer "F.SilkS")
-		(uuid "b6c769bb-995b-432c-8d33-6795814ac869")
+		(uuid "5bb73dce-798e-5d78-afbc-a6bdb47144da")
 		(effects
 			(font
 				(size 0.8 0.8)
@@ -21028,7 +21028,7 @@
 	(gr_text "github.com/schnebeck/Sopho2SIP"
 		(at 173 118.5 0)
 		(layer "F.SilkS")
-		(uuid "7f9aacbb-e3d9-47f8-832b-15813ef4ebbd")
+		(uuid "df96ee01-bda5-59b2-801a-e5a32cf052bc")
 		(effects
 			(font
 				(size 0.8 0.8)
@@ -21039,7 +21039,7 @@
 	(gr_text "Konfig"
 		(at 177 121 0)
 		(layer "F.SilkS")
-		(uuid "365756a4-c7d7-4ba1-b471-a754f3640d26")
+		(uuid "6b772f67-d07e-50ec-b0e0-074eb026bcaf")
 		(effects
 			(font
 				(size 0.8 0.8)
@@ -21050,7 +21050,7 @@
 	(gr_text "Ein/Aus"
 		(at 189 118.6 0)
 		(layer "F.SilkS")
-		(uuid "8c3c1139-a0a8-4124-9c5d-729ca7bfd0e3")
+		(uuid "c673f9c5-29f4-5b1e-882a-1f29dc3a0c02")
 		(effects
 			(font
 				(size 0.8 0.8)
@@ -21061,7 +21061,7 @@
 	(gr_text "ISO Audio"
 		(at 191 59.2 0)
 		(layer "F.SilkS")
-		(uuid "e3849e1d-839f-4ad5-8451-d72dc49cfa77")
+		(uuid "874bb5fa-ba8f-5cd6-a80c-6e5cfc17d818")
 		(effects
 			(font
 				(size 0.8 0.8)
@@ -21072,7 +21072,7 @@
 	(gr_text "Sopho2SIP · CM4-Träger 0.3"
 		(at 173 116 0)
 		(layer "F.SilkS")
-		(uuid "bd5d492f-81fe-4d2e-84d6-0fe73f6cde5a")
+		(uuid "3b09ade3-36e0-5a9e-859a-4465435c146c")
 		(effects
 			(font
 				(size 1.2 1.2)

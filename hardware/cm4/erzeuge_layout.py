@@ -22,7 +22,12 @@ import tempfile
 import pcbnew
 
 HIER = pathlib.Path(__file__).resolve().parent
+sys.path.insert(0, str(HIER.parent))
+import platinentexte  # noqa: E402
+
 NAME = "sopho2sip-cm4"
+BESCHRIFTUNG = HIER / "beschriftung.json"            # Platinentexte und Abweichungen der Bauteiltexte
+BESCHRIFTUNG_STAND = HIER / ".beschriftung_stand.json"   # Beschriftung, wie zuletzt geschrieben
 KICAD_FP = pathlib.Path("/usr/share/kicad/footprints")
 EIGENE_FP = HIER.parent / "bibliothek" / "sopho2sip.pretty"
 MM = pcbnew.FromMM
@@ -214,6 +219,7 @@ def linie(board, lage, x1, y1, x2, y2, breite=0.15):
     s.SetStart(punkt(x1, y1)); s.SetEnd(punkt(x2, y2))
     s.SetLayer(LAGE[lage]); s.SetWidth(MM(breite))
     board.Add(s)
+    return s
 
 
 def bogen(board, lage, mx, my, sx, sy, winkel, breite=0.1):
@@ -222,14 +228,6 @@ def bogen(board, lage, mx, my, sx, sy, winkel, breite=0.1):
     s.SetCenter(punkt(mx, my)); s.SetStart(punkt(sx, sy)); s.SetArcAngleAndEnd(pcbnew.EDA_ANGLE(winkel, pcbnew.DEGREES_T))
     s.SetLayer(LAGE[lage]); s.SetWidth(MM(breite))
     board.Add(s)
-
-
-def text(board, s, x, y, groesse=1.0, lage="F.SilkS", winkel=0):
-    t = pcbnew.PCB_TEXT(board)
-    t.SetText(s); t.SetPosition(punkt(x, y)); t.SetLayer(LAGE[lage])
-    t.SetTextSize(pcbnew.VECTOR2I(MM(groesse), MM(groesse))); t.SetTextThickness(MM(groesse * 0.15))
-    t.SetTextAngleDegrees(winkel)
-    board.Add(t)
 
 
 # ------------------------------------------------------------------------------------------------------------------
@@ -335,16 +333,33 @@ def flaechen(board):
 
 
 def beschriftung(board):
-    text(board, "Sopho2SIP · CM4-Träger 0.3", 180.0, 171.0, 1.2)
-    text(board, "github.com/schnebeck/Sopho2SIP", 180.0, 173.5, 0.8)
-    for s, x, y in (("PWR", 135.0, 181.3), ("ACT", 140.0, 181.3),
-                    ("TEL", 150.0, 181.3), ("GESPR", 155.0, 181.3), ("STAT", 160.0, 181.3),
-                    ("Annehmen", 172.0, 176.0), ("Konfig", 184.0, 176.0),
-                    ("Ein/Aus", 196.0, 173.6), ("Lüfter", 160.5, 147.0), ("nRPIBOOT", 121.0, 178.3),
-                    ("ISO RS-232", 177.0, 103.5), ("ISO Audio", 198.0, 114.2)):
-        text(board, s, x, y, 0.8)
-    for x1, y1, x2, y2 in TRENNSTREIFEN:
-        linie(board, "Dwgs.User", x1, y1, x2, y2, 0.15)
+    """Trennlinien, Bauteiltexte waagerecht, dann Platinentexte und Abweichungen aus beschriftung.json."""
+    for i, (x1, y1, x2, y2) in enumerate(TRENNSTREIFEN):
+        linie(board, "Dwgs.User", x1, y1, x2, y2, 0.15).SetUuid(pcbnew.KIID(platinentexte.kennung(f"trennlinie{i}")))
+    texte_waagerecht(board)
+    platinentexte.anwenden(board, platinentexte.laden(BESCHRIFTUNG))
+
+
+def _versatz(board) -> tuple[float, float]:
+    """Verschiebung der Platine gegenüber den Konstruktionskoordinaten (Lage auf dem Blatt)."""
+    bb = board.GetBoardEdgesBoundingBox()
+    return (round(pcbnew.ToMM(bb.GetLeft()) + 0.05 - X0, 2), round(pcbnew.ToMM(bb.GetTop()) + 0.05 - Y0, 2))
+
+
+def beschriftung_uebernehmen(ziel: pathlib.Path) -> None:
+    """In KiCad geänderte Beschriftungen (gegenüber dem Stand des letzten Laufs) nach beschriftung.json."""
+    if not ziel.exists() or not BESCHRIFTUNG_STAND.exists():
+        return
+    board = pcbnew.LoadBoard(str(ziel))
+    daten = platinentexte.laden(BESCHRIFTUNG)
+    meldungen = platinentexte.uebernehmen(board, daten, platinentexte.laden(BESCHRIFTUNG_STAND), _versatz(board))
+    if meldungen:
+        platinentexte.speichern(BESCHRIFTUNG, daten)
+        print(f"Beschriftung aus KiCad übernommen nach {BESCHRIFTUNG.name}:\n  " + "\n  ".join(meldungen))
+
+
+def beschriftung_stand(board) -> None:
+    platinentexte.speichern(BESCHRIFTUNG_STAND, platinentexte.lesen(board, _versatz(board)))
 
 
 # ------------------------------------------------------------------------------------------------------------------
@@ -654,12 +669,12 @@ def nacharbeit(ziel: pathlib.Path) -> None:
                 if pad.GetNetname() == "GND":
                     pad.SetLocalZoneConnection(pcbnew.ZONE_CONNECTION_FULL)
     beschriftung(board)
-    texte_waagerecht(board)
     modelle_erneuern(board)
     _verschieben_nach(board, BLATT_X, BLATT_Y)
     board.BuildConnectivity()                     # nach dem Verschieben, sonst bleiben Inseln stehen
     pcbnew.ZONE_FILLER(board).Fill(board.Zones())
     pcbnew.SaveBoard(str(ziel), board)
+    beschriftung_stand(board)
 
 
 def pruefen(ziel: pathlib.Path) -> int:
@@ -702,6 +717,8 @@ def fertigung(ziel: pathlib.Path) -> None:
 
 def main() -> int:
     ziel = HIER / f"{NAME}.kicad_pcb"
+    if not ({"--nur-pruefen", "--nur-fertigung"} & set(sys.argv)):
+        beschriftung_uebernehmen(ziel)
     if "--nur-nacharbeit" in sys.argv:
         nacharbeit(ziel)
         return 1 if pruefen(ziel) else 0
@@ -722,6 +739,7 @@ def main() -> int:
     board.SetFileName(str(ziel))
     pcbnew.ZONE_FILLER(board).Fill(board.Zones())
     pcbnew.SaveBoard(str(ziel), board)
+    beschriftung_stand(board)
     print(f"{len(teile)} Bauteile, {len(netze)} Netze → {ziel.name}")
     if "--routen" in sys.argv:
         routen(ziel)
