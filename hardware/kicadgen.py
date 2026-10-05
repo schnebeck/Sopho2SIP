@@ -21,6 +21,7 @@ Netzarten in SOLL:
 """
 from __future__ import annotations
 
+import ast
 import hashlib
 import json
 import math
@@ -800,7 +801,7 @@ def _literal(s: str) -> str:
     return '"' + s.replace("\\", "\\\\").replace('"', '\\"').replace("\n", "\\n") + '"'
 
 
-def _literale(absaetze: list[str], spalte: int, breite: int = 118) -> str:
+def _literale(absaetze: list[str], spalte: int, breite: int = 120) -> str:
     """Python-Literale für die Absätze (durch Komma getrennt); lange Absätze als verkettete Literale über
     mehrere Zeilen, eingerückt auf die Spalte des ersten Literals."""
     platz = max(40, breite - spalte - 3)
@@ -857,8 +858,18 @@ def _rueckfuehren(aenderungen: list[tuple]) -> dict[str, str]:
             a0 = anfang[erster.lineno - 1]
             spalte = len(roh[a0:a0 + erster.col_offset].decode("utf-8"))
             absaetze = neu.split("\n") if art == "notiz" else [neu]
+            # unveränderte Absätze wörtlich übernehmen (kein Umbruch-Rauschen im Diff)
+            stuecke = []
+            for i, absatz in enumerate(absaetze):
+                if i < len(args) and args[i].value == absatz:
+                    a = args[i]
+                    stuecke.append(roh[anfang[a.lineno - 1] + a.col_offset:
+                                       anfang[a.end_lineno - 1] + a.end_col_offset].decode("utf-8"))
+                else:
+                    stuecke.append(_literale([absatz], spalte))
+            code = (",\n" + " " * spalte).join(stuecke)
             ersatz.append((a0 + erster.col_offset, anfang[letzter.end_lineno - 1] + letzter.end_col_offset,
-                           _literale(absaetze, spalte).encode("utf-8"), ort, neu))
+                           code.encode("utf-8"), ort, neu))
         for a, e, code, ort, neu in sorted(ersatz, reverse=True):
             roh = roh[:a] + code + roh[e:]
             print(f"  Text zurückgeführt nach {ort}: „{neu[:70]}{'…' if len(neu) > 70 else ''}“")
