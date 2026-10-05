@@ -1,6 +1,6 @@
 {
  "sopho2sip-hat.kicad_sch": {
-  "fingerabdruck": "09e9de99b279ee4cea56bfca93162237ac88f9b54a516ba5d9dbd93ff045f4f5",
+  "fingerabdruck": "17aa3edd9c7219fa6a1f9b6e60a5c5f5666a4c004f10874500b42083bbc49b85",
   "texte": {
    "04d2a23d-f3e5-5894-9784-82284041546e": "Adresse 0x50 (A0–A2 = GND); WP hoch = schreibgeschützt, JP1 schließen zum Programmieren",
    "05dfde60-3838-5e39-accf-9e87f07d1d51": "UART3 = GPIO4/5 (PL011, kann 8O1) · I²S = GPIO18–21 · I²C1 = GPIO2/3",
@@ -9,7 +9,7 @@
    "49630890-555e-5ad1-bde8-6579176cda13": "Audio-Codec WM8731",
    "4a075d91-a803-5df4-a115-3ea8fb28aa7f": "RS-232 zur D340 (galvanisch getrennt)",
    "4d35d660-da59-505b-85f3-dad9ca6102ce": "Pi-Seite (GND)",
-   "4f46c474-3c10-51bb-8090-8817bcf7a26e": "ADuM5211: Trenner mit isolierter 3,3-V-Versorgung (VSEL = GND_ISO) · dtoverlay=uart3",
+   "4f46c474-3c10-51bb-8090-8817bcf7a26e": "ADuM5211:\nTrenner mit isolierter 3,3-V-Versorgung\n(VSEL = GND_ISO)\ndtoverlay=uart3",
    "54c852fc-fbc9-50e0-a55f-bd2a9a46540d": "LHPOUT treibt 600 Ω",
    "59353289-11b2-5f37-a2ec-8c8f46c11032": "(Pull-up im Pi)",
    "646831ef-3355-58eb-ac70-22015f31f59a": "oben Aufnahme (X_OUT → Codec), unten Wiedergabe (Codec → X_IN); R4 = 0R, R5 unbestückt",

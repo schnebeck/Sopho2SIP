@@ -461,7 +461,7 @@ def blatt_cm4(p: Blatt) -> None:
         p.setze(h, 299.72 + i * 12.7, 228.6)
     p.text(292, 236, "H5–H8: Bohrungen des CM4 (Abstandsbolzen M2,5, Raster 48 × 33 mm)")
     p.setze("M1", 320.04, 254.0, ref_at=(-15.24, -5.6, "left"), wert_at=(-15.24, 5.6, "left"))
-    p.text(292, 263, "M1: das CM4 selbst (Platzhalter für Stückliste und 3D-Ansicht, gesteckt, nicht bestückt)")
+    p.text(292, 263, "M1: das CM4 selbst (Platzhalter für Stückliste und 3D-Ansicht,\ngesteckt, nicht bestückt)")
     p.notiz(35.56, 45.72, 128,
             "Pinbelegung nach CM4-Datenblatt (Pins 1–200) · GPIO_VREF = 3,3 V · Ethernet 10/100 über Paar 0/1",
             "WLAN/Bluetooth auf dem Modul (CM4 mit Funk): WL_nDisable/BT_nDisable offen = an; "

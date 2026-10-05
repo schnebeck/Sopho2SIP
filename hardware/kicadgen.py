@@ -276,9 +276,7 @@ class Blatt:
         """Textkasten: KiCad bricht innerhalb der Breite selbst um; jeder Absatz beginnt eine neue Zeile.
         (x, y) wie bei text(): linker Anfang der Grundlinie der ersten Zeile."""
         self._merke("notiz")
-        innen = breite - 2 * KASTEN_RAND
-        zeilen = sum(_zeilen(a, innen, groesse) for a in absaetze)
-        hoehe = 2 * KASTEN_RAND + zeilen * ZEILENABSTAND * groesse + 0.3 * groesse
+        hoehe = _kastenhoehe(absaetze, breite, groesse)
         self.kaesten.append((rd(x - KASTEN_RAND), rd(y - groesse - KASTEN_RAND), breite, rd(hoehe),
                              "\n".join(absaetze), groesse))
 
@@ -302,24 +300,54 @@ class Blatt:
 # ------------------------------------------------------------------------------------------------------------------
 KASTEN_RAND = 0.9525            # Innenrand wie in KiCad voreingestellt
 ZEILENABSTAND = 1.61            # × Schriftgröße (mit pcbnew an der Strichschrift gemessen)
-_SCHMAL, _BREIT = set("iljtfrI.,:;|!()[]' "), set("mwMW")
+# Zeichenbreiten der KiCad-Strichschrift × Schriftgröße (mit pcbnew gemessen); andere Zeichen 0,95
+_ZEICHENBREITE = {c: b for b, zeichen in (
+    (0.48, "ijI.,:;!'"), (0.52, "l"), (0.57, "ft–"), (0.62, "r"), (0.67, "()[]{}\\"), (0.71, "~"),
+    (0.76, 'vyJT *_"²³·°„“'), (0.81, "ksxzL"), (0.86, "ceAFVY?Ä§"), (0.91, "abdghnopquEäöü"),
+    (0.95, "SXZ0123456789|"), (1.0, "BCDGKPR#€"), (1.05, "wHNOQU/ÖÜµ"), (1.09, "ß"), (1.14, "MW%—Ω"),
+    (1.24, "-+=<>&→←↔×−±≈"), (1.29, "@"), (1.33, "m"), (1.43, "…")) for c in zeichen}
 
 
 def _breite(s: str, groesse: float) -> float:
-    """Geschätzte Breite in der KiCad-Strichschrift (eher reichlich; gemessen im Mittel 0,81 × Größe je Zeichen)."""
-    return groesse * sum(0.55 if c in _SCHMAL else 1.3 if c in _BREIT else 0.85 for c in s)
+    """Breite eines Textes in der KiCad-Strichschrift."""
+    return groesse * sum(_ZEICHENBREITE.get(c, 0.95) for c in s)
 
 
 def _zeilen(absatz: str, breite: float, groesse: float) -> int:
-    """Zeilenzahl nach Wortumbruch."""
+    """Zeilenzahl nach Wortumbruch (3 % Reserve, damit KiCad nicht früher umbricht als geschätzt)."""
     n, zeile = 1, ""
     for wort in absatz.split():
         probe = f"{zeile} {wort}" if zeile else wort
-        if zeile and _breite(probe, groesse) > breite:
+        if zeile and _breite(probe, groesse) > 0.97 * breite:
             n, zeile = n + 1, wort
         else:
             zeile = probe
     return n
+
+
+def _kastenhoehe(absaetze, breite: float, groesse: float) -> float:
+    zeilen = sum(_zeilen(a, breite - 2 * KASTEN_RAND, groesse) for a in absaetze)
+    return rd(2 * KASTEN_RAND + zeilen * ZEILENABSTAND * groesse + 0.3 * groesse)
+
+
+def _kastenhoehen(text: str) -> str:
+    """Höhe jedes Textkastens aus Inhalt und (ggf. von Hand gesetzter) Breite neu berechnen."""
+    stuecke, pos = [], 0
+    for a, e, kopf in _kinder(text, text.index("(kicad_sch")):
+        if kopf != "text_box":
+            continue
+        block = text[a:e]
+        k = _sx(block)
+        groesse = _unter(k, "size")
+        schrift = _unter(_unter(_unter(k, "effects") or ["e"], "font") or ["f"], "size")
+        g = float(schrift[1]) if schrift else 1.27
+        if groesse:
+            b = float(groesse[1])
+            h = _kastenhoehe(k[1].split("\n"), abs(b), g)
+            block = re.sub(r"\(size ([-\d.]+)\s+[-\d.]+\)", lambda m: f"(size {m.group(1)} {h})", block, count=1)
+            stuecke += [text[pos:a], block]
+            pos = e
+    return "".join(stuecke) + text[pos:]
 
 
 # ------------------------------------------------------------------------------------------------------------------
@@ -980,7 +1008,7 @@ def _handlagen(verzeichnis: pathlib.Path, projekt: str, blaetter: list[tuple[Bla
 
         def jetzt() -> str:             # was ohne neue Handänderung geschrieben würde
             t = _aus_handlage(hand, gen, b.name)[0] if hand else gen
-            return _texte_setzen(_texte_setzen(t, gen_texte), von_hand[datei])
+            return _kastenhoehen(_texte_setzen(_texte_setzen(t, gen_texte), von_hand[datei]))
         if ziel.exists() and not weg:
             alt = ziel.read_text(encoding="utf-8")
             fa = _fingerabdruck(alt)
@@ -1009,7 +1037,7 @@ def _handlagen(verzeichnis: pathlib.Path, projekt: str, blaetter: list[tuple[Bla
             quelle[datei] = hand
         # Texte gehören dem Generator; von Hand geänderte bleiben, bis sie im Generator stehen
         bleibt = {**von_hand[datei], **{k: t for d, k, _, _, t in rueck if d == datei}}
-        texte[datei] = _texte_setzen(_texte_setzen(ausgabe, gen_texte), bleibt)
+        texte[datei] = _kastenhoehen(_texte_setzen(_texte_setzen(ausgabe, gen_texte), bleibt))
     if fehler:
         raise SystemExit("Handlage passt nicht zur Schaltung, nichts geschrieben:\n  " + "\n  ".join(fehler)
                          + "\nZeichnung in KiCad nachziehen oder mit --handlage-verwerfen <Blatt> zurücksetzen.")

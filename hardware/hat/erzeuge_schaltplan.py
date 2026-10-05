@@ -393,7 +393,7 @@ def rs232(p: Blatt, stecker: str = "de9") -> None:
         p.trenn(203.2, y0, y1)
     p.text(150, 246, "Pi-Seite (GND)")
     p.text(208, 246, "isolierte Seite (GND_ISO)")
-    p.text(140, 239, "ADuM5211: Trenner mit isolierter 3,3-V-Versorgung (VSEL = GND_ISO) · dtoverlay=uart3")
+    p.text(140, 239, "ADuM5211:\nTrenner mit isolierter 3,3-V-Versorgung\n(VSEL = GND_ISO)\ndtoverlay=uart3")
     if stecker == "de9":
         p.notiz(356, 223, 34, "DE9-Stecker wie am PC: 2 RxD · 3 TxD · 5 GND", "1:1-Kabel zur D340, 1200 Bd 8O1")
     else:

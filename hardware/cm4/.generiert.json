@@ -1,6 +1,6 @@
 {
  "bedienung.kicad_sch": {
-  "fingerabdruck": "209be62020a684831e7d6473cf5024328f12da3cff0d95e7a1f79989b8e59608",
+  "fingerabdruck": "370533ee668e7c79f3e95d62811aed1348642d4dee83fa4583cbb346e76da776",
   "texte": {
    "0944ad79-af1a-5482-87ca-937e8fdcf46a": "D3: Status/Konfiguration",
    "1d272922-28fc-56ea-b007-dbfdc7f9a7bf": "D1: Telefon verbunden",
@@ -14,18 +14,18 @@
   "von_hand": {}
  },
  "cm4.kicad_sch": {
-  "fingerabdruck": "30766ed78a6146416f42c0bc97f4170adf6d43d72be3b4788eccdec88d0e1e08",
+  "fingerabdruck": "ec11b5cc359d44f26f9158863474a2780956280f2d96ff1cba0e9877deb2eb73",
   "texte": {
    "15465f3d-d923-5e08-afb1-64c02fc4176b": "D10 = Aktivität (grün), D11 = Spannung (rot, über Q10 gepuffert)",
    "70ae1a27-37f4-5e8f-b4ab-948faed94d94": "Boot und Status",
    "8a3fd802-332c-58c8-b426-c4dfbb4d7752": "Pinbelegung nach CM4-Datenblatt (Pins 1–200) · GPIO_VREF = 3,3 V · Ethernet 10/100 über Paar 0/1\nWLAN/Bluetooth auf dem Modul (CM4 mit Funk): WL_nDisable/BT_nDisable offen = an; Antenne intern oder U.FL am Modul (dtparam=ant2)\neMMC: CM4 mit eMMC bootet davon; Flashen mit JP10 gesteckt über USB-C (rpiboot). CM4 Lite: Start von der µSD-Karte (Blatt µSD)",
-   "a8d6f5cc-1088-53ee-aa0e-bfd770766187": "M1: das CM4 selbst (Platzhalter für Stückliste und 3D-Ansicht, gesteckt, nicht bestückt)",
+   "a8d6f5cc-1088-53ee-aa0e-bfd770766187": "M1: das CM4 selbst (Platzhalter für Stückliste und 3D-Ansicht,\ngesteckt, nicht bestückt)",
    "ca134e98-7aaa-5f70-a175-f25a432bcdf3": "H5–H8: Bohrungen des CM4 (Abstandsbolzen M2,5, Raster 48 × 33 mm)"
   },
   "von_hand": {}
  },
  "codec.kicad_sch": {
-  "fingerabdruck": "7d0379dbcd9342e52f40207f7560e2077596a4cb0b1c86ec2443417482ca962d",
+  "fingerabdruck": "edbd887d2e52565073753cb855af7cfc856ffc0a4f382e838b009a575048019b",
   "texte": {
    "0092bf47-c0f0-5f99-acdf-7f13433ef733": "I²C 0x18 an I2C0 (GPIO0/1) · MCLK 12 MHz · Reset GPIO26 · Treiber tlv320aic32x4 (Overlay nach audiosense-pi)\nLDO_SELECT = 1: DVDD aus internem LDO; AVDD-LDO schaltet der Treiber (ldoin-supply)",
    "36e691d4-eeb7-5ff2-8737-29b8cca4ba7d": "Analogversorgung 3,3 V"
@@ -33,7 +33,7 @@
   "von_hand": {}
  },
  "ethernet.kicad_sch": {
-  "fingerabdruck": "3ce77929d9955de27643c09b6d10e8ea2740939546823305363f28eb8b17de5e",
+  "fingerabdruck": "d19bc6bab4bb557ad2bfa9eda9603b891965762c70a2a8bcff30de89869c627e",
   "texte": {
    "a1e57902-cb8e-5841-a732-d1607d90e471": "LED 12/11: Aktivität (nLED3)",
    "cee2c124-002b-57e6-b9e8-0d4448464b1b": "LED 9/10: Link (nLED2)",
@@ -42,19 +42,19 @@
   "von_hand": {}
  },
  "luefter.kicad_sch": {
-  "fingerabdruck": "5f1ca3db6d1b890d9e89eff0cb356c5053cd88368dd86cf12a7cfedfd9d5baf3",
+  "fingerabdruck": "ebe446fc46f82692ae148749f1898c99886cc65b2d2321a28dae831f3b7a9d61",
   "texte": {
    "84c72418-2075-5126-91b9-d30eb1fb79cc": "Steuerung über die SoC-Temperatur: dtoverlay=gpio-fan,gpiopin=12,temp=60000 (Hysterese im Treiber). GPIO12 kann auch PWM (PWM0) für Drehzahlregelung.\nJ15 JST PH 2,0 mm: 1 = +5 V, 2 = Lüfter −"
   },
   "von_hand": {}
  },
  "rs232.kicad_sch": {
-  "fingerabdruck": "aec2421df655f61a41b0610046447d802e53f202a169dbf71c84f87a0854c56e",
+  "fingerabdruck": "05ce1a1433d5c6de336640c74158a4ccc2d067807f9d036cb61be9dd689fcd77",
   "texte": {
    "464685f1-8e42-5a0f-b085-fdf20cafa38f": "4P4C (RJ10): 1 GND · 2 RxD · 3 TxD · 4 frei\nAdapterkabel auf DE9-Stecker zur D340: 4P4C 1→5, 2→2, 3→3 · 1200 Bd 8O1",
    "58cd603e-f405-516f-9b06-6be754be1b29": "Pi-Seite (GND)",
    "6fdfac90-4f98-5afd-9a2c-7ce763a3bf40": "isolierte Seite (GND_ISO)",
-   "d941c162-82e0-5805-8237-80bc6b9cd8e3": "ADuM5211: Trenner mit isolierter 3,3-V-Versorgung (VSEL = GND_ISO) · dtoverlay=uart3"
+   "d941c162-82e0-5805-8237-80bc6b9cd8e3": "ADuM5211:\nTrenner mit isolierter 3,3-V-Versorgung\n(VSEL = GND_ISO)\ndtoverlay=uart3"
   },
   "von_hand": {}
  },
@@ -73,7 +73,7 @@
   "von_hand": {}
  },
  "sprechweg.kicad_sch": {
-  "fingerabdruck": "74e25e34c1b0cb474adeb42b5f55b344017ba6658f771667194580a0c8d0b33f",
+  "fingerabdruck": "f110a67f8ad0979da2ffd7c22e518216b981520e392be98bb59354d0aafb5682",
   "texte": {
    "5fd58f92-c59f-513c-92c2-00b75d4ffc62": "Pi-Seite (GND)",
    "975f39ae-df4d-51e3-838d-24b2993f4d92": "oben Aufnahme (X_OUT → Codec), unten Wiedergabe (Codec → X_IN); R4 = 0R, R5 unbestückt",
@@ -83,7 +83,7 @@
   "von_hand": {}
  },
  "versorgung.kicad_sch": {
-  "fingerabdruck": "3dc5a953deb7bdefa2f0e9e308e8d57f7911dbc184be69c127559e5549607bbe",
+  "fingerabdruck": "670d99dbe787339f3e43b1da0cc55fe61e8495a7cb70785188f032eeab912ce0",
   "texte": {
    "8c70e5ab-3e55-5d03-913a-6267742af9af": "5 V über USB-C (Rd 5,1 kΩ: Senke); dieselbe Buchse dient mit gestecktem nRPIBOOT zum Flashen des eMMC.\nStrombedarf CM4 bis ~1,4 A + Peripherie: Netzteil mit 5 V/3 A verwenden."
   },
