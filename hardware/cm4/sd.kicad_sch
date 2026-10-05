@@ -1534,6 +1534,6 @@
 	(hierarchical_label "SD_DAT0" (shape bidirectional) (at 213.36 115.57 180) (effects (font (size 1.27 1.27)) (justify right)) (uuid "4ae00105-dde6-521b-bc78-602786d21718"))
 	(hierarchical_label "SD_DAT1" (shape bidirectional) (at 213.36 118.11 180) (effects (font (size 1.27 1.27)) (justify right)) (uuid "9dc6109d-06ba-5574-a401-6f7d260a6b43"))
 	(hierarchical_label "SD_PWR_ON" (shape bidirectional) (at 144.78 148.59 180) (effects (font (size 1.27 1.27)) (justify right)) (uuid "1b69476c-311a-548f-a9d3-5f18cd3136d1"))
-	(text_box "Nur beim CM4 Lite belegt; beim CM4 mit eMMC sind die SD-Pins offen, der Sockel stört nicht. R14 hält den Lastschalter ohne Ansteuerung an (Start von der Karte möglich), wie im CM4-Datenblatt." (exclude_from_sim no) (at 136.21 164.15 0) (size 104 6.38) (margins 0.9525 0.9525 0.9525 0.9525) (stroke (width 0.1) (type solid) (color 132 132 132 1)) (fill (type color) (color 255 255 230 1)) (effects (font (size 1.27 1.27)) (justify left top)) (uuid "199bd486-1686-54e3-869d-1aeb59e4b5b9"))
+	(text_box "Nur beim CM4 Lite belegt; beim CM4 mit eMMC sind die SD-Pins offen, der Sockel stört nicht. R14 hält den Lastschalter ohne Ansteuerung an (Start von der Karte möglich), wie im CM4-Datenblatt." (exclude_from_sim no) (at 136.21 164.15 0) (size 104 6.38) (margins 0.9525 0.9525 0.9525 0.9525) (stroke (width -0.0001) (type solid)) (fill (type none)) (effects (font (size 1.27 1.27)) (justify left top)) (uuid "199bd486-1686-54e3-869d-1aeb59e4b5b9"))
 	(embedded_fonts no)
 )

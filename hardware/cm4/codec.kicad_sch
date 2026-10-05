@@ -5170,5 +5170,5 @@
 		)
 	)
 (text "Analogversorgung 3,3 V" (exclude_from_sim no) (at 199.9 177.29 0) (effects (font (size 1.524 1.524) italic) (justify left bottom)) (uuid "36e691d4-eeb7-5ff2-8737-29b8cca4ba7d"))
-	(text_box "I²C 0x18 an I2C0 (GPIO0/1) · MCLK 12 MHz · Reset GPIO26 · Treiber tlv320aic32x4 (Overlay nach audiosense-pi)\nLDO_SELECT = 1: DVDD aus internem LDO; AVDD-LDO schaltet der Treiber (ldoin-supply)" (exclude_from_sim no) (at 148.15 210.89 0) (size 118 8.42) (margins 0.9525 0.9525 0.9525 0.9525) (stroke (width 0.1) (type solid) (color 132 132 132 1)) (fill (type color) (color 255 255 230 1)) (effects (font (size 1.27 1.27)) (justify left top)) (uuid "0092bf47-c0f0-5f99-acdf-7f13433ef733"))
+	(text_box "I²C 0x18 an I2C0 (GPIO0/1) · MCLK 12 MHz · Reset GPIO26 · Treiber tlv320aic32x4 (Overlay nach audiosense-pi)\nLDO_SELECT = 1: DVDD aus internem LDO; AVDD-LDO schaltet der Treiber (ldoin-supply)" (exclude_from_sim no) (at 148.15 210.89 0) (size 118 8.42) (margins 0.9525 0.9525 0.9525 0.9525) (stroke (width -0.0001) (type solid)) (fill (type none)) (effects (font (size 1.27 1.27)) (justify left top)) (uuid "0092bf47-c0f0-5f99-acdf-7f13433ef733"))
 	)

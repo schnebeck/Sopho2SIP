@@ -273,7 +273,7 @@ class Blatt:
         self.texte.append((x, y, s, groesse))
 
     def notiz(self, x, y, breite, *absaetze, groesse=1.27) -> None:
-        """Textkasten: KiCad bricht innerhalb der Breite selbst um; jeder Absatz beginnt eine neue Zeile.
+        """Textkasten ohne Rahmen und Hintergrund: KiCad bricht innerhalb der Breite um; jeder Absatz neue Zeile.
         (x, y) wie bei text(): linker Anfang der Grundlinie der ersten Zeile."""
         self._merke("notiz")
         hoehe = _kastenhoehe(absaetze, breite, groesse)
@@ -563,7 +563,7 @@ def schreibe_blatt(b: Blatt, projekt: str, pfad: str, wurzel: Blatt | None = Non
         b.textquellen[kennung] = (s, herkunft("notiz", i))
         t.append(f'\t(text_box "{_escape(s)}" (exclude_from_sim no) (at {x} {y} 0) (size {rd(br)} {rd(h)}) '
                  f'(margins {KASTEN_RAND} {KASTEN_RAND} {KASTEN_RAND} {KASTEN_RAND}) '
-                 f'(stroke (width 0.1) (type solid) (color 132 132 132 1)) (fill (type color) (color 255 255 230 1)) '
+                 f'(stroke (width -0.0001) (type solid)) (fill (type none)) '
                  f'(effects (font (size {g} {g})) (justify left top)) (uuid "{kennung}"))\n')
     for a, c in b.striche:
         (x0, y0), (x1, y1) = v(a), v(c)

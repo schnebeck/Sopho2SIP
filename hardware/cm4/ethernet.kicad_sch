@@ -4143,5 +4143,5 @@
 	)
 (text "LED 12/11: Aktivität (nLED3)" (exclude_from_sim no) (at 270.01 122.48 0) (effects (font (size 1.27 1.27) italic) (justify left bottom)) (uuid "a1e57902-cb8e-5841-a732-d1607d90e471"))
 	(text "LED 9/10: Link (nLED2)" (exclude_from_sim no) (at 270.01 126.48 0) (effects (font (size 1.27 1.27) italic) (justify left bottom)) (uuid "cee2c124-002b-57e6-b9e8-0d4448464b1b"))
-	(text_box "MagJack 1:1 wie CM4-Datenblatt (Figure 2): Mittelanzapfungen über C45 an GND, ESD-Schutz U12, LED 470 Ω.\n10/100 genügt für VoIP; für Gigabit 4-Paar-MagJack verwenden und Paare 2/3 des CM4 anschließen." (exclude_from_sim no) (at 117.16 164.15 0) (size 112 8.42) (margins 0.9525 0.9525 0.9525 0.9525) (stroke (width 0.1) (type solid) (color 132 132 132 1)) (fill (type color) (color 255 255 230 1)) (effects (font (size 1.27 1.27)) (justify left top)) (uuid "f5ebdb16-41ed-5d43-9990-1e4b18c79040"))
+	(text_box "MagJack 1:1 wie CM4-Datenblatt (Figure 2): Mittelanzapfungen über C45 an GND, ESD-Schutz U12, LED 470 Ω.\n10/100 genügt für VoIP; für Gigabit 4-Paar-MagJack verwenden und Paare 2/3 des CM4 anschließen." (exclude_from_sim no) (at 117.16 164.15 0) (size 112 8.42) (margins 0.9525 0.9525 0.9525 0.9525) (stroke (width -0.0001) (type solid)) (fill (type none)) (effects (font (size 1.27 1.27)) (justify left top)) (uuid "f5ebdb16-41ed-5d43-9990-1e4b18c79040"))
 	)
