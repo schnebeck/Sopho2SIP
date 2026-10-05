@@ -186,6 +186,9 @@ class Blatt:
         self.nc: list[tuple[float, float]] = []
         self.rahmen: list[tuple[float, float, float, float, str]] = []
         self.texte: list[tuple[float, float, str, float]] = []
+        self.kaesten: list[tuple[float, float, float, float, str, float]] = []   # Textkästen (x, y, b, h, Text, Größe)
+        self.herkunft: dict[str, list] = {"text": [], "notiz": [], "rahmen_": []}   # Aufrufstellen (Datei, Zeile, Art)
+        self.textquellen: dict[str, tuple[str, tuple | None]] = {}   # UUID → (Text, Aufrufstelle); von schreibe_blatt
         self.striche: list[tuple[tuple[float, float], tuple[float, float]]] = []
         self.blaetter: list[dict] = []        # Blattsymbole (nur im Wurzelblatt)
         self.libs: dict[str, str] = {}
@@ -255,11 +258,28 @@ class Blatt:
         self.pw(netz, (x, y - laenge))
 
     # --- Gestaltung -------------------------------------------------------------------------------------------
+    def _merke(self, art: str) -> None:
+        """Aufrufstelle im Generator merken (für die Rückführung geänderter Texte)."""
+        f = sys._getframe(2)
+        self.herkunft[art].append((f.f_code.co_filename, f.f_lineno, art))
+
     def rahmen_(self, x0, y0, x1, y1, titel) -> None:
+        self._merke("rahmen_")
         self.rahmen.append((x0, y0, x1, y1, titel))
 
     def text(self, x, y, s, groesse=1.27) -> None:
+        self._merke("text")
         self.texte.append((x, y, s, groesse))
+
+    def notiz(self, x, y, breite, *absaetze, groesse=1.27) -> None:
+        """Textkasten: KiCad bricht innerhalb der Breite selbst um; jeder Absatz beginnt eine neue Zeile.
+        (x, y) wie bei text(): linker Anfang der Grundlinie der ersten Zeile."""
+        self._merke("notiz")
+        innen = breite - 2 * KASTEN_RAND
+        zeilen = sum(_zeilen(a, innen, groesse) for a in absaetze)
+        hoehe = 2 * KASTEN_RAND + zeilen * ZEILENABSTAND * groesse + 0.3 * groesse
+        self.kaesten.append((rd(x - KASTEN_RAND), rd(y - groesse - KASTEN_RAND), breite, rd(hoehe),
+                             "\n".join(absaetze), groesse))
 
     def trenn(self, x, y0, y1) -> None:
         self.striche.append(((x, y0), (x, y1)))
@@ -274,6 +294,31 @@ class Blatt:
             pos[name] = (rd(x if seite == "l" else x + breite), rd(y + dy))
         self.blaetter.append({"kind": kind, "x": x, "y": y, "b": breite, "h": hoehe, "pins": pins, "pos": pos})
         return pos
+
+
+# ------------------------------------------------------------------------------------------------------------------
+# Textkästen
+# ------------------------------------------------------------------------------------------------------------------
+KASTEN_RAND = 0.9525            # Innenrand wie in KiCad voreingestellt
+ZEILENABSTAND = 1.61            # × Schriftgröße (mit pcbnew an der Strichschrift gemessen)
+_SCHMAL, _BREIT = set("iljtfrI.,:;|!()[]' "), set("mwMW")
+
+
+def _breite(s: str, groesse: float) -> float:
+    """Geschätzte Breite in der KiCad-Strichschrift (eher reichlich; gemessen im Mittel 0,81 × Größe je Zeichen)."""
+    return groesse * sum(0.55 if c in _SCHMAL else 1.3 if c in _BREIT else 0.85 for c in s)
+
+
+def _zeilen(absatz: str, breite: float, groesse: float) -> int:
+    """Zeilenzahl nach Wortumbruch."""
+    n, zeile = 1, ""
+    for wort in absatz.split():
+        probe = f"{zeile} {wort}" if zeile else wort
+        if zeile and _breite(probe, groesse) > breite:
+            n, zeile = n + 1, wort
+        else:
+            zeile = probe
+    return n
 
 
 # ------------------------------------------------------------------------------------------------------------------
@@ -361,6 +406,8 @@ def _ausdehnung(b: Blatt) -> tuple[float, float, float, float]:
         pts += [(x - 3.0, y - 5.0), (x + 3.0, y + 5.0)] + _textkasten(x, y, netz, 1.27)
     for x, y, s, g in b.texte:
         pts += _textkasten(x, y, s, g, "left", unten=True)
+    for x, y, br, h, _s, _g in b.kaesten:
+        pts += [(x, y), (x + br, y + h)]
     for bl in b.blaetter:
         pts += [(bl["x"], bl["y"] - 3.0), (bl["x"] + bl["b"], bl["y"] + bl["h"] + 3.0)]
     xs, ys = [p_[0] for p_ in pts], [p_[1] for p_ in pts]
@@ -465,16 +512,30 @@ def schreibe_blatt(b: Blatt, projekt: str, pfad: str, wurzel: Blatt | None = Non
         else:
             t.append(f'\t(label "{netz}" (at {x} {y} {a}) (effects (font (size 1.27 1.27)) (justify {j} bottom)) '
                      f'(uuid "{u()}"))\n')
-    for x0, y0, x1, y1, titel in b.rahmen:
+    herkunft = lambda art, i: b.herkunft[art][i] if i < len(b.herkunft[art]) else None
+    b.textquellen = {}
+    for i, (x0, y0, x1, y1, titel) in enumerate(b.rahmen):
         (x0, y0), (x1, y1) = v((x0, y0)), v((x1, y1))
         t.append(f'\t(rectangle (start {x0} {y0}) (end {x1} {y1}) (stroke (width 0.3) (type dash) (color 72 72 72 1)) '
                  f'(fill (type none)) (uuid "{u()}"))\n')
-        t.append(f'\t(text "{titel}" (exclude_from_sim no) (at {rd(x0 + 2)} {rd(y0 + 5)} 0) (effects (font (size 2.2 2.2) bold) '
-                 f'(justify left bottom)) (uuid "{u()}"))\n')
-    for x, y, s, g in b.texte:
+        kennung = u()
+        b.textquellen[kennung] = (titel, herkunft("rahmen_", i))
+        t.append(f'\t(text "{_escape(titel)}" (exclude_from_sim no) (at {rd(x0 + 2)} {rd(y0 + 5)} 0) '
+                 f'(effects (font (size 2.2 2.2) bold) (justify left bottom)) (uuid "{kennung}"))\n')
+    for i, (x, y, s, g) in enumerate(b.texte):
         x, y = v((x, y))
-        t.append(f'\t(text "{s}" (exclude_from_sim no) (at {x} {y} 0) (effects (font (size {g} {g}) italic) '
-                 f'(justify left bottom)) (uuid "{u()}"))\n')
+        kennung = u()
+        b.textquellen[kennung] = (s, herkunft("text", i))
+        t.append(f'\t(text "{_escape(s)}" (exclude_from_sim no) (at {x} {y} 0) (effects (font (size {g} {g}) italic) '
+                 f'(justify left bottom)) (uuid "{kennung}"))\n')
+    for i, (x, y, br, h, s, g) in enumerate(b.kaesten):
+        x, y = v((x, y))
+        kennung = u()
+        b.textquellen[kennung] = (s, herkunft("notiz", i))
+        t.append(f'\t(text_box "{_escape(s)}" (exclude_from_sim no) (at {x} {y} 0) (size {rd(br)} {rd(h)}) '
+                 f'(margins {KASTEN_RAND} {KASTEN_RAND} {KASTEN_RAND} {KASTEN_RAND}) '
+                 f'(stroke (width 0.1) (type solid) (color 132 132 132 1)) (fill (type color) (color 255 255 230 1)) '
+                 f'(effects (font (size {g} {g})) (justify left top)) (uuid "{kennung}"))\n')
     for a, c in b.striche:
         (x0, y0), (x1, y1) = v(a), v(c)
         t.append(f'\t(polyline (pts (xy {x0} {y0}) (xy {x1} {y1})) (stroke (width 0.4) (type dash_dot) '
@@ -516,11 +577,11 @@ def schreibe_projekt(verzeichnis: pathlib.Path, projekt: str, wurzel: Blatt,
     for bl in wurzel.blaetter:
         k: Blatt = bl["kind"]
         blaetter.append((k, k.datei, schreibe_blatt(k, projekt, f"/{wurzel.uuid}/{k.uuid}", wurzel)))
-    texte = _handlagen(verzeichnis, projekt, blaetter, verwerfen)
+    texte, stand = _handlagen(verzeichnis, projekt, blaetter, verwerfen)
     for datei, text in texte.items():
         (verzeichnis / datei).write_text(text, encoding="utf-8")
-    (verzeichnis / STAND).write_text(json.dumps({d: _fingerabdruck(t) for d, t in texte.items()}, indent=1,
-                                                sort_keys=True) + "\n", encoding="utf-8")
+    (verzeichnis / STAND).write_text(json.dumps(stand, indent=1, sort_keys=True, ensure_ascii=False) + "\n",
+                                     encoding="utf-8")
     schreibe_bibliothek(verzeichnis)
     schreibe_fp_tabelle(verzeichnis)
     # vorhandene Einstellungen (z. B. Netzklassen und Regeln aus dem Layout-Generator) behalten
@@ -580,6 +641,16 @@ def _verwerfen_aus_argv() -> set[str]:
     return {n.strip() for n in (_argument("--handlage-verwerfen") or "").split(",") if n.strip()}
 
 
+def _escape(s: str) -> str:
+    """Text → Inhalt einer KiCad-Zeichenkette."""
+    return s.replace("\\", "\\\\").replace('"', '\\"').replace("\n", "\\n")
+
+
+def _entschluesseln(s: str) -> str:
+    """Inhalt einer KiCad-Zeichenkette → Text."""
+    return re.sub(r"\\(.)", lambda m: "\n" if m.group(1) == "n" else m.group(1), s)
+
+
 def _sx(text: str):
     """S-Ausdruck → verschachtelte Listen (Zeichenketten ohne Anführungszeichen)."""
     stapel: list[list] = [[]]
@@ -591,7 +662,7 @@ def _sx(text: str):
             k = stapel.pop()
             stapel[-1].append(k)
         else:
-            stapel[-1].append(re.sub(r"\\(.)", r"\1", t[1:-1]) if t[0] == '"' else t)
+            stapel[-1].append(_entschluesseln(t[1:-1]) if t[0] == '"' else t)
     return stapel[0][0]
 
 
@@ -652,8 +723,9 @@ def _punkte(t: list) -> tuple:
     return tuple(tuple(round(float(v), 2) for v in xy[1:3]) for xy in _alle(pts, "xy"))
 
 
-def _zeichnung(text: str) -> list[str]:
-    """Alles, was die Zeichnung ausmacht (Lagen, Leitungen, Beschriftungen), ohne UUIDs und Formatierung."""
+def _zeichnung(text: str, mit_texten: bool = True) -> list[str]:
+    """Alles, was die Zeichnung ausmacht (Lagen, Leitungen, Beschriftungen), ohne UUIDs und Formatierung.
+    mit_texten=False: Inhalt von Texten und Textkästen nicht mitzählen, nur ihre Lage."""
     erg = []
     for k in _sx(text)[1:]:
         if not isinstance(k, list):
@@ -668,8 +740,14 @@ def _zeichnung(text: str) -> list[str]:
             erg.append((kopf, tuple(sorted(_punkte(k)))))
         elif kopf in ("junction", "no_connect", "bus_entry"):
             erg.append((kopf, _lage(k)))
-        elif kopf in ("label", "hierarchical_label", "global_label", "text"):
+        elif kopf in ("label", "hierarchical_label", "global_label"):
             erg.append((kopf, k[1], _lage(k), _schrift(k)))
+        elif kopf == "text":
+            erg.append((kopf, k[1] if mit_texten else "", _lage(k), _schrift(k)))
+        elif kopf == "text_box":
+            groesse = _unter(k, "size")
+            erg.append((kopf, k[1] if mit_texten else "", _lage(k),
+                        tuple(round(float(v), 2) for v in groesse[1:]) if groesse else None))
         elif kopf == "rectangle":
             erg.append((kopf, _xy(k, "start"), _xy(k, "end")))
         elif kopf == "sheet":
@@ -680,8 +758,114 @@ def _zeichnung(text: str) -> list[str]:
     return sorted(repr(e) for e in erg)
 
 
-def _fingerabdruck(text: str) -> str:
-    return hashlib.sha256("\n".join(_zeichnung(text)).encode()).hexdigest()
+def _fingerabdruck(text: str, mit_texten: bool = True) -> str:
+    return hashlib.sha256("\n".join(_zeichnung(text, mit_texten)).encode()).hexdigest()
+
+
+def _texte(text: str) -> dict[str, str]:
+    """Inhalt der Texte und Textkästen eines Blatts nach UUID."""
+    erg = {}
+    for k in _sx(text)[1:]:
+        if isinstance(k, list) and k and k[0] in ("text", "text_box"):
+            kennung = _unter(k, "uuid")
+            if kennung:
+                erg[kennung[1]] = k[1]
+    return erg
+
+
+def _texte_setzen(text: str, inhalte: dict[str, str]) -> str:
+    """Inhalt von Texten und Textkästen (nach UUID) ersetzen; Lage und Format bleiben."""
+    if not inhalte:
+        return text
+    stuecke, pos = [], 0
+    for a, e, kopf in _kinder(text, text.index("(kicad_sch")):
+        if kopf not in ("text", "text_box"):
+            continue
+        block = text[a:e]
+        k = _eigene_uuid(block)
+        kennung = re.search(r'"([^"]+)"', block[k[0]:k[1]]).group(1) if k else None
+        if kennung in inhalte:
+            block = re.sub(r'^\((text|text_box) %s' % _QSTR,
+                           lambda m: f'({m.group(1)} "{_escape(inhalte[kennung])}"', block, count=1)
+            stuecke += [text[pos:a], block]
+            pos = e
+    return "".join(stuecke) + text[pos:]
+
+
+# Argumente, die den Text tragen: text(x, y, s) · notiz(x, y, breite, *absaetze) · rahmen_(x0, y0, x1, y1, titel)
+_TEXTARGUMENTE = {"text": slice(2, 3), "notiz": slice(3, None), "rahmen_": slice(4, 5)}
+
+
+def _literal(s: str) -> str:
+    return '"' + s.replace("\\", "\\\\").replace('"', '\\"').replace("\n", "\\n") + '"'
+
+
+def _literale(absaetze: list[str], spalte: int, breite: int = 118) -> str:
+    """Python-Literale für die Absätze (durch Komma getrennt); lange Absätze als verkettete Literale über
+    mehrere Zeilen, eingerückt auf die Spalte des ersten Literals."""
+    platz = max(40, breite - spalte - 3)
+    teile = []
+    for absatz in absaetze:
+        zeilen, z = [], ""
+        for wort in absatz.split(" "):
+            probe = f"{z} {wort}" if z else wort
+            if z and len(probe) + 1 > platz:
+                zeilen.append(z + " ")
+                z = wort
+            else:
+                z = probe
+        zeilen.append(z)
+        teile.append(("\n" + " " * spalte).join(_literal(x) for x in zeilen))
+    return (",\n" + " " * spalte).join(teile)
+
+
+def _rueckfuehren(aenderungen: list[tuple]) -> dict[str, str]:
+    """In KiCad geänderte Texte in den Generator-Quelltext schreiben.
+    aenderungen: (Kennung, Herkunft (Datei, Zeile, Art), bisheriger Text, neuer Text).
+    Ersetzt wird nur, wenn der Aufruf eindeutig ist und seine Literale genau den bisherigen Text ergeben.
+    Liefert {Kennung: Grund} für die Texte, die nicht zurückgeführt werden konnten."""
+    fehl: dict[str, str] = {}
+    nach_datei: dict[str, list] = {}
+    for kennung, herkunft, alt, neu in aenderungen:
+        if herkunft is None:
+            fehl[kennung] = "Herkunft unbekannt"
+        else:
+            nach_datei.setdefault(herkunft[0], []).append((kennung, herkunft, alt, neu))
+    for datei, liste in nach_datei.items():
+        quelltext = pathlib.Path(datei).read_text(encoding="utf-8")
+        roh = quelltext.encode("utf-8")
+        anfang = [0]                                   # Byte-Versatz jeder Zeile (ast zählt Spalten in Bytes)
+        for zeile in roh.splitlines(keepends=True):
+            anfang.append(anfang[-1] + len(zeile))
+        aufrufe = [n for n in ast.walk(ast.parse(quelltext)) if isinstance(n, ast.Call)
+                   and isinstance(n.func, ast.Attribute) and n.func.attr in _TEXTARGUMENTE]
+        ersatz = []
+        for kennung, (_, zeile, art), alt, neu in liste:
+            ort = f"{pathlib.Path(datei).name}:{zeile}"
+            treffer = [n for n in aufrufe if n.func.attr == art and n.lineno <= zeile <= n.end_lineno]
+            if len(treffer) != 1:
+                fehl[kennung] = f"{ort}: Aufruf nicht eindeutig"
+                continue
+            args = treffer[0].args[_TEXTARGUMENTE[art]]
+            if not args or not all(isinstance(a, ast.Constant) and isinstance(a.value, str) for a in args):
+                fehl[kennung] = f"{ort}: Text wird im Generator berechnet"
+                continue
+            if "\n".join(a.value for a in args) != alt:
+                fehl[kennung] = f"{ort}: Quelltext ergibt nicht den bisherigen Text"
+                continue
+            erster, letzter = args[0], args[-1]
+            a0 = anfang[erster.lineno - 1]
+            spalte = len(roh[a0:a0 + erster.col_offset].decode("utf-8"))
+            absaetze = neu.split("\n") if art == "notiz" else [neu]
+            ersatz.append((a0 + erster.col_offset, anfang[letzter.end_lineno - 1] + letzter.end_col_offset,
+                           _literale(absaetze, spalte).encode("utf-8"), ort, neu))
+        for a, e, code, ort, neu in sorted(ersatz, reverse=True):
+            roh = roh[:a] + code + roh[e:]
+            print(f"  Text zurückgeführt nach {ort}: „{neu[:70]}{'…' if len(neu) > 70 else ''}“")
+        if ersatz:
+            ast.parse(roh.decode("utf-8"))             # Quelltext muss gültig bleiben
+            pathlib.Path(datei).write_text(roh.decode("utf-8"), encoding="utf-8")
+    return fehl
 
 
 def _eigenschaft_wert(block: str, name: str) -> str | None:
@@ -757,9 +941,10 @@ def _aus_handlage(hand: str, gen: str, name: str) -> tuple[str, list[str], list[
 
 
 def _handlagen(verzeichnis: pathlib.Path, projekt: str, blaetter: list[tuple[Blatt, str, str]],
-               verwerfen: set[str]) -> dict[str, str]:
-    """Endgültige Blatttexte: erzeugte Zeichnung oder Handlage (neu erkannte Handänderungen werden übernommen,
-    wenn die Netzliste stimmt). Bricht ab, ohne etwas zu schreiben, wenn eine Handlage nicht mehr passt."""
+               verwerfen: set[str]) -> tuple[dict[str, str], dict]:
+    """Endgültige Blatttexte und neuer Stand. Zeichnung vom Generator oder aus der Handlage (neu erkannte
+    Handänderungen werden übernommen, wenn die Netzliste stimmt); Texte vom Generator, in KiCad geänderte Texte
+    werden in den Generator zurückgeführt. Bricht ab, ohne etwas zu schreiben, wenn eine Handlage nicht passt."""
     ordner = verzeichnis / HANDLAGE
     kopie = _argument("--handlage-aus")
     quelle_dir = pathlib.Path(kopie).expanduser().resolve() if kopie else verzeichnis
@@ -768,32 +953,52 @@ def _handlagen(verzeichnis: pathlib.Path, projekt: str, blaetter: list[tuple[Bla
     stand_datei = verzeichnis / STAND
     stand = json.loads(stand_datei.read_text(encoding="utf-8")) if stand_datei.exists() else {}
     texte, neu, quelle, fehler, hinweise = {}, [], {}, [], []
+    rueck, nur_text, von_hand = [], [], {}
     for b, datei, gen in blaetter:
+        st = stand.get(datei)
+        st = st if isinstance(st, dict) else {"fingerabdruck": st} if st else {}
         weg = {datei, b.name} & verwerfen
         hand_datei, ziel = ordner / datei, quelle_dir / datei
         if weg and hand_datei.exists():
             hand_datei.unlink()
             print(f"{b.name}: Handlage verworfen, Zeichnung wieder vom Generator")
         hand = hand_datei.read_text(encoding="utf-8") if hand_datei.exists() else None
+        gen_texte = {k: v[0] for k, v in b.textquellen.items()}
+        von_hand[datei] = {} if weg else {k: v for k, v in st.get("von_hand", {}).items() if k in gen_texte}
+        bisher_texte = st.get("texte") or gen_texte
+
+        def jetzt() -> str:             # was ohne neue Handänderung geschrieben würde
+            t = _aus_handlage(hand, gen, b.name)[0] if hand else gen
+            return _texte_setzen(_texte_setzen(t, gen_texte), von_hand[datei])
         if ziel.exists() and not weg:
             alt = ziel.read_text(encoding="utf-8")
             fa = _fingerabdruck(alt)
-            bisher = stand.get(datei)
-            if bisher is None:          # ohne Stand: unverändert, wenn gleich dem, was jetzt entstünde
-                bisher = _fingerabdruck(_aus_handlage(hand, gen, b.name)[0] if hand else gen)
-            if fa != bisher:
-                hand = alt
-                neu.append((b.name, datei))
-            elif kopie and hand is None and fa != _fingerabdruck(gen):
-                hand = alt              # Kopie aus älterem Stand: nur übernehmen, was sich wirklich unterscheidet
-                neu.append((b.name, datei))
+            bisher = st.get("fingerabdruck") or _fingerabdruck(jetzt())
+            if fa != bisher or (kopie and fa != _fingerabdruck(jetzt())):
+                hand_texte = _texte(alt)
+                for k, inhalt in hand_texte.items():
+                    vorher = von_hand[datei].get(k, bisher_texte.get(k, gen_texte.get(k)))
+                    if k in gen_texte and inhalt != vorher:
+                        rueck.append((datei, k, b.textquellen[k][1], gen_texte[k], inhalt))
+                    elif k not in gen_texte and k not in bisher_texte:
+                        hinweise.append(f"{b.name}: neuer Text nur in der Zeichnung, nicht im Generator: „{inhalt[:60]}“")
+                for k in sorted(set(gen_texte) - set(hand_texte)):
+                    hinweise.append(f"{b.name}: Text in KiCad gelöscht, im Generator noch vorhanden: „{gen_texte[k][:60]}“")
+                if _fingerabdruck(alt, False) == _fingerabdruck(jetzt(), False):
+                    nur_text.append(b.name)  # Lage unverändert: keine Handlage nötig
+                else:
+                    hand = alt
+                    neu.append((b.name, datei))
         if hand is None:
-            texte[datei] = gen
-            continue
-        texte[datei], f, h = _aus_handlage(hand, gen, b.name)
-        fehler += f
-        hinweise += h
-        quelle[datei] = hand
+            ausgabe = gen
+        else:
+            ausgabe, f, h = _aus_handlage(hand, gen, b.name)
+            fehler += f
+            hinweise += h
+            quelle[datei] = hand
+        # Texte gehören dem Generator; von Hand geänderte bleiben, bis sie im Generator stehen
+        bleibt = {**von_hand[datei], **{k: t for d, k, _, _, t in rueck if d == datei}}
+        texte[datei] = _texte_setzen(_texte_setzen(ausgabe, gen_texte), bleibt)
     if fehler:
         raise SystemExit("Handlage passt nicht zur Schaltung, nichts geschrieben:\n  " + "\n  ".join(fehler)
                          + "\nZeichnung in KiCad nachziehen oder mit --handlage-verwerfen <Blatt> zurücksetzen.")
@@ -808,11 +1013,20 @@ def _handlagen(verzeichnis: pathlib.Path, projekt: str, blaetter: list[tuple[Bla
         ordner.mkdir(exist_ok=True)
         (ordner / datei).write_text(quelle[datei], encoding="utf-8")
         print(f"{name}: Handänderung erkannt, Netzliste wie SOLL → übernommen nach {HANDLAGE}/{datei}")
+    for name in nur_text:
+        print(f"{name}: nur Texte von Hand geändert")
     for datei in sorted(set(quelle) - {d for _, d in neu}):
         print(f"{datei}: Zeichnung aus {HANDLAGE}/{datei}")
+    fehl = _rueckfuehren([(k, herkunft, alt, t) for _, k, herkunft, alt, t in rueck])
+    for d, k, herkunft, _, t in rueck:
+        if k in fehl:
+            von_hand[d][k] = t
+            print(f"  Text bleibt von Hand ({fehl[k]}): „{t[:70]}“ – im Generator nachziehen")
     for h in hinweise:
         print(f"  Hinweis {h}")
-    return texte
+    stand_neu = {d: {"fingerabdruck": _fingerabdruck(t), "texte": _texte(t), "von_hand": von_hand.get(d, {})}
+                 for d, t in texte.items()}
+    return texte, stand_neu
 
 
 def _pruefe_texte(projekt: str, texte: dict[str, str], blaetter: list[Blatt]) -> list[str]:

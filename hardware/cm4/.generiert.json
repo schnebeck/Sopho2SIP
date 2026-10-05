@@ -1,12 +1,92 @@
 {
- "bedienung.kicad_sch": "3c2f234082cdbc0764e6db03bda753d7ed0bae12af598f4f82235e81bfeb3de5",
- "cm4.kicad_sch": "8c3cbb261fc45df3ce1a827214dbb89d638c3594e6fe82e8e600bb7e891f5df1",
- "codec.kicad_sch": "3357eeba19f2ccc8b4dcb9d6e5d47be20656bf576b3f75fc5b070156dc557191",
- "ethernet.kicad_sch": "2300feb3f2ca9123a95ae2ff85a7538f7602739ed5844105f16103b8922afbbc",
- "luefter.kicad_sch": "cacb71b73f7c7ed198e07f58afa23a40471137b68569606ad4b0db4a6b9db950",
- "rs232.kicad_sch": "b6735c92d51d012f39518b16ad0606c8db5c6e1b1d5df8e883d9b6d8c09dd667",
- "sd.kicad_sch": "9203672421a18a19ca81983291f3d6ffc8c73fe6830940ec832b0cf8e76fcb58",
- "sopho2sip-cm4.kicad_sch": "5720fc92fede21e755f194844bf70a00428d05038456b01734770ced0bf1d390",
- "sprechweg.kicad_sch": "74e25e34c1b0cb474adeb42b5f55b344017ba6658f771667194580a0c8d0b33f",
- "versorgung.kicad_sch": "dee522d6c912282a070d94f653485496950e27b39e80d6d79fd1604d30a3cc78"
+ "bedienung.kicad_sch": {
+  "fingerabdruck": "209be62020a684831e7d6473cf5024328f12da3cff0d95e7a1f79989b8e59608",
+  "texte": {
+   "0944ad79-af1a-5482-87ca-937e8fdcf46a": "H1–H4: Gehäusebefestigung M2,5 (Lage nach Gehäuse); CM4 auf 4 Abstandsbolzen M2,5",
+   "1d272922-28fc-56ea-b007-dbfdc7f9a7bf": "D1: Telefon verbunden",
+   "1d53d9d4-605b-5122-84bd-31665f5d2116": "D3: Status/Konfiguration",
+   "221e8702-f5b0-53f3-adfb-a7ec80d96913": "Annehmen/Auflegen",
+   "22687368-3afe-5129-9ebf-d1da20d6dc43": "D2: Gespräch",
+   "388e9c67-a234-50bd-a636-ceb4f33997b6": "Ein/Aus (GPIO3): Druck im Betrieb = sauber herunterfahren (dtoverlay=gpio-shutdown), Druck im Halt = starten (Bootloader WAKE_ON_GPIO=1).\nR9 nur bestücken, falls nötig.",
+   "3b63c57f-0847-53a7-829c-d539011f7898": "Konfiguration (Pull-up im Pi)",
+   "e8f65a0e-c93c-5efc-929f-f9092de694b4": "(Pull-up im Pi)"
+  },
+  "von_hand": {}
+ },
+ "cm4.kicad_sch": {
+  "fingerabdruck": "30766ed78a6146416f42c0bc97f4170adf6d43d72be3b4788eccdec88d0e1e08",
+  "texte": {
+   "15465f3d-d923-5e08-afb1-64c02fc4176b": "D10 = Aktivität (grün), D11 = Spannung (rot, über Q10 gepuffert)",
+   "70ae1a27-37f4-5e8f-b4ab-948faed94d94": "Boot und Status",
+   "8a3fd802-332c-58c8-b426-c4dfbb4d7752": "Pinbelegung nach CM4-Datenblatt (Pins 1–200) · GPIO_VREF = 3,3 V · Ethernet 10/100 über Paar 0/1\nWLAN/Bluetooth auf dem Modul (CM4 mit Funk): WL_nDisable/BT_nDisable offen = an; Antenne intern oder U.FL am Modul (dtparam=ant2)\neMMC: CM4 mit eMMC bootet davon; Flashen mit JP10 gesteckt über USB-C (rpiboot). CM4 Lite: Start von der µSD-Karte (Blatt µSD)",
+   "a8d6f5cc-1088-53ee-aa0e-bfd770766187": "M1: das CM4 selbst (Platzhalter für Stückliste und 3D-Ansicht, gesteckt, nicht bestückt)",
+   "ca134e98-7aaa-5f70-a175-f25a432bcdf3": "H5–H8: Bohrungen des CM4 (Abstandsbolzen M2,5, Raster 48 × 33 mm)"
+  },
+  "von_hand": {}
+ },
+ "codec.kicad_sch": {
+  "fingerabdruck": "7d0379dbcd9342e52f40207f7560e2077596a4cb0b1c86ec2443417482ca962d",
+  "texte": {
+   "0092bf47-c0f0-5f99-acdf-7f13433ef733": "I²C 0x18 an I2C0 (GPIO0/1) · MCLK 12 MHz · Reset GPIO26 · Treiber tlv320aic32x4 (Overlay nach audiosense-pi)\nLDO_SELECT = 1: DVDD aus internem LDO; AVDD-LDO schaltet der Treiber (ldoin-supply)",
+   "36e691d4-eeb7-5ff2-8737-29b8cca4ba7d": "Analogversorgung 3,3 V"
+  },
+  "von_hand": {}
+ },
+ "ethernet.kicad_sch": {
+  "fingerabdruck": "3ce77929d9955de27643c09b6d10e8ea2740939546823305363f28eb8b17de5e",
+  "texte": {
+   "a1e57902-cb8e-5841-a732-d1607d90e471": "LED 12/11: Aktivität (nLED3)",
+   "cee2c124-002b-57e6-b9e8-0d4448464b1b": "LED 9/10: Link (nLED2)",
+   "f5ebdb16-41ed-5d43-9990-1e4b18c79040": "MagJack 1:1 wie CM4-Datenblatt (Figure 2): Mittelanzapfungen über C45 an GND, ESD-Schutz U12, LED 470 Ω.\n10/100 genügt für VoIP; für Gigabit 4-Paar-MagJack verwenden und Paare 2/3 des CM4 anschließen."
+  },
+  "von_hand": {}
+ },
+ "luefter.kicad_sch": {
+  "fingerabdruck": "5f1ca3db6d1b890d9e89eff0cb356c5053cd88368dd86cf12a7cfedfd9d5baf3",
+  "texte": {
+   "84c72418-2075-5126-91b9-d30eb1fb79cc": "Steuerung über die SoC-Temperatur: dtoverlay=gpio-fan,gpiopin=12,temp=60000 (Hysterese im Treiber). GPIO12 kann auch PWM (PWM0) für Drehzahlregelung.\nJ15 JST PH 2,0 mm: 1 = +5 V, 2 = Lüfter −"
+  },
+  "von_hand": {}
+ },
+ "rs232.kicad_sch": {
+  "fingerabdruck": "aec2421df655f61a41b0610046447d802e53f202a169dbf71c84f87a0854c56e",
+  "texte": {
+   "464685f1-8e42-5a0f-b085-fdf20cafa38f": "4P4C (RJ10): 1 GND · 2 RxD · 3 TxD · 4 frei\nAdapterkabel auf DE9-Stecker zur D340: 4P4C 1→5, 2→2, 3→3 · 1200 Bd 8O1",
+   "58cd603e-f405-516f-9b06-6be754be1b29": "Pi-Seite (GND)",
+   "6fdfac90-4f98-5afd-9a2c-7ce763a3bf40": "isolierte Seite (GND_ISO)",
+   "d941c162-82e0-5805-8237-80bc6b9cd8e3": "ADuM5211: Trenner mit isolierter 3,3-V-Versorgung (VSEL = GND_ISO) · dtoverlay=uart3"
+  },
+  "von_hand": {}
+ },
+ "sd.kicad_sch": {
+  "fingerabdruck": "7a50a8eb61d97225548bda021d0514b5ae322b3f3035738f76d65ecd442c4a05",
+  "texte": {
+   "199bd486-1686-54e3-869d-1aeb59e4b5b9": "Nur beim CM4 Lite belegt; beim CM4 mit eMMC sind die SD-Pins offen, der Sockel stört nicht. R14 hält den Lastschalter ohne Ansteuerung an (Start von der Karte möglich), wie im CM4-Datenblatt."
+  },
+  "von_hand": {}
+ },
+ "sopho2sip-cm4.kicad_sch": {
+  "fingerabdruck": "d61d331023b727e351d61da1388d89385d86488b0bdeddd667ec90619ecece15",
+  "texte": {
+   "d36f7637-aaf0-5e30-828a-f232b3c44e02": "Speicher: CM4 mit eMMC (Flashen per USB-C, nRPIBOOT-Jumper im Blatt CM4) oder CM4 Lite mit µSD-Karte.\nNetz: WLAN/Bluetooth des CM4 (Antenne am Modul) oder Ethernet 10/100 (MagJack); beides gleichzeitig möglich.\nD340: Audio-Codec + Sprechweg (Übertrager, RJ12) und RS-232 (isoliert, UART3) wie beim HAT; Versorgungsnetze +5V/+3V3/GND global.\nErzeugt von hardware/cm4/erzeuge_schaltplan.py; Prüfung --pruefen (ERC + Netzliste gegen SOLL)."
+  },
+  "von_hand": {}
+ },
+ "sprechweg.kicad_sch": {
+  "fingerabdruck": "74e25e34c1b0cb474adeb42b5f55b344017ba6658f771667194580a0c8d0b33f",
+  "texte": {
+   "5fd58f92-c59f-513c-92c2-00b75d4ffc62": "Pi-Seite (GND)",
+   "975f39ae-df4d-51e3-838d-24b2993f4d92": "oben Aufnahme (X_OUT → Codec), unten Wiedergabe (Codec → X_IN); R4 = 0R, R5 unbestückt",
+   "aaf5d200-0e73-5380-a3e5-be556eb38edc": "RJ12 1:1 zur Audio-Buchse",
+   "fbc4d651-3021-5a2d-9961-69c974cf6ef9": "Telefonseite (GNDA)"
+  },
+  "von_hand": {}
+ },
+ "versorgung.kicad_sch": {
+  "fingerabdruck": "3dc5a953deb7bdefa2f0e9e308e8d57f7911dbc184be69c127559e5549607bbe",
+  "texte": {
+   "8c70e5ab-3e55-5d03-913a-6267742af9af": "5 V über USB-C (Rd 5,1 kΩ: Senke); dieselbe Buchse dient mit gestecktem nRPIBOOT zum Flashen des eMMC.\nStrombedarf CM4 bis ~1,4 A + Peripherie: Netzteil mit 5 V/3 A verwenden."
+  },
+  "von_hand": {}
+ }
 }

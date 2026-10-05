@@ -394,14 +394,10 @@ def rs232(p: Blatt, stecker: str = "de9") -> None:
     p.text(208, 246, "isolierte Seite (GND_ISO)")
     p.text(140, 239, "ADuM5211: Trenner mit isolierter 3,3-V-Versorgung (VSEL = GND_ISO) · dtoverlay=uart3")
     if stecker == "de9":
-        p.text(356, 223, "DE9-Stecker wie am PC:")
-        p.text(356, 226, "2 RxD · 3 TxD · 5 GND")
-        p.text(356, 229, "1:1-Kabel zur D340,")
-        p.text(356, 232, "1200 Bd 8O1")
+        p.notiz(356, 223, 34, "DE9-Stecker wie am PC: 2 RxD · 3 TxD · 5 GND", "1:1-Kabel zur D340, 1200 Bd 8O1")
     else:
-        p.text(352, 223, "4P4C (RJ10): 1 GND · 2 RxD · 3 TxD · 4 frei")
-        p.text(352, 226, "Adapterkabel auf DE9-Stecker zur D340:")
-        p.text(352, 229, "4P4C 1→5, 2→2, 3→3 · 1200 Bd 8O1")
+        p.notiz(352, 223, 46, "4P4C (RJ10): 1 GND · 2 RxD · 3 TxD · 4 frei",
+                "Adapterkabel auf DE9-Stecker zur D340: 4P4C 1→5, 2→2, 3→3 · 1200 Bd 8O1")
 
 
 def main() -> int:
