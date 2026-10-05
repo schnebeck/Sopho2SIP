@@ -4072,5 +4072,5 @@
 			)
 		)
 	)
-(text_box "5 V über USB-C (Rd 5,1 kΩ: Senke); dieselbe Buchse dient mit gestecktem nRPIBOOT zum Flashen des eMMC.\nStrombedarf CM4 bis ~1,4 A + Peripherie: Netzteil mit 5 V/3 A verwenden." (exclude_from_sim no) (at 132.4 159.07 0) (size 112 6.38) (margins 0.9525 0.9525 0.9525 0.9525) (stroke (width 0.1) (type solid) (color 132 132 132 1)) (fill (type color) (color 255 255 230 1)) (effects (font (size 1.27 1.27)) (justify left top)) (uuid "8c70e5ab-3e55-5d03-913a-6267742af9af"))
+(text_box "5 V über USB-C (Rd 5,1 kΩ: Senke); dieselbe Buchse dient mit gestecktem nRPIBOOT zum Flashen des eMMC.\nStrombedarf CM4 bis ~1,4 A + Peripherie: Netzteil mit 5 V/3 A verwenden." (exclude_from_sim no) (at 132.4 159.07 0) (size 112 6.38) (margins 0.9525 0.9525 0.9525 0.9525) (stroke (width -0.0001) (type solid)) (fill (type none)) (effects (font (size 1.27 1.27)) (justify left top)) (uuid "8c70e5ab-3e55-5d03-913a-6267742af9af"))
 	)
