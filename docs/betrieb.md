@@ -27,7 +27,23 @@ ssh sopho-gw 'cd ~/Sopho2SIP && sudo install -m 644 gateway/betrieb/sopho2sipd.s
   && sudo systemctl daemon-reload && sudo systemctl enable --now sopho2sipd'
 ssh -t sopho-gw 'python3 ~/Sopho2SIP/gateway/portal.py passwort'
 ssh sopho-gw 'python3 ~/Sopho2SIP/gateway/portal.py zertifikat && sudo systemctl restart sopho2sipd'
+ssh sopho-gw 'cd ~/Sopho2SIP && tools/ein_aus_einrichten.sh'   # Ein/Aus-Taster, STATUS-LED (CM4-Träger), dann reboot
 ```
+
+## Ein/Aus-Taster (CM4-Träger)
+`tools/ein_aus_einrichten.sh` richtet ein (idempotent; auf dem Pi 4 ohne Träger nur Schritt 1):
+1. logind (`gateway/betrieb/logind-ein-aus.conf` → `/etc/systemd/logind.conf.d/`): kurzer Druck wird ignoriert,
+   **langer Druck (5 s) fährt sauber herunter** – Schutz gegen versehentliches Ausschalten.
+2. `config.txt`: `dtoverlay=gpio-shutdown,gpio_pin=3` (Taster SW3 → Taste KEY_POWER) und
+   `dtoverlay=gpio-led,gpio=22,label=status,trigger=none` (D3 als LED `status`).
+3. Dienst `sopho2sip-herunterfahren` (`gateway/betrieb/`): STATUS leuchtet vom Beginn des Herunterfahrens bis zum
+   Halt; der Dienst ist nach den Gateway-Diensten geordnet und wird darum als erster gestoppt.
+4. Prüft den Bootloader: `WAKE_ON_GPIO=1` und `POWER_OFF_ON_HALT=0` nötig, sonst startet der Taster nicht.
+
+Bedienung: im Betrieb Taster 5 s halten → STATUS an, Dienste enden (eine laufende D340-Verbindung legt spätestens
+der 30-s-Watchdog der D340 auf), Halt. Im Halt kurz drücken → Neustart. Ohne Netzteil hilft der Taster nicht;
+eingesteckt startet das CM4 sofort. Hängt das System, bleibt nur der Stecker. Noch nicht am Muster erprobt
+(Wecken über GPIO3, ggf. R9 bestücken; Verhalten von D11 PWR im Halt).
 
 ## Aktualisieren
 `ssh sopho-gw 'cd ~/Sopho2SIP && git pull && sudo systemctl restart sopho2sipd'`

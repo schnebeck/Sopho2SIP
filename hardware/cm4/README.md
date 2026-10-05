@@ -122,7 +122,8 @@ dtoverlay=uart3            # GPIO4/5 → /dev/ttyAMA3 (Name nach dem Booten prü
 dtparam=ant2               # nur bei externer WLAN-Antenne (U.FL)
 ```
 Bootloader-EEPROM: `WAKE_ON_GPIO=1` (Werkseinstellung) und `POWER_OFF_ON_HALT=0` lassen, sonst weckt der Taster
-nicht. eMMC beschreiben: JP10 stecken, USB-C mit dem Rechner verbinden, `rpiboot` ausführen, Image schreiben, JP10 ziehen.
+nicht. Taster, langer Druck zum Ausschalten und STATUS-LED beim Herunterfahren richtet `tools/ein_aus_einrichten.sh`
+ein (Ablauf in `docs/betrieb.md`). eMMC beschreiben: JP10 stecken, USB-C mit dem Rechner verbinden, `rpiboot` ausführen, Image schreiben, JP10 ziehen.
 
 ## Vor der Fertigung prüfen (offen)
 - **Codec:** Overlay für I2C0 schreiben; Mixer-Einstellungen (IN1_L → ADC, DAC → LOL) mit `amixer` festlegen.
