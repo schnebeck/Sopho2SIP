@@ -47,6 +47,13 @@ hardware/cm4/erzeuge_schaltplan.py --handlage-verwerfen Bedienung      # Blatt w
 Kommt in SOLL ein Bauteil auf einem Blatt mit Handlage hinzu (oder fällt weg), bricht der Generator ab: das Blatt in
 KiCad nachziehen oder die Handlage verwerfen.
 
+**Texte** (Hinweiskästen, Texte, Blocktitel) gehören dem Generator. In KiCad geänderte Texte schreibt der Generator
+an die Stelle im Quelltext zurück, an der sie entstehen (`p.notiz(…)`, `p.text(…)`, `rahmen_(…)`); ein neuer Absatz
+im Kasten wird ein weiteres Argument von `notiz`. Ersetzt wird nur, wenn dort feste Literale genau den bisherigen
+Text ergeben; sonst bleibt der Text als Handtext in `.generiert.json` und wird gemeldet. Ändert sich nur Text, nicht
+die Lage, entsteht keine Handlage. In KiCad neu angelegte oder gelöschte Texte meldet der Generator nur.
+Hinweise stehen in Textkästen (`notiz`): KiCad bricht innerhalb der Kastenbreite um, die Höhe schätzt der Generator.
+
 ## Blätter und Bauteile
 
 | Blatt | Bauteile | Warum |

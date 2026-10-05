@@ -2,13 +2,13 @@
  "bedienung.kicad_sch": {
   "fingerabdruck": "209be62020a684831e7d6473cf5024328f12da3cff0d95e7a1f79989b8e59608",
   "texte": {
-   "0944ad79-af1a-5482-87ca-937e8fdcf46a": "H1–H4: Gehäusebefestigung M2,5 (Lage nach Gehäuse); CM4 auf 4 Abstandsbolzen M2,5",
+   "0944ad79-af1a-5482-87ca-937e8fdcf46a": "D3: Status/Konfiguration",
    "1d272922-28fc-56ea-b007-dbfdc7f9a7bf": "D1: Telefon verbunden",
-   "1d53d9d4-605b-5122-84bd-31665f5d2116": "D3: Status/Konfiguration",
+   "1d53d9d4-605b-5122-84bd-31665f5d2116": "Konfiguration (Pull-up im Pi)",
    "221e8702-f5b0-53f3-adfb-a7ec80d96913": "Annehmen/Auflegen",
    "22687368-3afe-5129-9ebf-d1da20d6dc43": "D2: Gespräch",
    "388e9c67-a234-50bd-a636-ceb4f33997b6": "Ein/Aus (GPIO3): Druck im Betrieb = sauber herunterfahren (dtoverlay=gpio-shutdown), Druck im Halt = starten (Bootloader WAKE_ON_GPIO=1).\nR9 nur bestücken, falls nötig.",
-   "3b63c57f-0847-53a7-829c-d539011f7898": "Konfiguration (Pull-up im Pi)",
+   "3b63c57f-0847-53a7-829c-d539011f7898": "H1–H4: Gehäusebefestigung M2,5 (Lage nach Gehäuse); CM4 auf 4 Abstandsbolzen M2,5",
    "e8f65a0e-c93c-5efc-929f-f9092de694b4": "(Pull-up im Pi)"
   },
   "von_hand": {}

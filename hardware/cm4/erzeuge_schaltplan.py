@@ -342,6 +342,8 @@ def bedienung_zusatz(p: Blatt) -> None:
     p.setze("R9", 170.18, y3 - 3.81); p.auf("R9", "1", "+3V3")
     p.notiz(211, 252, 62, "Ein/Aus (GPIO3): Druck im Betrieb = sauber herunterfahren (dtoverlay=gpio-shutdown), "
             "Druck im Halt = starten (Bootloader WAKE_ON_GPIO=1).", "R9 nur bestücken, falls nötig.")
+    # Bohrungen H1–H4 (vom HAT-Block gesetzt): das Raster des HAT gilt hier nicht
+    p.text(80, 269, "H1–H4: Gehäusebefestigung M2,5 (Lage nach Gehäuse); CM4 auf 4 Abstandsbolzen M2,5")
 
 
 # ------------------------------------------------------------------------------------------------------------------
@@ -602,13 +604,9 @@ def main() -> int:
     }
     blatt_cm4(blaetter["cm4"]); blatt_versorgung(blaetter["versorgung"]); blatt_sd(blaetter["sd"])
     blatt_ethernet(blaetter["eth"]); blatt_codec(blaetter["codec"]); hat.sprechweg(blaetter["sprechweg"])
-    hat.rs232(blaetter["rs232"], stecker="4p4c"); hat.bedienung(blaetter["bedienung"])
+    hat.rs232(blaetter["rs232"], stecker="4p4c"); hat.bedienung(blaetter["bedienung"], bohrungen_hinweis=False)
     bedienung_zusatz(blaetter["bedienung"])
     blatt_luefter(blaetter["luefter"])
-    # Bohrungen: das Raster des HAT gilt hier nicht
-    bed = blaetter["bedienung"]
-    bed.texte = [(x, y, "H1–H4: Gehäusebefestigung M2,5 (Lage nach Gehäuse); CM4 auf 4 Abstandsbolzen M2,5"
-                  if s.startswith("M2,5, Raster") else s, g) for x, y, s, g in bed.texte]
     for b in blaetter.values():
         fehlt = set(b.soll) - {t[0] for t in b.teile}
         if fehlt:

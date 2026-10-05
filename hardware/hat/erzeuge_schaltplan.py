@@ -188,8 +188,8 @@ def hat_eeprom(p: Blatt) -> None:
     p.text(18, 142, "Adresse 0x50 (A0–A2 = GND); WP hoch = schreibgeschützt, JP1 schließen zum Programmieren")
 
 
-def bedienung(p: Blatt) -> None:
-    """Block Bedienung."""
+def bedienung(p: Blatt, bohrungen_hinweis: bool = True) -> None:
+    """Block Bedienung. bohrungen_hinweis=False: der Träger schreibt seinen eigenen Hinweis zu H1–H4."""
     P, w = p.P, p.w
     p.rahmen_(15, 203, 132, 280, "Bedienung")
     for (r, d, netz, y) in (("R6", "D1", "LED_TELEFON", 220.98), ("R7", "D2", "LED_GESPRAECH", 236.22)):
@@ -207,7 +207,8 @@ def bedienung(p: Blatt) -> None:
     p.text(92, 255, "(Pull-up im Pi)")
     for i, h in enumerate(("H1", "H2", "H3", "H4")):
         p.setze(h, 27.94 + i * 12.7, 267.97)
-    p.text(80, 269, "M2,5, Raster 58 × 49 mm")
+    if bohrungen_hinweis:
+        p.text(80, 269, "M2,5, Raster 58 × 49 mm")
 
 
 def codec(p: Blatt) -> None:
