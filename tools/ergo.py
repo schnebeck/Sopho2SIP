@@ -8,7 +8,7 @@ Frei (ändern keinen Gesprächszustand):
   ergo.py anmelden [--dauer S]          01 02 01 00 senden, Quittung abwarten, dann mitlesen
   ergo.py keepalive                     01 02 00 00 senden, Quittung abwarten
 
-Nur mit --freigabe (Anruf wird ausgelöst/beeinflusst; CLAUDE.md: vorher Nutzer fragen):
+Nur mit --freigabe (Anruf wird ausgelöst/beeinflusst; vorher Nutzer fragen):
   ergo.py belegen | annehmen | auflegen --freigabe
   ergo.py waehlen NUMMER --freigabe     Nummer inkl. Amtsholung (extern: 01…)
   ergo.py roh "01 02 00 00" --freigabe  beliebiger Rahmen

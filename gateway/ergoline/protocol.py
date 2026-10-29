@@ -217,5 +217,5 @@ def waehlen(nummer: str) -> Rahmen:
     return Rahmen(AUFTRAG, bytes([0x19, 0x00, 0x98]) + ie)
 
 
-# Aufträge, die kein Gespräch auslösen oder beeinflussen (frei für Tests laut CLAUDE.md)
+# Aufträge, die kein Gespräch auslösen oder beeinflussen (frei für Tests)
 FREIE_AUFTRAEGE = {keepalive().to_bytes(), anmelden().to_bytes()}
