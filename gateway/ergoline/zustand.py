@@ -2,7 +2,9 @@
 """Zustandsautomat für die Anrufe der ErgoLine D340 (nach dem Vorbild des Philips-Treibers).
 
 Die Rahmen tragen keine Anrufkennung; jede Meldung wird – wie im Treiber – dem Anruf zugeordnet, der gerade in einem
-passenden Zustand ist. Zustände wie TAPI LINECALLSTATE. Beschreibung: docs/protocol.md, Abschnitt 6a.
+passenden Zustand ist. Welche Zustände passen und wohin sie führen, steht in der Übergangstabelle (uebergaenge.py);
+nicht vorgesehene Kombinationen melden UNERWARTET, verletzte Invarianten INVARIANTE. Zustände wie TAPI
+LINECALLSTATE. Beschreibung: docs/protocol.md, Abschnitt 6a.
 
 Telefon.verarbeite(rahmen, zeit) liefert Ereignisse; endet ein Anruf, enthält das Ereignis "ANRUF_ENDE" den
 Anrufdatensatz (dict) für Statistik/Webhook. Telefon.aufraeumen(zeit) verwirft Anrufe, die länger als ihre
@@ -13,8 +15,9 @@ from __future__ import annotations
 import itertools
 
 from . import protocol as p
-from .anruf import (ACCEPTED, AKTIV, BUSY, CONNECTED, DIALING, DIALTONE, DISCONNECTED, IDLE, OFFERING, ONHOLD,
-                    PROCEEDING, RINGBACK, Anruf)
+from .anruf import (ACCEPTED, AKTIV, BUSY, CONNECTED, DIALING, DIALTONE, DISCONNECTED, OFFERING, ONHOLD,
+                    PROCEEDING, RINGBACK, ZUSTANDSNAME, Anruf)
+from .uebergaenge import REGELN, verletzungen
 
 
 class AuftragNichtMoeglich(Exception):
@@ -38,6 +41,7 @@ class Telefon:
         self.x_eingang = False              # Merkmal 4f „X-Eingang statt Mikrofon“ (gilt je Gespräch)
         self.bereit = False
         self._kennungen = itertools.count(1)
+        self._verletzt: set[str] = set()
 
     # --- Hilfen ---------------------------------------------------------------------------------
     def _suche(self, *zustaende: int) -> Anruf | None:
@@ -69,82 +73,12 @@ class Telefon:
         typ = p.MELDUNGSTYP.get(r.typ)
         ies = dict(p.ies(r.daten[2:])) if typ not in ("FACILITY_EIN", "FACILITY_AUS", "FACILITY_ABGELEHNT") else {}
 
-        if typ == "READY":
+        if typ in REGELN:
+            self._anwenden(typ, REGELN[typ], r, ies, zeit, ev)
+            ev += self._pruefe_invarianten()
+        elif typ == "READY":
             self.bereit = True
             ev.append(("BEREIT", None, None))
-        elif typ == "RINGING":
-            a = self._neu("ein", zeit)
-            a.nummer_roh = p.rufnummer(ies.get(0x6C, b""))
-            a.setze(OFFERING, zeit)
-            ev.append(("ANRUF_EIN", a, a.nummer_roh))
-        elif typ == "DIALTONE":                 # repeated within one call (log 2026-09-30); stale calls are gone
-            if not self._suche(DIALTONE, DIALING):
-                a = self._neu("aus", zeit)
-                a.setze(DIALTONE, zeit)
-                ev.append(("WAEHLTON", a, None))
-        elif typ == "MORE_INFO":
-            a = self._suche(DIALTONE, DIALING)
-            laufend = None if a else self._suche(*AKTIV)
-            if laufend:     # within a call: IE 70 = digits dialled afterwards, IE 6c = party actually reached
-                if 0x70 in ies:
-                    ev.append(("NACHWAHL", laufend, p.rufnummer(ies[0x70])))
-                elif 0x6C in ies:
-                    ev.append(("GEGENSTELLE", laufend, p.rufnummer(ies[0x6C])))
-                else:
-                    ev.append(("UNERWARTET", laufend, r.hex()))
-                return ev
-            a = a or self._neu("aus", zeit)
-            if 0x70 in ies:
-                a.nummer_roh = p.rufnummer(ies[0x70])
-            a.setze(DIALING, zeit)
-            ev.append(("WAHL", a, a.nummer_roh))
-        elif typ == "PROCEEDING":
-            a = self._suche(DIALING)
-            if a:
-                a.setze(PROCEEDING, zeit)
-                a.setze(RINGBACK, zeit)          # Treiber: RESP_PROCEEDING erzeugt 2a und 2b
-                ev.append(("RUFT", a, None))
-        elif typ == "BUSY":
-            a = self._suche(DIALING, PROCEEDING)
-            if a:
-                a.setze(BUSY, zeit)
-                ev.append(("BESETZT", a, None))
-        elif typ == "CONNECTED":
-            a = self._suche(OFFERING, ACCEPTED, RINGBACK, BUSY, PROCEEDING, DIALING, ONHOLD)
-            if a:
-                if a.zustand == OFFERING:
-                    a.setze(ACCEPTED, zeit)      # Treiber: RESP_CONNECT auf OFFERING → 2f, dann 32
-                a.setze(CONNECTED, zeit)
-                a.verbunden = a.verbunden or zeit
-                ev.append(("VERBUNDEN", a, None))
-        elif typ == "HOLD":
-            a = self._suche(CONNECTED)
-            if a:
-                a.setze(ONHOLD, zeit)
-                ev.append(("GEHALTEN", a, None))
-        elif typ == "UNHOLD":
-            a = self._suche(ONHOLD)
-            if a:
-                a.setze(CONNECTED, zeit)
-                ev.append(("ZURUECKGEHOLT", a, None))
-        elif typ == "DISCONNECTED":
-            a = self._suche(CONNECTED, RINGBACK, BUSY, PROCEEDING, DIALING, ACCEPTED, OFFERING, DIALTONE, ONHOLD)
-            if a:
-                a.ursache = ies.get(0x08, b"")
-                a.getrennt = zeit
-                a.setze(DISCONNECTED, zeit)
-                ev.append(("GETRENNT", a, a.ursache.hex()))
-        elif typ == "RELEASED":
-            a = self._suche(DISCONNECTED) or self._suche(*AKTIV)
-            if a:
-                if a.getrennt is None:
-                    a.getrennt = zeit
-                if a.ursache is None and 0x08 in ies:
-                    a.ursache = ies[0x08]
-                a.ende = zeit
-                a.setze(IDLE, zeit)
-                del self.anrufe[a.kennung]
-                ev.append(("ANRUF_ENDE", a, a.datensatz(self.amtsholung)))
         elif typ in ("FACILITY_EIN", "FACILITY_AUS"):
             ein = typ == "FACILITY_EIN"
             merkmal = p.MERKMAL.get(r.daten[2]) if len(r.daten) > 2 else None
@@ -164,6 +98,68 @@ class Telefon:
         else:
             ev.append(("UNBEKANNT", None, r.hex()))
         return ev
+
+    def _anwenden(self, typ: str, regel, r: p.Rahmen, ies: dict, zeit: float, ev: list) -> None:
+        """Applies one rule of the transition table (uebergaenge.REGELN)."""
+        a, nach = None, ()
+        for von, nach in regel.uebergaenge:
+            a = self._suche(von)
+            if a:
+                break
+        if a is None:
+            laufend = self._suche(*AKTIV) if regel.im_anruf else None
+            if laufend:
+                ev.append(self._im_anruf(laufend, r, ies))
+                return
+            if regel.neu is None:
+                zustaende = ", ".join(ZUSTANDSNAME[x.zustand] for x in self.anrufe.values()) or "keine Anrufe"
+                ev.append(("UNERWARTET", None, f"{typ} ohne passenden Anruf ({zustaende}): {r.hex()}"))
+                return
+            a, nach = self._neu(regel.neu, zeit), regel.start
+        elif not nach:
+            return                              # known repetition
+        for z in nach:
+            a.setze(z, zeit)
+        ev.append(self._folgen(regel.ereignis, a, ies, zeit))
+
+    def _im_anruf(self, a: Anruf, r: p.Rahmen, ies: dict) -> tuple:
+        """MORE_INFO within a call: IE 70 = digits dialled afterwards, IE 6c = party actually reached."""
+        if 0x70 in ies:
+            return ("NACHWAHL", a, p.rufnummer(ies[0x70]))
+        if 0x6C in ies:
+            return ("GEGENSTELLE", a, p.rufnummer(ies[0x6C]))
+        return ("UNERWARTET", a, r.hex())
+
+    def _folgen(self, ereignis: str, a: Anruf, ies: dict, zeit: float) -> tuple:
+        """Call data carried by the message; returns the event of the transition."""
+        if ereignis == "ANRUF_EIN":
+            a.nummer_roh = p.rufnummer(ies.get(0x6C, b""))
+            return (ereignis, a, a.nummer_roh)
+        if ereignis == "WAHL":
+            if 0x70 in ies:
+                a.nummer_roh = p.rufnummer(ies[0x70])
+            return (ereignis, a, a.nummer_roh)
+        if ereignis == "VERBUNDEN":
+            a.verbunden = a.verbunden or zeit
+        elif ereignis == "GETRENNT":
+            a.ursache = ies.get(0x08, b"")
+            a.getrennt = zeit
+            return (ereignis, a, a.ursache.hex())
+        elif ereignis == "ANRUF_ENDE":
+            if a.getrennt is None:
+                a.getrennt = zeit
+            if a.ursache is None and 0x08 in ies:
+                a.ursache = ies[0x08]
+            a.ende = zeit
+            del self.anrufe[a.kennung]
+            return (ereignis, a, a.datensatz(self.amtsholung))
+        return (ereignis, a, None)
+
+    def _pruefe_invarianten(self) -> list[tuple]:
+        """Reports each violated invariant once, when it appears."""
+        jetzt = verletzungen([a.zustand for a in self.anrufe.values()])
+        neu, self._verletzt = jetzt - self._verletzt, jetzt
+        return [("INVARIANTE", None, text) for text in sorted(neu)]
 
     # --- Aufträge mit Vorbedingung (wie die Sendefunktionen des Treibers) ------------------------
     def auftraege_waehlen(self, nummer: str) -> list[p.Rahmen]:

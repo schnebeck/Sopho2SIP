@@ -171,6 +171,14 @@ Nach `31` CONNECTED folgt ein zweites MORE_INFO `19` mit IE `6c` (Nummer der tat
 auch extern bei Rufumleitung; Bedeutung **vermutet**). Es eröffnet keinen Anruf, sondern gehört zum laufenden Gespräch.
 Ein neuer Anruf für dieses MORE_INFO bliebe in DIALING stehen und bekäme das RELEASED des nächsten Anrufs.
 
+**Daemon:** Die Übergänge stehen als Tabelle in `gateway/ergoline/uebergaenge.py`, je Eintrag mit Quelle
+(Treiber / beobachtet / vermutet). Die Reihenfolge der Quellzustände ist die Zuordnungsregel: Eine Meldung gehört dem
+ältesten Anruf im ersten belegten Quellzustand. Kombinationen ohne Eintrag melden `UNERWARTET` (nichts wird still
+verworfen). Invarianten einer D340, nach jeder Meldung geprüft (`INVARIANTE`, einmal je Auftreten): höchstens ein Anruf
+im Gespräch, einer im Verbindungsaufbau, einer in der Auslösung. Gegen alle Mitschnitte bis 2026-11-18 geprüft:
+gleiche Anrufdatensätze wie vorher, kein `UNERWARTET`, keine verletzte Invariante.
+Vermutet, ohne Mitschnitt: Anklopfen (ein aufgebender Anklopfer wird vor dem Gespräch freigegeben), Halten/Zurückholen.
+
 **Daemon, über den Treiber hinaus:**
 - MORE_INFO `19` während eines Anrufs: IE `70` = Nachwahl (`NACHWAHL`), IE `6c` = Gegenstelle (`GEGENSTELLE`),
   sonst `UNERWARTET`. Nur ohne laufenden Anruf eröffnet `19` einen (Belegen durch den PC meldet keinen Wählton).
