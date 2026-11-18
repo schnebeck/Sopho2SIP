@@ -224,7 +224,7 @@ nach dem man synchronisieren könnte: Nach einem Fehler den Puffer verwerfen und
  ein Daemon kann sie als „angemeldet“ werten oder ignorieren.</td><td><span class="st st-b">bestätigt</span></td></tr>
 <tr><td class="hex">30</td><td>RINGING</td><td>Anruf kommt an; IE <span class="hex">6c</span> Anrufernummer</td><td><span class="st st-b">bestätigt</span></td></tr>
 <tr><td class="hex">36</td><td>DIALTONE</td><td>Wählton; beim Wählen am Telefon erst bei Wahlende gemeldet, ohne Wahl alle 10 s wiederholt</td><td><span class="st st-b">bestätigt</span></td></tr>
-<tr><td class="hex">19</td><td>MORE_INFO</td><td>gewählte Nummer als Block; IE <span class="hex">70</span> Ziel</td><td><span class="st st-b">bestätigt</span></td></tr>
+<tr><td class="hex">19</td><td>MORE_INFO</td><td>gewählte Nummer als Block; IE <span class="hex">70</span> Ziel. Nach CONNECTED eines abgehenden Anrufs zusätzlich mit IE <span class="hex">6c</span>: Nummer der erreichten Gegenstelle, gehört zum laufenden Gespräch</td><td><span class="st st-b">bestätigt</span> (Bedeutung <span class="hex">6c</span>: <span class="st st-v">vermutet</span>)</td></tr>
 <tr><td class="hex">3e</td><td>PROCEEDING</td><td>Verbindungsaufbau läuft, Gegenseite wird gerufen</td><td><span class="st st-b">bestätigt</span></td></tr>
 <tr><td class="hex">31</td><td>CONNECTED</td><td>verbunden (ein- und abgehend)</td><td><span class="st st-b">bestätigt</span></td></tr>
 <tr><td class="hex">32</td><td>DISCONNECTED</td><td>Gespräch getrennt; IE <span class="hex">08</span> Ursache (leer = eigene Seite)</td><td><span class="st st-b">bestätigt</span></td></tr>

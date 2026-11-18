@@ -166,6 +166,11 @@ erst `2f`, dann `32`.
 `31` CONNECTED → (ACCEPTED,) CONNECTED · `37` BUSY → BUSY · `34`/`35` HOLD/UNHOLD → ONHOLD/CONNECTED ·
 `32` DISCONNECTED → DISCONNECTED, Modus aus IE `08` · `39` RELEASED → IDLE, Platz frei.
 
+**Bestätigt** (Betriebsmitschnitte 2026-11-04 bis 2026-11-17, alle fünf abgehenden Anrufe, sämtlich auf interne Nummern):
+Nach `31` CONNECTED folgt ein zweites MORE_INFO `19` mit IE `6c` (Nummer der tatsächlich erreichten Gegenstelle,
+auch extern bei Rufumleitung; Bedeutung **vermutet**). Es eröffnet keinen Anruf, sondern gehört zum laufenden Gespräch.
+Ein neuer Anruf für dieses MORE_INFO bliebe in DIALING stehen und bekäme das RELEASED des nächsten Anrufs.
+
 **Vorbedingungen der Aufträge** (Sendefunktionen, siehe Abschnitt 6):
 - Wählen: abgelehnt, solange ein Anruf DISCONNECTED ist. Kein Anruf → erst `11` belegen (ACK), dann `19` wählen.
   Ein Anruf in ONHOLD oder ONHOLDPENDTRANSFER → `19` direkt (Rückfragewahl, ohne Belegen). Sonst abgelehnt.

@@ -131,7 +131,12 @@ class Telefon:
                 a.setze(DIALTONE, zeit)
                 ev.append(("WAEHLTON", a, None))
         elif typ == "MORE_INFO":
-            a = self._suche(DIALTONE, DIALING) or self._neu("aus", zeit)
+            a = self._suche(DIALTONE, DIALING)
+            laufend = None if a else self._suche(*AKTIV)
+            if laufend:     # e.g. after CONNECTED: IE 6c carries the number of the party actually reached
+                ev.append(("GEGENSTELLE", laufend, p.rufnummer(ies.get(0x6C, b""))))
+                return ev
+            a = a or self._neu("aus", zeit)
             if 0x70 in ies:
                 a.nummer_roh = p.rufnummer(ies[0x70])
             a.setze(DIALING, zeit)

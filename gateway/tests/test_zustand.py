@@ -109,6 +109,20 @@ class Vorbedingungen(unittest.TestCase):
         self.melde("02 05 39 01 98 08 00")
         self.assertEqual(self.tel.zustand_kurz(), {"zustand": "ruhe"})
 
+    def test_gegenstelle_nach_verbunden_oeffnet_keinen_anruf(self):
+        nummer = "02 12 19 01 98 6c 0d" + b"0101700000000".hex()
+        for rahmen in ("02 02 36 01", "02 08 19 01 98 70 03 2a 34 31", "02 02 31 01"):
+            self.melde(rahmen)
+        ev = self.melde(nummer)                                             # MORE_INFO im Gespräch
+        self.assertEqual([(e[0], e[2]) for e in ev], [("GEGENSTELLE", "0101700000000")])
+        self.melde("02 06 32 01 98 08 01 8f")
+        self.melde("02 05 39 01 98 08 00")
+        self.assertEqual(self.tel.anrufe, {})
+        self.melde("02 12 30 01 98 6c 0d" + b"0101700000000".hex())        # danach: verpasster Anruf
+        (ende,) = [e for e in self.melde("02 06 39 01 98 08 01 8f") if e[0] == "ANRUF_ENDE"]
+        self.assertEqual((ende[2]["richtung"], ende[2]["ergebnis"]), ("ein", "verpasst"))
+        self.assertEqual(self.tel.zustand_kurz(), {"zustand": "ruhe"})
+
 
 if __name__ == "__main__":
     unittest.main()
