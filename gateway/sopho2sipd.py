@@ -108,11 +108,22 @@ class Gateway:
     def verarbeite(self, r: p.Rahmen, zeit: float) -> None:
         with self.lock:
             ereignisse = self.telefon.verarbeite(r, zeit)
+        self._verteile(ereignisse)
+
+    def aufraeumen(self, zeit: float) -> None:
+        with self.lock:
+            ereignisse = self.telefon.aufraeumen(zeit)
+        self._verteile(ereignisse)
+
+    def _verteile(self, ereignisse: list[tuple]) -> None:
         for name, anruf, zusatz in ereignisse:
             if name == "ANRUF_ENDE":
                 self.ausgabe.ereignis(name, anruf, f"{zusatz['richtung']} {zusatz['nummer'] or '–'} "
                                       f"{'angenommen ' + str(zusatz['dauer_s']) + ' s' if zusatz['angenommen'] else 'nicht angenommen'}")
                 self.ausgabe.datensatz(zusatz)
+            elif name == "ANRUF_VERWORFEN":
+                self.ausgabe.ereignis(name, anruf, f"{zusatz['richtung']} {zusatz['nummer'] or '–'} "
+                                      f"{zusatz['verlauf'][-1]}: ohne Abschluss, aus der Anruftabelle entfernt")
             else:
                 self.ausgabe.ereignis(name, anruf, zusatz)
             if name == "VERBUNDEN":
@@ -234,6 +245,7 @@ def betrieb(a, gw: Gateway) -> int:
                     try:
                         zeit, r = link.rahmen.get(timeout=1.0)
                     except queue.Empty:
+                        gw.aufraeumen(time.time())
                         continue
                     gw.verarbeite(r, zeit)
         except (serial.SerialException, OSError) as e:

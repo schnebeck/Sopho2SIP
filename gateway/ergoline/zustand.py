@@ -5,82 +5,26 @@ Die Rahmen tragen keine Anrufkennung; jede Meldung wird – wie im Treiber – d
 passenden Zustand ist. Zustände wie TAPI LINECALLSTATE. Beschreibung: docs/protocol.md, Abschnitt 6a.
 
 Telefon.verarbeite(rahmen, zeit) liefert Ereignisse; endet ein Anruf, enthält das Ereignis "ANRUF_ENDE" den
-Anrufdatensatz (dict) für Statistik/Webhook. Telefon.auftraege_*() liefern die zu sendenden Rahmen samt Vorbedingung.
+Anrufdatensatz (dict) für Statistik/Webhook. Telefon.aufraeumen(zeit) verwirft Anrufe, die länger als ihre
+Plausibilitätsgrenze (anruf.GRENZE_S) ohne weitere Meldung in einem Zustand stehen ("ANRUF_VERWORFEN"). Telefon.auftraege_*() liefern die zu sendenden Rahmen samt Vorbedingung.
 """
 from __future__ import annotations
 
-import datetime as dt
 import itertools
-from dataclasses import dataclass, field
 
 from . import protocol as p
-
-# LINECALLSTATE (TAPI)
-IDLE, OFFERING, ACCEPTED, DIALTONE, DIALING, RINGBACK, BUSY = 0x1, 0x2, 0x4, 0x8, 0x10, 0x20, 0x40
-CONNECTED, PROCEEDING, ONHOLD, DISCONNECTED, UNKNOWN = 0x100, 0x200, 0x400, 0x4000, 0x8000
-ZUSTANDSNAME = {IDLE: "IDLE", OFFERING: "OFFERING", ACCEPTED: "ACCEPTED", DIALTONE: "DIALTONE", DIALING: "DIALING",
-                RINGBACK: "RINGBACK", BUSY: "BUSY", CONNECTED: "CONNECTED", PROCEEDING: "PROCEEDING",
-                ONHOLD: "ONHOLD", DISCONNECTED: "DISCONNECTED", UNKNOWN: "UNKNOWN"}
-AKTIV = (OFFERING, ACCEPTED, DIALTONE, DIALING, PROCEEDING, RINGBACK, BUSY, CONNECTED, ONHOLD)
+from .anruf import (ACCEPTED, AKTIV, BUSY, CONNECTED, DIALING, DIALTONE, DISCONNECTED, IDLE, OFFERING, ONHOLD,
+                    PROCEEDING, RINGBACK, Anruf)
 
 
 class AuftragNichtMoeglich(Exception):
     """Vorbedingung für einen Auftrag nicht erfüllt (wie LINEERR_* im Treiber)."""
 
 
-def _iso(t: float | None) -> str | None:
-    return None if t is None else dt.datetime.fromtimestamp(t).astimezone().isoformat(timespec="milliseconds")
-
-
-@dataclass
-class Anruf:
-    kennung: int
-    richtung: str                       # "ein" oder "aus"
-    beginn: float
-    zustand: int = UNKNOWN
-    nummer_roh: str = ""
-    verbunden: float | None = None
-    getrennt: float | None = None
-    ende: float | None = None
-    ursache: bytes | None = None        # Inhalt von IE 08 (b"" = keine)
-    name: str | None = None             # aus der Rückwärtssuche (gateway/rueckwaerts.py)
-    ort: str | None = None
-    verlauf: list = field(default_factory=list)
-
-    def setze(self, zustand: int, zeit: float) -> None:
-        self.zustand = zustand
-        self.verlauf.append((zeit, ZUSTANDSNAME[zustand]))
-
-    def datensatz(self, amtsholung: str = p.AMTSHOLUNG) -> dict:
-        ext, nummer = p.extern(self.nummer_roh, amtsholung) if self.nummer_roh else (False, "")
-        if self.ursache is None:
-            ausloeser = None
-        else:   # beobachtet: leere Ursache = eigene Seite hat ausgelöst, sonst Gegenseite (vermutet)
-            ausloeser = "eigene_seite" if self.ursache == b"" else "gegenseite"
-        if self.richtung == "ein":
-            ergebnis = "angenommen" if self.verbunden else "verpasst"
-        elif not self.nummer_roh:
-            ergebnis = "ohne_wahl"
-        else:
-            ergebnis = "verbunden" if self.verbunden else "nicht_erreicht"
-        return {
-            "kennung": self.kennung,
-            "ergebnis": ergebnis,
-            "richtung": self.richtung,
-            "nummer": nummer,
-            "extern": ext,
-            "nummer_roh": self.nummer_roh,
-            "name": self.name,
-            "ort": self.ort,
-            "beginn": _iso(self.beginn),
-            "verbunden": _iso(self.verbunden),
-            "ende": _iso(self.ende),
-            "angenommen": self.verbunden is not None,
-            "dauer_s": round(self.getrennt - self.verbunden, 1) if self.verbunden and self.getrennt else 0.0,
-            "ursache": None if self.ursache is None else self.ursache.hex(),
-            "ausloeser": ausloeser,
-            "verlauf": [z for _, z in self.verlauf],
-        }
+_VORRANG = (CONNECTED, ACCEPTED, BUSY, RINGBACK, PROCEEDING, DIALING, DIALTONE, OFFERING, ONHOLD, DISCONNECTED)
+_ANZEIGE = {OFFERING: "klingelt", ACCEPTED: "verbunden", DIALTONE: "waehlton", DIALING: "waehlt",
+            PROCEEDING: "ruft", RINGBACK: "ruft", BUSY: "besetzt", CONNECTED: "verbunden",
+            ONHOLD: "gehalten", DISCONNECTED: "getrennt"}
 
 
 class Telefon:
@@ -109,11 +53,19 @@ class Telefon:
         return a
 
     # --- Meldungen ------------------------------------------------------------------------------
+    def aufraeumen(self, zeit: float) -> list[tuple]:
+        """Verwirft überfällige Anrufe; das Ereignis trägt den Datensatz, ist aber kein Anrufende."""
+        ev = []
+        for a in [a for a in self.anrufe.values() if a.ueberfaellig(zeit)]:
+            del self.anrufe[a.kennung]
+            ev.append(("ANRUF_VERWORFEN", a, a.datensatz(self.amtsholung)))
+        return ev
+
     def verarbeite(self, r: p.Rahmen, zeit: float) -> list[tuple]:
         """Verarbeitet einen Rahmen des Telefons; liefert Ereignisse (name, Anruf|None, Zusatz)."""
-        ev: list[tuple] = []
         if r.klasse != p.MELDUNG or not r.daten:
-            return ev
+            return []
+        ev = self.aufraeumen(zeit)
         typ = p.MELDUNGSTYP.get(r.typ)
         ies = dict(p.ies(r.daten[2:])) if typ not in ("FACILITY_EIN", "FACILITY_AUS", "FACILITY_ABGELEHNT") else {}
 
@@ -125,7 +77,7 @@ class Telefon:
             a.nummer_roh = p.rufnummer(ies.get(0x6C, b""))
             a.setze(OFFERING, zeit)
             ev.append(("ANRUF_EIN", a, a.nummer_roh))
-        elif typ == "DIALTONE":
+        elif typ == "DIALTONE":                 # repeated within one call (log 2026-09-30); stale calls are gone
             if not self._suche(DIALTONE, DIALING):
                 a = self._neu("aus", zeit)
                 a.setze(DIALTONE, zeit)
@@ -133,8 +85,13 @@ class Telefon:
         elif typ == "MORE_INFO":
             a = self._suche(DIALTONE, DIALING)
             laufend = None if a else self._suche(*AKTIV)
-            if laufend:     # e.g. after CONNECTED: IE 6c carries the number of the party actually reached
-                ev.append(("GEGENSTELLE", laufend, p.rufnummer(ies.get(0x6C, b""))))
+            if laufend:     # within a call: IE 70 = digits dialled afterwards, IE 6c = party actually reached
+                if 0x70 in ies:
+                    ev.append(("NACHWAHL", laufend, p.rufnummer(ies[0x70])))
+                elif 0x6C in ies:
+                    ev.append(("GEGENSTELLE", laufend, p.rufnummer(ies[0x6C])))
+                else:
+                    ev.append(("UNERWARTET", laufend, r.hex()))
                 return ev
             a = a or self._neu("aus", zeit)
             if 0x70 in ies:
@@ -235,15 +192,16 @@ class Telefon:
         return self.auftraege_ziffern(nummer)
 
     def zustand_kurz(self) -> dict:
-        """Kurzzustand für Anzeigen (Portal): erster laufender Anruf oder Ruhe."""
-        namen = {OFFERING: "klingelt", ACCEPTED: "verbunden", DIALTONE: "waehlton", DIALING: "waehlt",
-                 PROCEEDING: "ruft", RINGBACK: "ruft", BUSY: "besetzt", CONNECTED: "verbunden",
-                 ONHOLD: "gehalten", DISCONNECTED: "getrennt"}
-        for a in self.anrufe.values():
-            ext, nummer = p.extern(a.nummer_roh, self.amtsholung) if a.nummer_roh else (False, "")
-            return {"zustand": namen.get(a.zustand, "unbekannt"), "richtung": a.richtung, "nummer": nummer,
-                    "extern": ext, "name": a.name, "ort": a.ort, "beginn": a.beginn, "verbunden": a.verbunden}
-        return {"zustand": "ruhe"}
+        """Kurzzustand für Anzeigen (Portal): der Anruf, um den es gerade geht, oder Ruhe.
+        Vorrang hat das Gespräch, dann der abgehende Ruf, dann ein klingelnder, zuletzt ein gehaltener Anruf."""
+        if not self.anrufe:
+            return {"zustand": "ruhe"}
+        a = min(self.anrufe.values(), key=lambda a: (_VORRANG.index(a.zustand) if a.zustand in _VORRANG
+                                                     else len(_VORRANG), a.kennung))
+        ext, nummer = p.extern(a.nummer_roh, self.amtsholung) if a.nummer_roh else (False, "")
+        return {"zustand": _ANZEIGE.get(a.zustand, "unbekannt"), "richtung": a.richtung, "nummer": nummer,
+                "extern": ext, "name": a.name, "ort": a.ort, "beginn": a.beginn, "verbunden": a.verbunden,
+                "weitere": len(self.anrufe) - 1}
 
     def auftraege_annehmen(self) -> list[p.Rahmen]:
         klingelt = [a for a in self.anrufe.values() if a.zustand == OFFERING]

@@ -171,6 +171,17 @@ Nach `31` CONNECTED folgt ein zweites MORE_INFO `19` mit IE `6c` (Nummer der tat
 auch extern bei Rufumleitung; Bedeutung **vermutet**). Es eröffnet keinen Anruf, sondern gehört zum laufenden Gespräch.
 Ein neuer Anruf für dieses MORE_INFO bliebe in DIALING stehen und bekäme das RELEASED des nächsten Anrufs.
 
+**Daemon, über den Treiber hinaus:**
+- MORE_INFO `19` während eines Anrufs: IE `70` = Nachwahl (`NACHWAHL`), IE `6c` = Gegenstelle (`GEGENSTELLE`),
+  sonst `UNERWARTET`. Nur ohne laufenden Anruf eröffnet `19` einen (Belegen durch den PC meldet keinen Wählton).
+- DIALTONE `36` kommt auch mehrfach im selben Anruf (`serial_20260930_163534.log`, 10 s Abstand) und eröffnet
+  deshalb nur dann einen Anruf, wenn keiner wählt.
+- Plausibilitätsgrenzen (`gateway/ergoline/anruf.py`, `GRENZE_S`): Ein Anruf, der ohne weitere Meldung zu lange in
+  einem Zustand steht (OFFERING, DIALING, PROCEEDING, RINGBACK 600 s; DIALTONE, BUSY 300 s; DISCONNECTED 120 s;
+  ACCEPTED 60 s), wird verworfen (`ANRUF_VERWORFEN`, Warnung im Journal, kein Anrufdatensatz). CONNECTED und ONHOLD
+  haben keine Grenze. Gegen alle Betriebsmitschnitte bis 2026-11-18 geprüft: kein echter Anruf betroffen.
+- Anzeige (`zustand_kurz`): Gespräch vor abgehendem Ruf vor klingelndem vor gehaltenem Anruf; `weitere` zählt den Rest.
+
 **Vorbedingungen der Aufträge** (Sendefunktionen, siehe Abschnitt 6):
 - Wählen: abgelehnt, solange ein Anruf DISCONNECTED ist. Kein Anruf → erst `11` belegen (ACK), dann `19` wählen.
   Ein Anruf in ONHOLD oder ONHOLDPENDTRANSFER → `19` direkt (Rückfragewahl, ohne Belegen). Sonst abgelehnt.

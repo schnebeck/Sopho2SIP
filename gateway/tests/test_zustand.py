@@ -123,6 +123,38 @@ class Vorbedingungen(unittest.TestCase):
         self.assertEqual((ende[2]["richtung"], ende[2]["ergebnis"]), ("ein", "verpasst"))
         self.assertEqual(self.tel.zustand_kurz(), {"zustand": "ruhe"})
 
+    def test_nachwahl_im_gespraech_bleibt_beim_anruf(self):
+        for rahmen in ("02 02 36 01", "02 08 19 01 98 70 03 2a 34 31", "02 02 31 01"):
+            self.melde(rahmen)
+        ev = self.melde("02 07 19 01 98 70 02 81 23")
+        self.assertEqual([(e[0], e[1].kennung, e[2]) for e in ev], [("NACHWAHL", 1, "#")])
+        self.assertEqual([e[0] for e in self.melde("02 03 19 01 aa")], ["UNERWARTET"])
+        self.assertEqual(list(self.tel.anrufe), [1])
+
+    def test_wiederholter_waehlton_nur_bei_frischem_anruf(self):
+        self.melde("02 02 36 01")
+        self.assertEqual(self.melde("02 02 36 01", t=10.0), [])            # Wiederholung im selben Anruf
+        ev = self.melde("02 02 36 01", t=400.0)                            # Waise (> 300 s) zuerst verworfen
+        self.assertEqual([(e[0], e[1].kennung) for e in ev], [("ANRUF_VERWORFEN", 1), ("WAEHLTON", 2)])
+        self.assertEqual(self.tel.anrufe[2].beginn, 400.0)
+
+    def test_anzeige_zeigt_das_gespraech_vor_dem_anklopfenden(self):
+        self.melde("02 12 30 01 98 6c 0d" + b"0101700000000".hex())
+        self.melde("02 02 31 01")
+        self.melde("02 12 30 01 98 6c 0d" + b"0101700000001".hex())        # zweiter Ruf
+        kurz = self.tel.zustand_kurz()
+        self.assertEqual((kurz["zustand"], kurz["nummer"], kurz["weitere"]), ("verbunden", "01700000000", 1))
+
+    def test_ueberfaellige_anrufe_werden_verworfen(self):
+        self.melde("02 12 30 01 98 6c 0d" + b"0101700000000".hex())
+        self.assertEqual(self.tel.aufraeumen(600.0), [])
+        ((name, a, ds),) = self.tel.aufraeumen(600.1)
+        self.assertEqual((name, a.kennung, ds["richtung"], ds["verlauf"]), ("ANRUF_VERWORFEN", 1, "ein", ["OFFERING"]))
+        self.assertEqual(self.tel.zustand_kurz(), {"zustand": "ruhe"})
+        self.melde("02 12 30 01 98 6c 0d" + b"0101700000000".hex(), t=700.0)
+        self.melde("02 02 31 01", t=701.0)
+        self.assertEqual(self.tel.aufraeumen(701.0 + 86400), [])          # Gespräche haben keine Grenze
+
 
 if __name__ == "__main__":
     unittest.main()

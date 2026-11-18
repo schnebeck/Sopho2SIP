@@ -49,6 +49,15 @@ class Bruecke(unittest.TestCase):
     def sip(self, typ, **kw):
         self.br.bei_sip({"event": True, "type": typ, **kw})
 
+    def test_verworfener_anruf_gibt_die_bruecke_frei(self):
+        self.aufbau()
+        self.melde("02 12 30 01 98 6c 0d " + NUMMER)                      # RINGING, Ende geht verloren
+        self.gw.aufraeumen(601.0)
+        self.assertEqual(self.ctrl.befehle[-1], "hangup")
+        self.assertIsNone(self.br.modus)
+        self.melde("02 12 30 01 98 6c 0d " + NUMMER)                      # nächster Ruf wird wieder vermittelt
+        self.assertEqual(self.ctrl.befehle[-1], "dial sip:01700000000@127.0.0.1")
+
     def test_sopho_nach_sip(self):
         self.aufbau()
         self.melde("02 12 30 01 98 6c 0d " + NUMMER)                      # RINGING

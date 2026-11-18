@@ -159,6 +159,11 @@ class SipBruecke:
                 self._sip_auflegen()
                 if name == "ANRUF_ENDE":
                     self._ende()
+            elif name == "ANRUF_VERWORFEN" and self.modus is not None \
+                    and self.gw.status()["anruf"]["zustand"] == "ruhe":
+                self._log("Anruf ohne Abschluss verworfen: SIP-Ruf beendet")
+                self._sip_auflegen()
+                self._ende()
 
     # --- SIP → Telefon ------------------------------------------------------------------------------
     def bei_sip(self, ev: dict) -> None:
